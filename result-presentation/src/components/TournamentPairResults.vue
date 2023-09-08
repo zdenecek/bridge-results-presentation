@@ -70,10 +70,10 @@ const players = props.tournament.getPair(props.pair)?.players;
         <td>
           <router-link v-if="result.tableResult.status === 'played'"
                        :to="{ name: 'round-pair-results', params: { pair: pair, round: result.round } }">
-            {{ result.tableResult.imp_ns }} : {{ result.tableResult.imp_ew }}
+                       {{ result.imps }} : {{ result.oppResult.imps }}
           </router-link>
           <template v-else-if="result.tableResult.status === 'postponed' ">
-            {{ result.tableResult.imp_ns }} : {{ result.tableResult.imp_ew }}
+            {{ result.imps }} : {{ result.oppResult.imps }}
           </template>
         </td>
         <td>{{ result.vps?.toFixed(2) }}</td>

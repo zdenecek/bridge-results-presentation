@@ -30,7 +30,7 @@ results.sort((a, b) => {
   return (b as CompleteBoardResult).points - (a as CompleteBoardResult).points;
 });
 
-
+const average = props.round.getBoardAverage(props.board);
 </script>
 
 <template>
@@ -66,6 +66,9 @@ results.sort((a, b) => {
           <template v-else-if="result.status === 'not-played'">
             <td colspan="5">Nehráno</td>
           </template>
+        </tr>
+        <tr v-if="average">
+          <td>{{ average }}</td>
         </tr>
 
       </table>

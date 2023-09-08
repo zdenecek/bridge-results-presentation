@@ -2,9 +2,10 @@
   <div>
     <h2>Výsledky {{ round }}. kola</h2>
     <nav>
+      <router-link :to="{ name: 'seatings' }" v-if="!tournament?.isFinished">Nasazení</router-link>
       <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
       <router-link :to="{ name: 'rounds-results' }">Výsledky všech kol</router-link>
-      <router-link :to="{ name: 'round-board-results' }">Výsledky rozdání</router-link>
+      <router-link :to="{ name: 'round-board-results' }">Rozdání</router-link>
     </nav>
     <template v-if="tournament">
       <RoundTotals :round="round" :tournament="tournament" />

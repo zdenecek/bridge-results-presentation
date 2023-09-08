@@ -15,6 +15,7 @@ import { calculateAllPairResult } from "./ResultsCalculation";
 
 export type TournamentData = {
     title: string;
+    totalRounds: number;
     td?: {
         name: string;
         email?: string;
@@ -59,11 +60,13 @@ export class Tournament {
         Array.from(Array(this.totalRounds).keys()).forEach((r) => {
             this.pairResults.set(r, undefined);
         });
-
-
     }
 
     private pairResults: Map<RoundNumber, Map<PairNumber, PairSumResult> | undefined>;
+
+    public get isFinished(): boolean {
+        return this.standing === this.totalRounds;
+    }
 
     getSeating(
         round: RoundNumber,
@@ -81,6 +84,8 @@ export class Tournament {
 
     getPairResult(pair: PairNumber, untilRound?: RoundNumber): PairSumResult | undefined {
         let round = untilRound ?? this.standing;
+
+
         if(round > this.standing) round = this.standing;
         if(this.pairResults.get(round - 1) === undefined) 
             this.pairResults.set(round - 1, calculateAllPairResult( Object.values(this.rounds).slice(0, round ) ,this));
@@ -105,16 +110,17 @@ export class Tournament {
         return this.rounds[round.toString()]?.getPairResult(pair);
     }
 
-    getPairRoundResults(pair: PairNumber): PairTableRoundResult[] {
-        const results = Object.values(this.rounds).map(
+    getPairRoundResults(pair: PairNumber, rounds: Round[] | undefined = undefined): PairTableRoundResult[] {
+        const results = Object.values(rounds ?? this.rounds).map(
             (r) => r.getPairResult(pair)
         ).filter((r) => r !== undefined) as PairTableRoundResult[];
         return results ;
-    }
+}
 
     getRoundResults(round: RoundNumber): TableRoundResult[] {
+        const items =  this.rounds[round.toString()]?.getMatchResults().values();
         return Array.from(
-            this.rounds[round.toString()]?.getMatchResults().values()
+           items ?? []
         );
     }
 
@@ -127,6 +133,6 @@ export class Tournament {
     get standing(): RoundNumber {
         return Object.values(this.rounds)
             .map((r) => r.number)
-            .reduce((a, b) => Math.max(a, b), 1);
+            .reduce((a, b) => Math.max(a, b), 0);
     }
 }

@@ -6,7 +6,7 @@
       <router-link :to="{ name: 'round-results', params: { round: roundNum } }">Výsledky kola</router-link>
       <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
       <router-link :to="{ name: 'pair-results' }">Celkové výsledky páru</router-link>
-      <router-link :to="{ name: 'round-board-results' }">Výsledky rozdání</router-link>
+      <router-link :to="{ name: 'round-board-results' }">Rozdání</router-link>
     </nav>
 
     <template v-if="tournament && round && pair">

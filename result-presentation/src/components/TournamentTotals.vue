@@ -10,9 +10,6 @@ const props = defineProps({
     required: true,
   },
 })
-
-console.log(props.tournament)
-
 </script>
 
 <template>

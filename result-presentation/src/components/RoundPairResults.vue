@@ -2,7 +2,7 @@
 
 import { Tournament } from '@/model/Tournament';
 import { unique } from '@/utils/unique';
-import { defineProps } from 'vue';
+import { computed, defineProps } from 'vue';
 import Contract from './partial/ContractPartial.vue';
 import { Round } from '@/model/Round';
 import { BoardResult, CompleteBoardResult } from '@/model/BoardResult';
@@ -36,6 +36,7 @@ const imp_ew = MatchResults.getImpsEW(finalResult?.tableResult);
 const vp_ns = MatchResults.getVpsNS(finalResult?.tableResult);
 const vp_ew = MatchResults.getVpsEW(finalResult?.tableResult);
 
+const averages = computed( () => props.round.hasAverages);
 
 </script>
 
@@ -78,6 +79,7 @@ const vp_ew = MatchResults.getVpsEW(finalResult?.tableResult);
         </template>
         <th>Závazek</th>
         <th colspan="2">Výsledek</th>
+        <th v-if="averages">Průměr</th>
         <th>IMPy</th>
       </tr>
       <tr v-for="result in results" :key="result.ns">
@@ -102,6 +104,7 @@ const vp_ew = MatchResults.getVpsEW(finalResult?.tableResult);
           </td>
           <td>{{ (result as CompleteBoardResult).result }}</td>
           <td>{{ (result as CompleteBoardResult).points }}</td>
+          <td v-if="averages">{{ round.getBoardAverage(result.deal) }}</td>
           <td>{{ ns ? (result as CompleteBoardResult).res_ns : (result as CompleteBoardResult).res_ew }}</td>
         </template>
         <template v-else-if="result.status === 'not-played'">

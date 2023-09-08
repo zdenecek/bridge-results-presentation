@@ -64,7 +64,7 @@ const results = computed(() => props.tournament.getRoundResults(props.round)?.fi
             {{ result['imp_' + key as keyof TableRoundResult] }}
           </span>
          </td>
-        <td v-for="key in ['vp_ew', 'vp_ns']" :key="key"> {{ result[key as keyof TableRoundResult] }} </td>
+        <td v-for="key in ['vp_ns', 'vp_ew']" :key="key"> {{ result[key as keyof TableRoundResult] }} </td>
       </tr>
     </table>
     <div v-else>

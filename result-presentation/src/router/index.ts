@@ -15,7 +15,42 @@ import RoundPairResultsView from "../views/RoundPairResultsView.vue";
 import RoundBoardResultsView from "../views/RoundBoardResultsView.vue";
 import TournamentCrosstablesView from "../views/TournamentCrosstablesView.vue";
 
+import TournamentsIndexView from "../views/index/TournamentsIndexView.vue";
+import AdminView from "../views/admin/AdminView.vue";
+
+import CreateTournamentView from "../views/admin/CreateTournamentView.vue";
+import IndexTournamentsView from "../views/admin/IndexTournamentsView.vue";
+import EditTournamentView from "../views/admin/EditTournamentView.vue";
+import RoundsSeatingsViewVue from "@/views/RoundsSeatingsView.vue";
+
 const routes: Array<RouteRecordRaw> = [
+    {
+        path: "/",
+        name: "home",
+        component: TournamentsIndexView,
+    },
+    {
+        path: "/admin",
+        name: "admin",
+        component: AdminView,
+        children: [
+            {
+                path: "create",
+                name: "admin-tournament-create",
+                component: CreateTournamentView,
+            },
+            {
+                path: "",
+                name: "admin-tournament-show",
+                component: IndexTournamentsView,
+            },
+            {
+                path: "edit/:tournament",
+                name: "admin-tournament-edit",
+                component: EditTournamentView,
+            },
+        ]
+    },
     {
         path: "/tournament/:tournament",
         name: "tournament",
@@ -25,6 +60,11 @@ const routes: Array<RouteRecordRaw> = [
                 path: "",
                 name: "tournament-results",
                 component: TournamentResultsView,
+            },
+            {
+                path: "seatings/:round?",
+                name: "seatings",
+                component: RoundsSeatingsViewVue,
             },
             {
                 path: "pair/:pair",

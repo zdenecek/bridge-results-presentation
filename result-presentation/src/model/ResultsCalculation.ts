@@ -85,7 +85,7 @@ export function calculateAllPairResult(
 
     const pairResults = pairs.map((pair) => { 
         
-        const results =  tournament.getPairRoundResults(pair);
+        const results =  tournament.getPairRoundResults(pair, rounds);
         
         return new PairSumResult({
         pair: pair,

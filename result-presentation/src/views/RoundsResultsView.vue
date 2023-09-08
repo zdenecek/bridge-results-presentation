@@ -2,6 +2,7 @@
   <div>
     <h2>Výsledky kol a průběžné celkové výsledky</h2>
     <nav>
+      <router-link :to="{ name: 'seatings' }" v-if="!tournament?.isFinished">Nasazení</router-link>
       <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
       <router-link v-show="played" :to="{ name: 'round-board-results', params: { round: round } }">Rozdání</router-link>
       <router-link :to="{ name: 'crosstables' }">Křížové tabulky</router-link>
