@@ -36,7 +36,7 @@ const players = props.tournament.getPair(props.pair)?.players;
       </tr>
     </table>
 
-    <table class="table">
+    <table class="table" v-if="players?.length">
       <tr>
         <th colspan="3">Hráči</th>
       </tr>
@@ -48,7 +48,7 @@ const players = props.tournament.getPair(props.pair)?.players;
       </tr>
     </table>
 
-    <table class="table table-totals">
+    <table class="table table-totals" v-if="results.length">
       <tr>
         <th>Kolo</th>
         <th>Soupeři</th>
@@ -79,6 +79,9 @@ const players = props.tournament.getPair(props.pair)?.players;
         <td>{{ result.vps?.toFixed(2) }}</td>
       </tr>
     </table>
+    <div v-else>
+      <p>Zatím nejsou dostupné žádné výsledky</p>
+    </div>
   </div>
 </template>
 

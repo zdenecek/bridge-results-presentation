@@ -39,13 +39,12 @@ const standing = computed(() => tournament.value?.standing);
 
 let round = computed(() => {
   const val = Number.parseInt(route.params['round'] as string)
-  if (isNaN(val) && standing.value) return standing.value;
+  if (isNaN(val)) return standing.value ?? 1;
   return val;
 });
 
 
-
-const played = computed(() => tournament.value?.getRoundResults(round.value) !== undefined);
+const played = computed(() => tournament.value?.wasRoundPlayed(round.value) );
 </script>
 
 <style scoped></style>

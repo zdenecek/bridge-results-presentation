@@ -6,7 +6,7 @@
       <router-link :to="{ name: 'round-results', params: { round: roundNum } }">Výsledky kola</router-link>
       <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
       <router-link :to="{ name: 'pair-results' }">Celkové výsledky páru</router-link>
-      <router-link :to="{ name: 'round-board-results' }">Rozdání</router-link>
+      <router-link v-show="roundHasDeals" :to="{ name: 'round-board-results' }">Rozdání</router-link>
     </nav>
 
     <template v-if="tournament && round && pair">
@@ -26,9 +26,12 @@ const route = useRoute();
 const roundNum = Number.parseInt(route.params['round'] as string)
 const tournament = inject('tournament') as Ref<Tournament | undefined>;
 const round = computed( () =>tournament.value?.rounds[roundNum]);
-const pair = computed( () => tournament.value?.getPair(route.params['pair'] as string))
+const pair = computed( () => tournament.value?.getPair(Number.parseInt(route.params['pair'] as string)))
 
-
+const roundHasDeals = computed( () =>  { 
+  if(!round.value?.boards) return false;
+  return Object.keys(round.value.boards).length > 0;
+} );
 </script>
 
 <style scoped></style>

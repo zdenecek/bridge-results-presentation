@@ -21,19 +21,17 @@ const props = defineProps({
 const group = ref(props.tournament?.groups[props.groupIndex]);
 
 const seatings = computed(() => {
-  if (!props.tournament || !props.tournament.rotations[props.round]) return undefined;
-  const a = Object.entries(
-    props.tournament.rotations[props.round]
-  ).filter(([, { ns, ew }]) => group.value?.players.includes(ns) && group.value?.players.includes(ew))
+  if (!props.tournament || !props.tournament.rotations.get(props.round)) return undefined;
+  const allSeatings = Object.entries(props.tournament.rotations.get(props.round)!);
+  const groupSeatings = allSeatings.filter(([, {ns, ew}]) => group.value?.players.includes(ns) || group.value?.players.includes(ew))
     .map(([table, { ns, ew }]) => {
       return {
-        table: Number.parseInt(table),
+        table: table,
         ns: props.tournament!.getPair(ns),
         ew: props.tournament!.getPair(ew),
       }
     })
-  console.log(a)
-  return a;
+  return groupSeatings;
 })
 
 </script>
@@ -54,8 +52,8 @@ const seatings = computed(() => {
           <td>{{ seating.table }}</td>
           <td class="col-name" v-for="key in ['ns', 'ew']" :key="key">
             <router-link
-                         :to="{ name: 'pair-results', params: { pair: seating[key]?.id ?? 1 } }">
-              {{ seating[key]?.title }}
+                         :to="{ name: 'pair-results', params: { pair: seating[key as 'ns' | 'ew']?.id ?? 1 } }">
+              {{ seating[key as 'ns' | 'ew']?.title }}
             </router-link>
           </td>
         </tr>
@@ -77,4 +75,3 @@ const seatings = computed(() => {
   padding-bottom: 20px;
 }
 </style>
-@/model/TableResult

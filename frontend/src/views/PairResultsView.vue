@@ -13,14 +13,14 @@
 <script setup lang="ts">
 import TournamentPairResults from '@/components/TournamentPairResults.vue';
 import { Tournament } from '@/model/Tournament';
-import { Ref, inject } from 'vue';
+import { Ref, computed, inject } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const tournament = inject('tournament') as Ref<Tournament | undefined>;
 
-const pair = tournament.value?.getPair(route.params['pair'] as string);
-const pairNum = parseInt(route.params['pair'] as string);
+  const pairNum = computed( ( ) => parseInt(route.params['pair'] as string));
+const pair = computed( () =>  tournament.value?.getPair(pairNum.value));
 
 </script>
 

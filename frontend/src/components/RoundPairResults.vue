@@ -56,7 +56,7 @@ const averages = computed( () => props.round.hasAverages);
 
           <router-link
                        :to="{ name: 'round-pair-results', params: { pair: results[0]?.[line as keyof BoardResult], round: props.round.number } }">
-            {{ tournament.getPair(results[0]?.[line as keyof BoardResult])?.title }}
+            {{ tournament.getPair(results[0]?.[line  as 'ns' | 'ew'])?.title }}
           </router-link>
         </td>
         <td>
@@ -94,7 +94,7 @@ const averages = computed( () => props.round.hasAverages);
           <td class="col-name" v-for="line in ['ns', 'ew']" :key="line">
             <router-link
                          :to="{ name: 'round-pair-results', params: { pair: result[line as keyof BoardResult], round: props.round.number } }">
-              {{ tournament.getPair(result[line as keyof BoardResult])?.title }}
+              {{ tournament.getPair(result[line  as 'ns' | 'ew'])?.title }}
             </router-link>
           </td>
         </template>

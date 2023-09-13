@@ -97,11 +97,11 @@ export class PairSumResult {
             .length;
     }
 
-    static Default(): PairSumResult {
+    static Default(player?: number | undefined, groupSize?: number | undefined): PairSumResult {
         return new PairSumResult({
-            pair: 0,
+            pair: player ?? 0,
             vp: 0,
-            rank: Rank.default(10),
+            rank: Rank.default(groupSize ?? 10),
         });
     }
 }

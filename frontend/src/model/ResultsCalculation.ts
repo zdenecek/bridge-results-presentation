@@ -90,7 +90,7 @@ export function calculateAllPairResult(
         return new PairSumResult({
         pair: pair,
         vp: results.reduce((acc, curr) => acc + (curr.vps ?? 0), 0),
-        rank: Rank.default(tournament.getPairGroup(pair).players.length),
+        rank: Rank.default(tournament.getPairGroup(pair)?.players.length),
         matchResults: results
     }) });
 

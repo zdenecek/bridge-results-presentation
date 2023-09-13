@@ -34,12 +34,13 @@ const results = computed(() => props.tournament.getRoundResults(props.round)?.fi
     <div class="flex flex-column flex-center">
       
 
+      <template v-if="results.length">
     <TournamentGroupTotals class="totals" :tournament="tournament" :groupIndex="groupIndex" :untilRound="round">
       <template v-slot:header><span></span>
       </template>
     </TournamentGroupTotals>
 
-    <table v-if="results" class="table table-totals">
+    <table  class="table table-totals">
       <tr>
         <th>Stůl</th>
         <th>NS</th>
@@ -52,7 +53,7 @@ const results = computed(() => props.tournament.getRoundResults(props.round)?.fi
         <td class="col-name" v-for="key in ['ns', 'ew']" :key="key">
           <router-link 
                        :to="{ name: 'pair-results', params: { pair: result[key as keyof TableRoundResult] } }">
-            {{ tournament.getPair(result[key as keyof TableRoundResult])?.title }}
+            {{ tournament.getPair(result[key as 'ns' | 'ew'])?.title }}
           </router-link>
         </td>
         <td v-for="key in ['ns', 'ew']" :key="key"> 
@@ -67,6 +68,7 @@ const results = computed(() => props.tournament.getRoundResults(props.round)?.fi
         <td v-for="key in ['vp_ns', 'vp_ew']" :key="key"> {{ result[key as keyof TableRoundResult] }} </td>
       </tr>
     </table>
+      </template>
     <div v-else>
       <p>Výsledky nejsou dostupné.</p>
     </div>

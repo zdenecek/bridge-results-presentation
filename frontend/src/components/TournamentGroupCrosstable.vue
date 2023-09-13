@@ -20,7 +20,7 @@ type matrix = (PairTableRoundResult | undefined)[][];
 const group = reactive(props.tournament.groups[props.groupIndex]);
 const groupSize = group.players.length;
 
-const additionalColumns = computed(() => props.tournament.totalRounds - group.players.length + 1);
+const additionalColumns = computed(() => Math.max(0,props.tournament.totalRounds - group.players.length + 1));
 const additionalColumnsTitles = computed(() => Array.from({ length: additionalColumns.value }, (_, i) => i + group.players.length + ". kolo"));
 
 const additionalColumnResults = computed(() => {

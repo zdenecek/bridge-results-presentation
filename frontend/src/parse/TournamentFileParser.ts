@@ -135,7 +135,7 @@ export default class TournamentFileParser {
             if (ability_present)
                 Object.assign(board, { ability: ability, minimax: minimax });
 
-            Object.assign(boards, { board: board });
+            Object.assign(boards, { [boardNum]: board });
         }
 
         const lines = text.split("\r\n");

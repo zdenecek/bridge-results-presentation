@@ -3,6 +3,7 @@ import { RoundData } from "./Round";
 export interface Pair {
     title: string;
     id: number;
+    isBye: boolean; 
     players: Player[];
 }
 export interface Player {
@@ -23,6 +24,10 @@ export type PairNumberKey = string;
 export type RoundNumber = number;
 export type RoundNumberKey = string;
 
+export type SegmentNumber = number;
+export type SegmentNumberKey = string;
+
+
 export type RoundRotation = Record<
     TableNumberKey,
     {
@@ -30,6 +35,9 @@ export type RoundRotation = Record<
         ew: PairNumber;
     }
 >;
+
+export type SegmentedRoundRotation = Record<SegmentNumberKey, RoundRotation>;
+
 
 
 
