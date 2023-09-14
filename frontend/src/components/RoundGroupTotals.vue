@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { Tournament } from '@/model/Tournament';
-import { computed, defineProps, reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import TournamentGroupTotals from './TournamentGroupTotals.vue';
 import { TableRoundResult } from '@/model/MatchResult';
 

@@ -26,7 +26,6 @@
 
 <script setup lang="ts">
 
-import { defineProps } from 'vue';
 import BoardCardsPartial from './BoardCardsPartial.vue';
 import { Board } from '@/model/Board';
 import DoubleDummyPartial from './DoubleDummyPartial.vue';

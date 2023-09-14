@@ -2,7 +2,7 @@
 
 import { PairTableRoundResult } from '@/model/MatchResult';
 import { Tournament } from '@/model/Tournament';
-import { computed, defineProps, reactive } from 'vue';
+import { computed, reactive } from 'vue';
 
 const props = defineProps({
   tournament: {

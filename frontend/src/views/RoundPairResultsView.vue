@@ -23,9 +23,9 @@ import RoundPairResults from '@/components/RoundPairResults.vue';
 
 const route = useRoute();
 
-const roundNum = Number.parseInt(route.params['round'] as string)
+const roundNum = computed( ( ) => Number.parseInt(route.params['round'] as string))
 const tournament = inject('tournament') as Ref<Tournament | undefined>;
-const round = computed( () =>tournament.value?.rounds.get(roundNum));
+const round = computed( () =>tournament.value?.rounds.get(roundNum.value));
 const pair = computed( () => tournament.value?.getPair(Number.parseInt(route.params['pair'] as string)))
 
 const roundHasDeals = computed( () =>  { 

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 import { Tournament } from '@/model/Tournament';
-import { defineProps } from 'vue';
 import TournamentGroupTotals from './TournamentGroupTotals.vue';
 
 const props = defineProps({

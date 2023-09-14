@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
 import { Tournament } from '@/model/Tournament';
-import { defineProps, computed } from 'vue';
+import { computed } from 'vue';
 import RoundBoardResult from './RoundBoardResult.vue';
 import { Round } from '@/model/Round';
 

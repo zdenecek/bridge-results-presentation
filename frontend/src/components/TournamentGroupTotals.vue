@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { PairSumResult } from '@/model/MatchResult';
 import { Tournament } from '@/model/Tournament';
-import { computed, defineProps, reactive } from 'vue';
+import { computed, reactive } from 'vue';
 import WinnerCupIconPartial from './partial/WinnerCupIconPartial.vue';
 
 const props = defineProps({

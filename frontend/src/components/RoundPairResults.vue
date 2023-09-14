@@ -2,7 +2,7 @@
 
 import { Tournament } from '@/model/Tournament';
 import { unique } from '@/utils/unique';
-import { computed, defineProps } from 'vue';
+import { computed } from 'vue';
 import Contract from './partial/ContractPartial.vue';
 import { Round } from '@/model/Round';
 import { BoardResult, CompleteBoardResult } from '@/model/BoardResult';

@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import Checkmark from '@/components/partial/CheckmarkPartial.vue';
 import { TournamentData } from '@/model/Tournament';
-import { ref, defineEmits, defineProps, watchEffect } from 'vue';
+import { ref, watchEffect } from 'vue';
 import TournamentFileParser from '@/parse/TournamentFileParser';
 
 function results(round: number): number {
