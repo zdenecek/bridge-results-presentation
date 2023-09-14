@@ -17,7 +17,7 @@ export interface RoundData {
     date?: string | Date;
     boards?: Record<BoardNumberKey, Board>;
     boardResults?: BoardResult[];
-    overwrites: Overwrite[];
+    overwrites?: Overwrite[];
     averages?: Record<BoardNumberKey, number>;
 }
 
@@ -56,14 +56,16 @@ export class Round {
 
         const results = calculateResults(this, data);
 
-        data.overwrites.filter((o) => o.type === "postponed").forEach((o) => {
+        const overwrites = data.overwrites ?? [];
+
+        overwrites.filter((o) => o.type === "postponed").forEach((o) => {
             this.postponedTables.push(o.table);
         });
 
         this.matchResultsByPair = new Map<PairNumber, TableRoundResult>();
         
         this.matchResultsByTable = this.applyOverwrites(
-            data.overwrites,
+            overwrites,
             results
         );
         
