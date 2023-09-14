@@ -15,7 +15,7 @@
 
       <h3>Data turnaje</h3>
 
-      <tournament-data-editor :tournamentData="initialData" @change="updateData">
+      <tournament-data-editor :tournamentData="(initialData as TournamentData)" @change="updateData">
       </tournament-data-editor>
 
     </div>
@@ -27,6 +27,7 @@ import { onMounted, ref  } from 'vue';
 import {  useRoute } from 'vue-router';
 
 import TournamentDataEditor from '@/views/admin/TournamentDataEditor.vue';
+import { TournamentData } from '@/model/Tournament';
 
 const title = ref("");
 const slug = ref("");

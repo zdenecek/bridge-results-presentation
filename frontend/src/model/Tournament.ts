@@ -120,10 +120,7 @@ export class Tournament {
 
     getPairGroup(pair: PairNumber): Group | undefined {
         if (this.players.get(pair)?.isBye) return undefined;
-        return (
-            this.groups.find((g) => g.players.includes(pair)) ??
-            throwError(`Pair ${pair} not found in any group`)
-        );
+        return this.groups.find((g) => g.players.includes(pair));
     }
 
     getRoundsUntil(untilRound?: RoundNumber): Round[] {

@@ -25,7 +25,7 @@ const route = useRoute();
 
 const roundNum = Number.parseInt(route.params['round'] as string)
 const tournament = inject('tournament') as Ref<Tournament | undefined>;
-const round = computed( () =>tournament.value?.rounds[roundNum]);
+const round = computed( () =>tournament.value?.rounds.get(roundNum));
 const pair = computed( () => tournament.value?.getPair(Number.parseInt(route.params['pair'] as string)))
 
 const roundHasDeals = computed( () =>  { 

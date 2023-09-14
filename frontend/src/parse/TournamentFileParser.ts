@@ -126,6 +126,9 @@ export default class TournamentFileParser {
         let boardNum = "";
 
         function save() {
+
+            if(deal.length !== 4) return;
+
             const board = {
                 dealer: dealer,
                 vul: vul,
@@ -133,6 +136,8 @@ export default class TournamentFileParser {
             };
             if (ability_present)
                 Object.assign(board, { ability: ability, minimax: minimax });
+
+
 
             Object.assign(boards, { [boardNum]: board });
         }

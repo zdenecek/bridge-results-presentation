@@ -5,7 +5,7 @@ import axios from "axios";
 
 export default class TournamentApi {
 
-    private static url: string = process.env.VUE_APP_API_URL;
+    private static url: string = import.meta.env.VITE_API_URL;
 
     public static getTournament(slug: string): Promise<TournamentEntry> {
         return axios.get(this.url + "tournament/" + slug).then((response) => {

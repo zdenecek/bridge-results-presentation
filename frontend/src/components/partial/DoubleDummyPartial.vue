@@ -20,10 +20,10 @@
           <SuitPartial suit="C" />
         </th>
       </tr>
-      <tr v-for=" [pos, i] in [['N', 0], ['S', 2], ['E', 1], ['W', 3]]" :key="i">
+      <tr v-for="[pos, i] in [['N', 0], ['S', 2], ['E', 1], ['W', 3]]" :key="i">
         <td>{{ pos }}</td>
         <td v-for="s in 5" :key="s">
-          {{ dd[i * 5 + s - 1] }}
+          {{ dd[ 5 * (i as number) + s - 1] }}
         </td>
       </tr>
     </table>

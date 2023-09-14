@@ -29,7 +29,7 @@
                         <input type="date" v-model="data.rounds[round].date" v-if="data.rounds[round]" />
                     </div>
                     <input multiple="true" accept=".txt,.csv,.pbn" :id="'fileinput-' + round" type="file"
-                           @input="(e) => addFilesToRound(round, e)">
+                           @input="(e) => addFilesToRound(round, e as InputEvent)">
                 </template>
             </template>
         </div>

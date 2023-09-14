@@ -5,4 +5,4 @@ declare module "*.vue" {
     export default component;
 }
 
-declare module "bridge-scoring";
+import 'vite/client';
