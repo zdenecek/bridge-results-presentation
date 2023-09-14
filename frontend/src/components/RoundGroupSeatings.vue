@@ -1,3 +1,39 @@
+
+
+<template>
+  <div>
+    <h3>Skupina {{ group?.name }}</h3>
+
+    <div class="flex flex-column flex-center">
+
+      <table v-if="seatings" class="table table-totals">
+        <tr>
+          <th>Stůl</th>
+          <th>NS</th>
+          <th>EW</th>
+          <th v-if="displayPostponedColumn">Odklady</th>
+        </tr>
+        <tr v-for="seating in seatings" :key="seating.table">
+          <td>{{ seating.table }}</td>
+          <td class="col-name" v-for="key in ['ns', 'ew']" :key="key">
+            <router-link
+                         :to="{ name: 'pair-results', params: { pair: seating[key as 'ns' | 'ew']?.id ?? 1 } }">
+              {{ seating[key as 'ns' | 'ew']?.title }}
+            </router-link>
+          </td>
+          <td v-if="displayPostponedColumn">
+            <span v-if="seating.postponed">  Odloženo </span>
+          </td>
+        </tr>
+      </table>
+      <div v-else>
+        <p>Posazení není dostupné.</p>
+      </div>
+    </div>
+
+  </div>
+</template>
+
 <script setup lang="ts">
 
 import { Tournament } from '@/model/Tournament';
@@ -29,42 +65,17 @@ const seatings = computed(() => {
         table: table,
         ns: props.tournament!.getPair(ns),
         ew: props.tournament!.getPair(ew),
+        postponed: props.tournament!.rounds.get(props.round)?.isTablePostponed(Number.parseInt(table)),
       }
     })
   return groupSeatings;
 })
 
+const displayPostponedColumn = computed(() => {
+  return seatings.value?.some(s => s.postponed);
+})
+
 </script>
-
-<template>
-  <div>
-    <h3>Skupina {{ group?.name }}</h3>
-
-    <div class="flex flex-column flex-center">
-
-      <table v-if="seatings" class="table table-totals">
-        <tr>
-          <th>Stůl</th>
-          <th>NS</th>
-          <th>EW</th>
-        </tr>
-        <tr v-for="seating in seatings" :key="seating.table">
-          <td>{{ seating.table }}</td>
-          <td class="col-name" v-for="key in ['ns', 'ew']" :key="key">
-            <router-link
-                         :to="{ name: 'pair-results', params: { pair: seating[key as 'ns' | 'ew']?.id ?? 1 } }">
-              {{ seating[key as 'ns' | 'ew']?.title }}
-            </router-link>
-          </td>
-        </tr>
-      </table>
-      <div v-else>
-        <p>Posazení není dostupné.</p>
-      </div>
-    </div>
-
-  </div>
-</template>
 
 <style scoped>
 .flex {

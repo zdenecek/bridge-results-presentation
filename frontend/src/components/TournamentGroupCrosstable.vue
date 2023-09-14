@@ -79,7 +79,7 @@ const pairResults = computed(() => props.tournament.getPairResults());
           <td v-for="player2, i2 in group.players" :key="player2"
               class="col-vp"
               :class="{ empty: player === player2, missing: (results[i][i2]?.round ?? 100) <= tournament.standing && results[i][i2]?.tableResult.status === 'not-played' }"
-              :title="player !== player2 ? (results[i][i2]?.round + '. kolo proti ' + tournament.getPair(player2)?.title) : ''">
+              :title="player !== player2 ? (results[i][i2]?.round.toString() ?? '?' + '. kolo proti ' + tournament.getPair(player2)?.title) : ''">
             <template v-if="player !== player2 && results[i][i2] && results[i][i2]?.tableResult.status !== 'not-played'">
               <router-link v-if="results[i][i2]?.status === 'played'"
                            :to="{ name: 'round-pair-results', params: { round: results[i][i2]?.round, pair: player } }">
@@ -112,7 +112,7 @@ const pairResults = computed(() => props.tournament.getPairResults());
           </template>
 
 
-          <td>{{ pairResults.get(player)?.average.toFixed(2) }}</td>
+          <td>{{ pairResults.get(player)?.average?.toFixed(2) ?? 'N/A' }}</td>
           <td>{{ pairResults.get(player)?.vp.toFixed(2) }}</td>
           <td>{{ pairResults.get(player)?.rank }}</td>
         </tr>

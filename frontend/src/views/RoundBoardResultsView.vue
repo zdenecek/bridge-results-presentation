@@ -43,9 +43,9 @@ const route = useRoute();
 
 
 const tournament = inject('tournament') as Ref<Tournament | undefined>;
-const round = computed(() => tournament.value?.rounds[route.params['round'] as string]);
+const round = computed(() => tournament.value?.rounds.get(Number.parseInt(route.params['round'] as string)));
 
-const boards = computed(() => new Set(round.value?.boardResults.map(r => r.deal)));
+const boards = computed(() => new Set(round.value?.boardResults?.map(r => r.deal)));
 
 const board = (() => {
   if (route.params['board'] === 'all') return 'all';

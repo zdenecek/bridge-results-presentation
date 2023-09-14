@@ -32,10 +32,13 @@
 
 <script setup lang="ts">
 import {   provide, ref, watch } from 'vue';
+// eslint-disable-next-line
 import TournamentApi from '@/api/TournamentApi';
 import { Tournament } from '@/model/Tournament';
 import { useRoute } from 'vue-router';
 import MainLayout from '@/layouts/MainLayout.vue';
+// eslint-disable-next-line
+import { getData } from '@/getTestData';
 
 const route = useRoute();
 let title = ref('Výsledky turnaje');
@@ -53,11 +56,16 @@ watch(route, () => {
 loadTournament();
 
 function loadTournament() {
-  
+  // tournament.value = getData();
+  // state.value = 'loaded';
+
+  // return;
+
+
   TournamentApi.getTournament(route.params['tournament'] as string).then((data) => {
     state.value = 'loaded';
     tournament.value = new Tournament(data.data);
-    title.value = data.name + " - výsledky turnaje";
+    title.value = data.name;
     document.title = data.name;
   }).catch((err) => {
     console.debug('Error loading tournament');

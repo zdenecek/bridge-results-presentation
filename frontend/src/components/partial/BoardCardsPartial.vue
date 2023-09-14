@@ -1,5 +1,5 @@
 <template>
-  <div class="hand">
+  <div class="hand" v-if="suits">
     <SuitPartial suit="S" /><span>{{ suits[0] }}</span>
     <SuitPartial suit="H" /><span>{{ suits[1] }}</span>
     <SuitPartial suit="D" /><span>{{ suits[2] }}</span>
@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
+import { computed, defineProps } from 'vue';
 import SuitPartial from './SuitPartial.vue';
 
 const props = defineProps({
@@ -19,7 +19,7 @@ const props = defineProps({
 
 })
 
-const suits = props.cards.split('.');
+const suits = computed(() => props.cards?.split('.'));
 </script>
 
 <style scoped>

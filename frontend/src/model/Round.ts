@@ -15,9 +15,8 @@ import { calculateVP } from "./VP";
 
 export interface RoundData {
     date?: string | Date;
-    number: number;
     boards?: Record<BoardNumberKey, Board>;
-    boardResults: BoardResult[];
+    boardResults?: BoardResult[];
     overwrites: Overwrite[];
     averages?: Record<BoardNumberKey, number>;
 }
@@ -27,32 +26,50 @@ export interface RoundData {
  * Main resposibility is to calculate the match results and store them to matchResultsByTable upon creation.
  */
 export class Round {
-    readonly number: number;
-    readonly date?: string;
-    readonly boards?: Record<BoardNumberKey, Board>;
-    readonly boardResults!: BoardResult[];
+    readonly date?: Date;
+    readonly boards?: Map<BoardNumber, Board>;
+    readonly boardResults?: BoardResult[];
 
     private matchResultsByTable: Map<TableNumber, TableRoundResult>;
     private matchResultsByPair: Map<PairNumber, TableRoundResult>;
     private boardAverages?: Map<BoardNumber, number>;
 
-    constructor(data: RoundData, public rotation: RoundRotation) {
-        this.date = data.date?.toString();
-        this.number = data.number;
-        this.boards = data.boards;
+    private postponedTables: TableNumber[] = [];
+
+    constructor(data: RoundData, public readonly number: number, public readonly rotation: RoundRotation) {
+        if(data.date) 
+        this.date = new Date(data.date);
         this.boardResults = data.boardResults;
+
+        this.boards = new Map<BoardNumber, Board>();
+        if(data.boards !== undefined) {
+            Object.keys(data.boards).forEach(num => {
+
+                if(data.boards![num].deal.length !== 4) 
+                {
+                    console.warn(`Board ${num} in round ${this.number} has ${data.boards![num].deal.length} cards`);
+                    return;
+                }
+                this.boards?.set(Number.parseInt(num), data.boards![num]);
+            })
+        }
 
         const results = calculateResults(this, data);
 
+        data.overwrites.filter((o) => o.type === "postponed").forEach((o) => {
+            this.postponedTables.push(o.table);
+        });
+
+        this.matchResultsByPair = new Map<PairNumber, TableRoundResult>();
+        
         this.matchResultsByTable = this.applyOverwrites(
             data.overwrites,
             results
         );
-
-        this.matchResultsByPair = new Map<PairNumber, TableRoundResult>();
+        
         this.matchResultsByTable.forEach((result, tableNumber) => {
-            this.matchResultsByPair.set(result.ns, result);
-            this.matchResultsByPair.set(result.ew, result);
+            this.matchResultsByPair!.set(result.ns, result);
+            this.matchResultsByPair!.set(result.ew, result);
         });
 
         if(data.averages !== undefined) {
@@ -67,23 +84,32 @@ export class Round {
         return this.boardAverages;
     }
 
+    public get wasPlayed(): boolean {
+        return (this.boardResults?.length ?? 0) > 0;
+    }
+
     public getBoardAverage(boardNumber: number) : number | undefined {
         return this.boardAverages?.get(boardNumber);
     }
     
     public getMatchResults(): TableRoundResult[] {
+        if(this.matchResultsByTable === undefined) return [];
         return Array.from(this.matchResultsByTable.values());
     }
 
     public getPairResult(pairNumber: PairNumber): PairTableRoundResult | undefined {
-        const result = this.matchResultsByPair.get(pairNumber);
+        const result = this.matchResultsByPair?.get(pairNumber);
         if(result) return new PairTableRoundResult(result, pairNumber);
     }
 
     public getTableResult(
         tableNumber: TableNumber
     ): TableRoundResult | undefined {
-        return this.matchResultsByTable.get(tableNumber);
+        return this.matchResultsByTable?.get(tableNumber);
+    }
+
+    public isTablePostponed(tableNumber: TableNumber): boolean {
+        return this.postponedTables.includes(tableNumber);
     }
 
     private applyOverwrites(
@@ -94,17 +120,18 @@ export class Round {
             .filter((o) => o.type === "ignore")
             .forEach((o) => {
                 const success = resultsByTable.delete(o.table);
-                if (!success) console.warn(`Table ${o.table} not found`);
+                if (!success) console.warn(`Table ${o.table} not found in round ${this.number}`);
             });
 
         // Postponed
-        overwrites
-            .filter((o) => o.type === "postponed")
+        (overwrites
+            .filter((o) => o.type === "postponed") as ResultOverwritePostponed[])
+            .filter( o => o.imp_ew !== undefined && o.imp_ns !== undefined)
             .forEach((o) => {
                 if (resultsByTable.get(o.table)?.status === "played")
-                    console.warn(`Postponed table ${o.table} already played`);
+                    console.warn(`Postponed table ${o.table} already played, round ${this.number}`);
                 if (resultsByTable.get(o.table)?.status === "postponed")
-                    console.warn(`Postponed table ${o.table} duplicate entry`);
+                    console.warn(`Postponed table ${o.table} duplicate entry, round ${this.number}`);
 
                 const result =
                     resultsByTable.get(o.table) ??
@@ -115,8 +142,8 @@ export class Round {
                         round: this.number,
                         ns: result.ns,
                         ew: result.ew,
-                        imp_ns: overwrite.imp_ns,
-                        imp_ew: overwrite.imp_ew,
+                        imp_ns: overwrite.imp_ns!,
+                        imp_ew: overwrite.imp_ew!,
                     }),
                     status: "postponed",
                     table: o.table,

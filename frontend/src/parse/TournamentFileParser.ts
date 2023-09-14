@@ -29,7 +29,6 @@ export default class TournamentFileParser {
         return {
             boardResults: [],
             date: new Date().toISOString().slice(0, 10),
-            number: number,
             boards: {},
             overwrites: [],
         };

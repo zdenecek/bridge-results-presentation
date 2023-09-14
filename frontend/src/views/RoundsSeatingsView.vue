@@ -14,6 +14,10 @@
         <router-link :to="{ params: { round: next } }" v-if="!tournament.isFinished"
                      :class="{ 'router-link-exact-active': round === next }">Aktuální</router-link>
       </nav>
+
+      <div v-if="date">
+        <h3>{{ round }}. kolo - {{ date.toLocaleDateString() }}</h3>
+      </div>
       <RoundSeatings :round="round" :tournament="tournament" />
     </template>
   </div>
@@ -37,6 +41,8 @@ let round = computed(() => {
   if (isNaN(val) && next.value) return next.value;
   return val;
 });
+
+const date = computed(() => tournament.value?.rounds.get(round.value)?.date);
 
 </script>
 

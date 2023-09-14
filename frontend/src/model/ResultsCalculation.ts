@@ -28,7 +28,7 @@ export function calculateResults(
     }
 
    round.boardResults
-        .filter((r) => r.status === "played")
+        ?.filter((r) => r.status === "played")
         .map((r) => r as CompleteBoardResult)
         .forEach((result) => {
             let r = resultsByNS.get(result.ns) || resultsByNS.get(result.ew);

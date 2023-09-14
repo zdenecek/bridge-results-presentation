@@ -14,7 +14,7 @@
                      :class="{ 'router-link-exact-active': round === rnd, disabled: false }"
                      v-for="rnd in tournament.totalRounds" :key="rnd">
           {{ rnd }}</router-link>
-        <router-link :to="{ params: { round: standing } }"
+        <router-link v-if="anyPlayed" :to="{ params: { round: standing } }"
                      :class="{ 'router-link-exact-active': round === standing }">poslední hrané</router-link>
       </nav>
       <RoundTotals :round="round" :tournament="tournament" />
@@ -38,13 +38,16 @@ const tournament = inject('tournament') as Ref<Tournament | undefined>;
 const standing = computed(() => tournament.value?.standing);
 
 let round = computed(() => {
-  const val = Number.parseInt(route.params['round'] as string)
-  if (isNaN(val)) return standing.value ?? 1;
+  let val = Number.parseInt(route.params['round'] as string)
+  if (isNaN(val)) val = standing.value ?? 1;
+  if (val == 0) return 1;
   return val;
 });
 
 
 const played = computed(() => tournament.value?.wasRoundPlayed(round.value) );
+const anyPlayed = computed(() => tournament.value?.wasRoundPlayed(1) );
+
 </script>
 
 <style scoped></style>

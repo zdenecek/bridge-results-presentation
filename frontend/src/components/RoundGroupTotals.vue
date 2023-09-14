@@ -24,6 +24,7 @@ const props = defineProps({
 const group = reactive(props.tournament.groups[props.groupIndex]);
 const results = computed(() => props.tournament.getRoundResults(props.round)?.filter(r => group.players.includes(r.ns) || group.players.includes(r.ew)));
 
+const wasPlayed = computed(() => props.tournament.wasRoundPlayed(props.round));
 
 </script>
 
@@ -34,7 +35,7 @@ const results = computed(() => props.tournament.getRoundResults(props.round)?.fi
     <div class="flex flex-column flex-center">
       
 
-      <template v-if="results.length">
+      <template v-if="results.length && wasPlayed">
     <TournamentGroupTotals class="totals" :tournament="tournament" :groupIndex="groupIndex" :untilRound="round">
       <template v-slot:header><span></span>
       </template>

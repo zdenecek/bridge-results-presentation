@@ -3,7 +3,7 @@ import { RoundData } from "./Round";
 export interface Pair {
     title: string;
     id: number;
-    isBye: boolean; 
+    isBye?: boolean; 
     players: Player[];
 }
 export interface Player {

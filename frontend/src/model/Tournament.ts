@@ -49,7 +49,7 @@ export class Tournament {
     groups: Group[];
     players: Map<PairNumber, Pair>;
     rotations: Map<RoundNumber, RoundRotation>;
-    rounds: Record<RoundNumberKey, Round>;
+    rounds: Map<RoundNumber, Round>;
 
     protected pairResults: Map<
         RoundNumber,
@@ -73,15 +73,15 @@ export class Tournament {
             this.rotations.set(Number.parseInt(key), r);
         });
 
-        this.rounds = Object.fromEntries(
-            Object.entries(tournamentData.rounds).map(
-                ([key, r]) =>
-                    [
-                        key,
-                        new Round(r, this.rotations.get(Number.parseInt(key))!),
-                    ] as [RoundNumberKey, Round]
-            )
+        this.rounds = new Map();
+        Object.entries(tournamentData.rounds).forEach(
+            ([key, roundData]) =>{
+                const roundNumber = Number.parseInt(key);
+                const roundRotation =  this.rotations.get(Number.parseInt(key))!;
+                this.rounds.set(roundNumber, new Round(roundData, roundNumber, roundRotation));
+            }
         );
+        
         this.pairResults = new Map<
             RoundNumber,
             Map<PairNumber, PairSumResult> | undefined
@@ -95,16 +95,27 @@ export class Tournament {
         return this.standing === this.totalRounds;
     }
 
-    public getRoundGroupSeatings() {}
+    public getRound(round: RoundNumber): Round | undefined {
+        return this.rounds.get(round);
+    }
+
+
 
     getTableSeating(
         round: RoundNumber,
         table: TableNumber
-    ): { ns: PairNumber; ew: PairNumber } {
-        return (
-            this.rotations.get(round)?.[table.toString()] ??
-            throwError(`Table ${table} not found in round ${round}`)
-        );
+    ): { ns: PairNumber; ew: PairNumber, postponed?: boolean } {
+
+        const res = this.rotations.get(round)?.[table.toString()] ??
+        throwError(`Table ${table} not found in round ${round}`);
+
+        const postponed = this.getRound(round)?.isTablePostponed(table);
+
+        return {
+            ns: res.ns,
+            ew: res.ew,
+            postponed
+        };
     }
 
     getPairGroup(pair: PairNumber): Group | undefined {
@@ -113,6 +124,12 @@ export class Tournament {
             this.groups.find((g) => g.players.includes(pair)) ??
             throwError(`Pair ${pair} not found in any group`)
         );
+    }
+
+    getRoundsUntil(untilRound?: RoundNumber): Round[] {
+        if(untilRound === undefined) return Array.from(this.rounds.values());
+
+        return Array.from(this.rounds.entries()).filter(([key,]) => untilRound === undefined || key <= untilRound).map(([key, value]) => value)
     }
 
     getPairResult(
@@ -126,7 +143,7 @@ export class Tournament {
             this.pairResults.set(
                 round - 1,
                 calculateAllPairResult(
-                    Object.values(this.rounds).slice(0, round),
+                    this.getRoundsUntil(untilRound),
                     this
                 )
             );
@@ -141,7 +158,7 @@ export class Tournament {
             this.pairResults.set(
                 round - 1,
                 calculateAllPairResult(
-                    Object.values(this.rounds).slice(0, round),
+                    this.getRoundsUntil(untilRound),
                     this
                 )
             );
@@ -153,21 +170,24 @@ export class Tournament {
         pair: PairNumber,
         round: RoundNumber
     ): PairTableRoundResult | undefined {
-        return this.rounds[round.toString()]?.getPairResult(pair);
+        return this.getRound(round)?.getPairResult(pair);
     }
 
     getPairRoundResults(
         pair: PairNumber,
         rounds: Round[] | undefined = undefined
     ): PairTableRoundResult[] {
-        const results = Object.values(rounds ?? this.rounds)
+
+        const roundsToCheck = rounds ?? this.getRoundsUntil(this.standing);
+
+        const results = roundsToCheck
             .map((r) => r.getPairResult(pair))
             .filter((r) => r !== undefined) as PairTableRoundResult[];
         return results;
     }
 
     getRoundResults(round: RoundNumber): TableRoundResult[] {
-        const items = this.rounds[round.toString()]?.getMatchResults().values();
+        const items = this.getRound(round)?.getMatchResults().values();
         return Array.from(items ?? []);
     }
 
@@ -176,12 +196,14 @@ export class Tournament {
     }
 
     get standing(): RoundNumber {
-        return Object.values(this.rounds)
+        const standing = Array.from(this.rounds.values())
+            .filter((r) => this.wasRoundPlayed(r.number))
             .map((r) => r.number)
             .reduce((a, b) => Math.max(a, b), 0);
+        return standing;
     }
 
     public wasRoundPlayed(round: RoundNumber): boolean {
-        return (this.rounds[round.toString()]?.boardResults.length ?? 0) > 0;
+        return (this.getRound(round)?.boardResults?.length ?? 0) > 0;
     }
 }

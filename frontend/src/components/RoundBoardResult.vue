@@ -24,8 +24,8 @@ const props = defineProps({
 
 
 const results = computed(() => {
-  const res = props.round.boardResults.filter(r => r.deal === props.board);
-  res.sort((a, b) => {
+  const res = props.round.boardResults?.filter(r => r.deal === props.board);
+  res?.sort((a, b) => {
     if (a.status === 'not-played') return 1;
     if (b.status === 'not-played') return -1;
     return (b as CompleteBoardResult).points - (a as CompleteBoardResult).points;
@@ -35,7 +35,8 @@ const results = computed(() => {
 
 
 const average = computed(() => props.round.getBoardAverage(props.board));
-const boardData = computed(() => props.round.boards?.[props.board]);
+const boardData = computed(() => props.round.boards?.get(props.board));
+
 </script>
 
 <template>
@@ -46,7 +47,7 @@ const boardData = computed(() => props.round.boards?.[props.board]);
       <BoardPartial v-if="boardData" :board="boardData" :number="board" />
       <div v-else>Detaily rozdání nejsou k dispozici.</div>
 
-      <table class="table table-results">
+      <table class="table table-results" v-if="results">
         <tr>
           <th>NS</th>
           <th>EW</th>

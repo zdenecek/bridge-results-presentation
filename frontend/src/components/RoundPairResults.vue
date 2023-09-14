@@ -24,24 +24,32 @@ const props = defineProps({
 })
 
 
-const results = props.round.boardResults.filter(r => r.ew === props.pair || r.ns === props.pair);
-results.sort((a, b) => a.deal - b.deal);
+const results = computed(() => {
+  const results = props.round.boardResults?.filter(r => r.ew === props.pair || r.ns === props.pair);
+  if (results) results.sort((a, b) => a.deal - b.deal);
+  return results;
+})
 
-const mergeNames = unique(results.map(r => r.ns).values()).size === 1 && unique(results.map(r => r.ew).values()).size === 1;
-const finalResult = props.tournament.getPairRoundResult(props.pair, props.round.number);
-const ns = finalResult?.ns;
+const mergeNames = computed(() => {
+  if (!results.value) return false;
+  return unique(results.value.map(r => r.ns).values()).size === 1 && unique(results.value.map(r => r.ew).values()).size === 1
+}
 
-const imp_ns = MatchResults.getImpsNS(finalResult?.tableResult);
-const imp_ew = MatchResults.getImpsEW(finalResult?.tableResult);
-const vp_ns = MatchResults.getVpsNS(finalResult?.tableResult);
-const vp_ew = MatchResults.getVpsEW(finalResult?.tableResult);
+);
+const finalResult = computed(() => props.tournament.getPairRoundResult(props.pair, props.round.number));
+const ns = computed(() => finalResult.value?.ns);
 
-const averages = computed( () => props.round.hasAverages);
+const imp_ns = computed(() => MatchResults.getImpsNS(finalResult.value?.tableResult));
+const imp_ew = computed(() => MatchResults.getImpsEW(finalResult.value?.tableResult));
+const vp_ns = computed(() => MatchResults.getVpsNS(finalResult.value?.tableResult));
+const vp_ew = computed(() => MatchResults.getVpsEW(finalResult.value?.tableResult));
+
+const averages = computed(() => props.round.hasAverages);
 
 </script>
 
 <template>
-  <div class="flex flex-column flex-center">
+  <div class="flex flex-column flex-center" v-if="results">
     <table class="table" v-if="mergeNames">
       <tr>
         <th colspan="2">Výsledek</th>
@@ -55,8 +63,8 @@ const averages = computed( () => props.round.hasAverages);
         <td>
 
           <router-link
-                       :to="{ name: 'round-pair-results', params: { pair: results[0]?.[line as keyof BoardResult], round: props.round.number } }">
-            {{ tournament.getPair(results[0]?.[line  as 'ns' | 'ew'])?.title }}
+            :to="{ name: 'round-pair-results', params: { pair: results[0]?.[line as keyof BoardResult], round: props.round.number } }">
+            {{ tournament.getPair(results[0]?.[line as 'ns' | 'ew'])?.title }}
           </router-link>
         </td>
         <td>
@@ -93,14 +101,15 @@ const averages = computed( () => props.round.hasAverages);
         <template v-if="!mergeNames">
           <td class="col-name" v-for="line in ['ns', 'ew']" :key="line">
             <router-link
-                         :to="{ name: 'round-pair-results', params: { pair: result[line as keyof BoardResult], round: props.round.number } }">
-              {{ tournament.getPair(result[line  as 'ns' | 'ew'])?.title }}
+              :to="{ name: 'round-pair-results', params: { pair: result[line as keyof BoardResult], round: props.round.number } }">
+              {{ tournament.getPair(result[line as 'ns' | 'ew'])?.title }}
             </router-link>
           </td>
         </template>
         <template v-if="result.status === 'played'">
           <td>
-            <Contract :contract="(result as CompleteBoardResult).contract" :declarer="(result as CompleteBoardResult).declarer" />
+            <Contract :contract="(result as CompleteBoardResult).contract"
+              :declarer="(result as CompleteBoardResult).declarer" />
           </td>
           <td>{{ (result as CompleteBoardResult).result }}</td>
           <td>{{ (result as CompleteBoardResult).points }}</td>

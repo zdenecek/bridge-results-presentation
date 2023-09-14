@@ -88,7 +88,8 @@ export class PairSumResult {
         this.matchResults = data.matchResults ?? [];
     }
 
-    get average(): number {
+    get average(): number | undefined {
+        if(this.matchCount === 0) return undefined;
         return this.vp / this.matchCount;
     }
 
