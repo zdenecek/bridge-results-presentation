@@ -65,31 +65,48 @@ def get_int(prompt: str, default=None):
             return get_int(prompt)
 
 
-def parse_rotations(file):
+def parse_player(players, player):
+    if player.isnumeric():
+        return int(player)
+    else:
+        for p in players.values():
+            if p["title"] == player:
+                return p["id"]
+                
+        print(f"Neznámý hráč {player}")
+    
+    return player
+
+def parse_rotations(file, players):
     try:
         res = {}
-        for line in map(lambda x: list(map(int, x.split(","))), file.readlines()):
-            if len(line) != 4:
-                raise RuntimeError("Neplatný formát souboru rotations.csv")
+        def set(rounds, where, data):
+            
+            if len(rounds) == 1:
+                where[rounds[0]] = data
+            else:
+                if rounds[0] not in where:
+                    where[rounds[0]] = {}
+                set(rounds[1:], where[rounds[0]], data)
+        
+        for line in map(lambda x: x.split(","), file.readlines()):
 
-            round, table, ns, ew = line
-            round, table, ns, ew = int(round), int(table), int(ns), int(ew)
+            round_identifiers = len(line) - 3 # 3 = table, ns, ew
+            
+            ns, ew = line[-2:]
+            ns, ew = parse_player(players , ns.strip()), parse_player(players, ew.strip())
+            rounds = list(map(int, line[:round_identifiers + 1])) # also table
 
-            if round not in res:
-                res[round] = {}
-
-            if table not in res[round]:
-                res[round][table] = {}
-
-            res[round][table]["ns"] = ns
-            res[round][table]["ew"] = ew
-
+            set(rounds, res, {
+                "ns": ns,
+                "ew": ew,
+            })
+            
         return res
     except Exception as e:
         print("Chyba při zpracování souboru rotations.csv")
         print(e)
-        print("Program bude ukončen")
-        exit(1)
+        raise 
 
 
 def create_result(line, rotation):
@@ -236,7 +253,7 @@ def create_round(data, path):
 
 def add_cbs_player_data(players, in_hraci_cbs):
 
-    ids = [str(player["id"]) for pair in players for player in pair["players"]]
+    ids = [str(player["id"]) for pair in players.values() for player in pair["players"]]
 
     found = {}
 
@@ -247,7 +264,7 @@ def add_cbs_player_data(players, in_hraci_cbs):
                 "club": club_short,
             }
 
-    for pair in players:
+    for pair in players.values():
         for player in pair["players"]:
             if player["id"] in found.keys():
                 player["name"] = found[player["id"]]["name"]
@@ -262,13 +279,20 @@ def add_cbs_player_data(players, in_hraci_cbs):
 def parse_players(in_csv):
     print("Načítám hráče")
 
-    players = []
-    for index, line in enumerate(in_csv):
-        players.append({
-            "id":  index + 1,
-            "title": line[0],
-            "players": [{"id": id} for id in line[1:]]
-        })
+    players = {}
+    
+    data = list(in_csv)
+    
+    first_column_is_id = data[0][0].isnumeric()
+    base_index = 1 if first_column_is_id else 0
+    
+    for index, line in enumerate(data):
+        id =  int(line[0]) if first_column_is_id else index + 1
+        players[id] = {
+            "id": id,
+            "title": line[base_index],
+            "players": [{"id": id} for id in line[base_index+1:]]
+        }
 
     return players
 
@@ -283,8 +307,8 @@ def create_run():
             fopen(os.path.join(folder, "players.csv")) as in_players, \
             fopen(os.path.join(folder, "Hraci_CBS.csv"), encoding="windows-1250") as in_hraci_csb:
 
-        rotations = parse_rotations(in_rotations)
         pairs = parse_players(csv.reader(in_players))
+        rotations = parse_rotations(in_rotations, pairs)
         pairs = add_cbs_player_data(
             pairs, csv.reader(in_hraci_csb, delimiter=";"))
 
@@ -293,11 +317,14 @@ def create_run():
         return {
             "title":  input('Zadejte název turnaje: '),
             "totalRounds": len(rotations),
+            "groups": [],
             "rotations": rotations,
             "players": pairs,
-            "td": input('Zadejte jméno TD: '),
+            "td": {
+                "name": input('Zadejte jméno TD: '),
+                "email": input('Zadejte email TD: '),
+            },
             "rounds": {},
-            "postponed": { r:[] for r in range(1, len(rotations) + 1) },
         }
 
 
@@ -326,6 +353,8 @@ def main():
             else:
                 inpath = input(
                     "Zadejte cestu k souboru s výsledky skupinovky ve formátu excel (např. soubor Jaro 202306_Opis_Rozdani_Excel_Becko.txt): ")
+                path = os.path.join(os.path.dirname(path), inpath)
+
 
             output = create_round(standing, inpath)
     else:

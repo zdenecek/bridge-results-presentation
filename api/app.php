@@ -227,7 +227,6 @@ $app->get("$prefix/migrate", function (Request $request, Response $response, $ar
     return $response;
 });
 $app->add($loggedInMiddleware);
-$app->addRoutingMiddleware();
 
 $app->add(function ($request, $handler) {
     $requestHeaders = $request->getHeaderLine('Access-Control-Request-Headers');
@@ -257,6 +256,27 @@ $app->add(
     }
 );
 
+
+$app->add(function ($request, $handler) {
+    $routeContext = RouteContext::fromRequest($request);
+    $route = $routeContext->getRoute();
+
+    if (empty($route)) {
+        throw new HttpNotFoundException($request, $response);
+    }
+
+    $response = $handler->handle($request);
+
+    $routeName = $route->getName();
+    $method = $request->getMethod();
+
+    $value = $method === 'GET' && $routeName === 'tournament' ? 540 : 0;
+
+    return $response->withHeader('Cache-Control', "max-age=".$value);
+
+});
+
+$app->addRoutingMiddleware();
 
 
 
