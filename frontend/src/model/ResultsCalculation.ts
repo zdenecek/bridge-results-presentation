@@ -99,9 +99,14 @@ export function calculateAllPairResult(
     const res = new Map<PairNumber, PairSumResult>();
     pairResults.forEach((r) => res.set(r.pair, r));
 
+    const resultComparator: (a: PairSumResult, b: PairSumResult) => number 
+        = tournament.settings.rankByAverage ?  
+        (a, b) => b.averageAsNumber - a.averageAsNumber
+        : (a, b) => b.vp - a.vp ;
+
     tournament.groups.forEach((g) => {
         const results = g.players.map((p) => res.get(p)!);
-        results.sort((a, b) => b.vp - a.vp);
+        results.sort(resultComparator);
 
         const counts = results.reduce((acc, curr) => {
             if (acc.has(curr.vp)) {

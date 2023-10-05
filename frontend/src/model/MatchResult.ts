@@ -93,6 +93,10 @@ export class PairSumResult {
         return this.vp / this.matchCount;
     }
 
+    get averageAsNumber(): number {
+        return this.average ?? 0;
+    }
+
     get matchCount(): number {
         return this.matchResults.filter((r) => r.status !== "not-played")
             .length;

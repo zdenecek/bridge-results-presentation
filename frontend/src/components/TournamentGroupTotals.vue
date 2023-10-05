@@ -48,6 +48,7 @@ const results = computed(() => {
           <th>Pořadí</th>
           <th>Pár</th>
           <th>VP</th>
+          <th>Průměr</th>
         </tr>
         <tr v-for="result in results" :key="result.pair">
           <td class="col-rank">{{ result.rank }}</td>
@@ -60,6 +61,7 @@ const results = computed(() => {
 
           </td>
           <td> {{ result.vp.toFixed(2) }} </td>
+          <td> {{ result.averageAsNumber.toFixed(2) }} </td>
         </tr>
       </table>
     </slot>

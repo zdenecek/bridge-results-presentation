@@ -20,6 +20,9 @@ import { TournamentType } from "./TournamentType";
 
 export type TournamentData = {
     type?: TournamentType;
+    settings?: {
+        rankByAverage?: boolean;
+    }
     title: string;
     totalRounds: number;
     td?: {
@@ -50,6 +53,9 @@ export class Tournament {
     players: Map<PairNumber, Pair>;
     rotations: Map<RoundNumber, RoundRotation>;
     rounds: Map<RoundNumber, Round>;
+    settings: {
+        rankByAverage: boolean;
+    }
 
     protected pairResults: Map<
         RoundNumber,
@@ -62,6 +68,10 @@ export class Tournament {
         this.td = tournamentData.td;
         this.totalRounds = tournamentData.totalRounds;
         this.groups = tournamentData.groups;
+
+        this.settings = {
+            rankByAverage: tournamentData.settings?.rankByAverage ?? false
+        }
 
         this.players = new Map();
         Object.values(tournamentData.players).forEach((p) => {
