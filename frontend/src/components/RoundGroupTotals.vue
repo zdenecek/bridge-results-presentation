@@ -62,7 +62,7 @@ const wasPlayed = computed(() => props.tournament.wasRoundPlayed(props.round));
                        :to="{ name: 'round-pair-results', params: { pair: result[key as keyof TableRoundResult], round: props.round } }">
                        {{ result['imp_' + key as keyof TableRoundResult] }}
           </router-link>
-          <span v-else>
+          <span v-else title="Dohrávka">
             {{ result['imp_' + key as keyof TableRoundResult] }}
           </span>
          </td>

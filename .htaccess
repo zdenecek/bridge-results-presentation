@@ -1,3 +1,4 @@
+
 # Gzip compression
 <IfModule mod_deflate.c>
 # Active compression
@@ -22,3 +23,15 @@ AddOutputFilterByType DEFLATE application/atom+xml \
                             text/xml
 </IfModule>
 </IfModule>
+
+Header set Access-Control-Allow-Origin "*"
+
+RewriteEngine On
+RewriteBase /
+
+# Redirect /api requests to api/index.php
+RewriteRule ^api(/.*)?$ api/public/index.php [L]
+
+# Redirect all other requests to app/index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ app/$1

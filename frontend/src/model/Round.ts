@@ -121,8 +121,20 @@ export class Round {
         overwrites
             .filter((o) => o.type === "ignore")
             .forEach((o) => {
-                const success = resultsByTable.delete(o.table);
-                if (!success) console.warn(`Table ${o.table} not found in round ${this.number}`);
+
+                let result = resultsByTable.get(o.table);
+                if (!result) {
+                    return;
+                    console.warn(`Table ${o.table} not found in round ${this.number}`);
+                }
+                result = {
+                    ns:  result.ns,
+                    ew: result.ew,
+                    status: "not-played",
+                    round: result.round,
+                    table: result.table,
+                };
+                resultsByTable.set(o.table, result);
             });
 
         // Postponed

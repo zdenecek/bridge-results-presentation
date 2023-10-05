@@ -3,6 +3,8 @@ name: Deploy
 on:
   workflow_dispatch:
   push:
+    paths:
+      - frontend/**
     branches:
       - master
 
@@ -32,5 +34,5 @@ jobs:
           user: ${{ secrets.FTP_LOGIN }}
           password: ${{ secrets.FTP_PASSWORD }}
           local_dir: "./frontend/dist"
-          remote_dir: "."
+          remote_dir: "./app"
           delete: "true"

@@ -47,8 +47,9 @@ const results = computed(() => {
         <tr>
           <th>Pořadí</th>
           <th>Pár</th>
-          <th>VP</th>
           <th>Průměr</th>
+          <th>VP</th>
+          <th>zápasy</th>
         </tr>
         <tr v-for="result in results" :key="result.pair">
           <td class="col-rank">{{ result.rank }}</td>
@@ -60,8 +61,9 @@ const results = computed(() => {
             <winner-cup-icon-partial class="cup cup-right" :place="result.rank.rank" v-if="showCups && result.rank.rank <= 3"></winner-cup-icon-partial>
 
           </td>
-          <td> {{ result.vp.toFixed(2) }} </td>
           <td> {{ result.averageAsNumber.toFixed(2) }} </td>
+          <td> {{ result.vp.toFixed(2) }} </td>
+          <td> {{ result.matchCount }} </td>
         </tr>
       </table>
     </slot>
