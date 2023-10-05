@@ -26,12 +26,12 @@ jobs:
         run: | 
           npm install
           npm run build --production
-     - name: Upload via FTP
-        uses: airvzxf/ftp-deployment-action@latest
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          user: ${{ secrets.FTP_LOGIN }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local_dir: ".frontend/dist/"
-          remote_dir: "./"
-          delete: "true"
+      - name: Upload via FTP
+          uses: airvzxf/ftp-deployment-action@latest
+          with:
+            server: ${{ secrets.FTP_SERVER }}
+            user: ${{ secrets.FTP_LOGIN }}
+            password: ${{ secrets.FTP_PASSWORD }}
+            local_dir: ".frontend/dist/"
+            remote_dir: "./"
+            delete: "true"
