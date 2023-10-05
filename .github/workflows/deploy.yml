@@ -31,6 +31,6 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           user: ${{ secrets.FTP_LOGIN }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local_dir: ".frontend/dist/"
-          remote_dir: "./"
+          local_dir: "./frontend/dist"
+          remote_dir: "."
           delete: "true"
