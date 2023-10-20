@@ -117,7 +117,7 @@ const averages = computed(() => props.round.hasAverages);
           <td>{{ ns ? (result as PlayedBoardResult).res_ns : (result as PlayedBoardResult).res_ew }}</td>
         </template>
         <template v-else-if="result.status === 'adjusted'">
-          <td colspan="4">UV: {{  }}</td>
+          <td colspan="4">UV: {{ result.text ?? '' }}</td>
           <td>{{ ns ? (result as AdjustedBoardResult).res_ns : (result as AdjustedBoardResult).res_ew }}</td>
         </template>
         <template v-else-if="result.status === 'not-played'">
