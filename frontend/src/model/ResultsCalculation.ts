@@ -9,17 +9,17 @@ import { Tournament } from "./Tournament";
 export function calculateResults(
     round: Round,
     data: RoundData
-):  Map<TableNumber, TableRoundResult> {
-    
+): Map<TableNumber, TableRoundResult> {
+
     const resultsByNS = new Map<TableNumber, TableRoundResult>();
 
     const tables = Object.entries(round.rotation);
 
     for (const [key, table] of tables) {
-        const tablenum =  Number.parseInt(key);
+        const tablenum = Number.parseInt(key);
         const matchResult: TableRoundResult = {
             round: round.number,
-            table:tablenum,
+            table: tablenum,
             status: "not-played",
             ns: table.ns,
             ew: table.ew,
@@ -27,39 +27,50 @@ export function calculateResults(
         resultsByNS.set(table.ns, matchResult);
     }
 
-   round.boardResults
-        ?.filter((r) => r.status === "played")
+    round.boardResults
+        ?.filter((r) => r.status === "played" || r.status === "adjusted")
         .map((r) => r as CompleteBoardResult)
-        .forEach((result) => {
-            let r = resultsByNS.get(result.ns) || resultsByNS.get(result.ew);
-            if(!r) {
-                console.warn(`Result not found: Round: ${round.number}, NS: ${result.ns} EW: ${result.ew}`);
+        .forEach((boardResult) => {
+            let matchResult = resultsByNS.get(boardResult.ns) || resultsByNS.get(boardResult.ew);
+            if (!matchResult) {
+                console.warn(`Result not found: Round: ${round.number}, NS: ${boardResult.ns} EW: ${boardResult.ew}`);
                 return;
             }
-            if (r.status !== "played") {
-                r = {
-                    ...r,
+            if (matchResult.status !== "played") {
+                matchResult = {
+                    ...matchResult,
                     status: "played",
                     imp_ew: 0,
                     imp_ns: 0,
                     vp_ew: 0,
                     vp_ns: 0,
                 };
-                resultsByNS.set(r.ns, r);
+                resultsByNS.set(matchResult.ns, matchResult);
             }
 
-            let res_ns = result.ns === r.ns ? result.res_ns : result.res_ew;
-            if(result.rotated) res_ns *= -1;
+            if (boardResult.status === "played") {
+                let res_ns = boardResult.ns === matchResult.ns ? boardResult.res_ns : boardResult.res_ew;
+                if (boardResult.rotated) res_ns *= -1;
 
-            if( res_ns > 0 ) 
-                r.imp_ns += res_ns;
-            else r.imp_ew -= res_ns;
+                if (res_ns > 0)
+                    matchResult.imp_ns += res_ns;
+                else matchResult.imp_ew -= res_ns;
+            }
+            else if (boardResult.status === "adjusted") {
+                if (boardResult.res_ns > 0)
+                    matchResult.imp_ns += boardResult.res_ns;
+                else matchResult.imp_ew -= boardResult.res_ns;
+                
+                if (boardResult.res_ew > 0)
+                    matchResult.imp_ew += boardResult.res_ew;
+                else matchResult.imp_ns -= boardResult.res_ew;
+            }
         });
 
     const resultsByTable = new Map<TableNumber, TableRoundResult>();
 
     for (const [key, table] of tables) {
-        const tablenum =  Number.parseInt(key);
+        const tablenum = Number.parseInt(key);
         resultsByTable.set(tablenum, resultsByNS.get(table.ns)!);
     }
 
@@ -76,33 +87,34 @@ export function calculateResults(
 
 export function calculateAllPairResult(
     rounds: Round[],
-    tournament: Tournament  
+    tournament: Tournament
 ): Map<PairNumber, PairSumResult> {
-    
-    if(rounds.length === 0) return new Map<PairNumber, PairSumResult>();
+
+    if (rounds.length === 0) return new Map<PairNumber, PairSumResult>();
 
     const pairs = Object.values(rounds[0].rotation).flatMap((t) => [t.ns, t.ew]).filter((p) => p !== 0);
 
-    const pairResults = pairs.map((pair) => { 
-        
-        const results =  tournament.getPairRoundResults(pair, rounds);
-        
+    const pairResults = pairs.map((pair) => {
+
+        const results = tournament.getPairRoundResults(pair, rounds);
+
         return new PairSumResult({
-        pair: pair,
-        vp: results.reduce((acc, curr) => acc + (curr.vps ?? 0), 0),
-        rank: Rank.default(tournament.getPairGroup(pair)?.players.length),
-        matchResults: results
-    }) });
+            pair: pair,
+            vp: results.reduce((acc, curr) => acc + (curr.vps ?? 0), 0),
+            rank: Rank.default(tournament.getPairGroup(pair)?.players.length),
+            matchResults: results
+        })
+    });
 
     // RANK Calculation
 
     const res = new Map<PairNumber, PairSumResult>();
     pairResults.forEach((r) => res.set(r.pair, r));
 
-    const resultComparator: (a: PairSumResult, b: PairSumResult) => number 
-        = tournament.settings.rankByAverage ?  
-        (a, b) => b.averageAsNumber - a.averageAsNumber
-        : (a, b) => b.vp - a.vp ;
+    const resultComparator: (a: PairSumResult, b: PairSumResult) => number
+        = tournament.settings.rankByAverage ?
+            (a, b) => b.averageAsNumber - a.averageAsNumber
+            : (a, b) => b.vp - a.vp;
 
     tournament.groups.forEach((g) => {
         const results = g.players.map((p) => res.get(p)!);

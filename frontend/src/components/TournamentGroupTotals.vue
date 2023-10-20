@@ -23,6 +23,11 @@ const props = defineProps({
     required: false,
     default: false,
   },
+  showMatches: {
+    type: Boolean,
+    required: false,
+    default: true,
+  }
 })
 
 
@@ -49,7 +54,7 @@ const results = computed(() => {
           <th>Pár</th>
           <th>Průměr</th>
           <th>VP</th>
-          <th>zápasy</th>
+          <th v-if="!tournament.isFinished && showMatches">zápasy</th>
         </tr>
         <tr v-for="result in results" :key="result.pair">
           <td class="col-rank">{{ result.rank }}</td>
@@ -63,7 +68,7 @@ const results = computed(() => {
           </td>
           <td> {{ result.averageAsNumber.toFixed(2) }} </td>
           <td> {{ result.vp.toFixed(2) }} </td>
-          <td> {{ result.matchCount }} </td>
+          <td v-if="!tournament.isFinished && showMatches"> {{ result.matchCount }} </td>
         </tr>
       </table>
     </slot>

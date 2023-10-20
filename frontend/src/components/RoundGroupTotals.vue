@@ -36,7 +36,7 @@ const wasPlayed = computed(() => props.tournament.wasRoundPlayed(props.round));
       
 
       <template v-if="results.length && wasPlayed">
-    <TournamentGroupTotals class="totals" :tournament="tournament" :groupIndex="groupIndex" :untilRound="round">
+    <TournamentGroupTotals class="totals" :tournament="tournament" :groupIndex="groupIndex" :untilRound="round" :showMatches="false">
       <template v-slot:header><span></span>
       </template>
     </TournamentGroupTotals>

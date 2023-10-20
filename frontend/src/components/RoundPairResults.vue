@@ -5,7 +5,7 @@ import { unique } from '@/utils/unique';
 import { computed } from 'vue';
 import Contract from './partial/ContractPartial.vue';
 import { Round } from '@/model/Round';
-import { BoardResult, CompleteBoardResult } from '@/model/BoardResult';
+import { AdjustedBoardResult, BoardResult, CompleteBoardResult, PlayedBoardResult } from '@/model/BoardResult';
 import { MatchResults } from '@/model/MatchResult';
 
 const props = defineProps({
@@ -108,13 +108,17 @@ const averages = computed(() => props.round.hasAverages);
         </template>
         <template v-if="result.status === 'played'">
           <td>
-            <Contract :contract="(result as CompleteBoardResult).contract"
-              :declarer="(result as CompleteBoardResult).declarer" />
+            <Contract :contract="(result as PlayedBoardResult).contract"
+              :declarer="(result as PlayedBoardResult).declarer" />
           </td>
-          <td>{{ (result as CompleteBoardResult).result }}</td>
-          <td>{{ (result as CompleteBoardResult).points }}</td>
+          <td>{{ (result as PlayedBoardResult).result }}</td>
+          <td>{{ (result as PlayedBoardResult).points }}</td>
           <td v-if="averages">{{ round.getBoardAverage(result.deal) }}</td>
-          <td>{{ ns ? (result as CompleteBoardResult).res_ns : (result as CompleteBoardResult).res_ew }}</td>
+          <td>{{ ns ? (result as PlayedBoardResult).res_ns : (result as PlayedBoardResult).res_ew }}</td>
+        </template>
+        <template v-else-if="result.status === 'adjusted'">
+          <td colspan="4">UV: {{  }}</td>
+          <td>{{ ns ? (result as AdjustedBoardResult).res_ns : (result as AdjustedBoardResult).res_ew }}</td>
         </template>
         <template v-else-if="result.status === 'not-played'">
           <td colspan="5">Nehráno</td>

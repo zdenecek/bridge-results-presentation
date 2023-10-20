@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import Contract from './partial/ContractPartial.vue';
 import BoardPartial from './partial/BoardPartial.vue';
 import { Round } from '@/model/Round';
-import { BoardResult, CompleteBoardResult } from '@/model/BoardResult';
+import { AdjustedBoardResult, BoardResult, CompleteBoardResult, PlayedBoardResult } from '@/model/BoardResult';
 
 const props = defineProps({
   tournament: {
@@ -26,9 +26,9 @@ const props = defineProps({
 const results = computed(() => {
   const res = props.round.boardResults?.filter(r => r.deal === props.board);
   res?.sort((a, b) => {
-    if (a.status === 'not-played') return 1;
-    if (b.status === 'not-played') return -1;
-    return (b as CompleteBoardResult).points - (a as CompleteBoardResult).points;
+    if (a.status === 'not-played' || a.status === 'adjusted') return 1;
+    if (b.status === 'not-played' || b.status === 'adjusted') return -1;
+    return (b as PlayedBoardResult).points - (a as PlayedBoardResult).points;
   });
   return res;
 });
@@ -60,29 +60,31 @@ const boardData = computed(() => props.round.boards?.get(props.board));
         <tr v-for="result in results" :key="result.ns">
           <td class="col-name" v-for="line in ['ns', 'ew']" :key="line">
             <router-link
-                         :to="{ name: 'round-pair-results', params: { pair: result[line as keyof BoardResult], round: props.round.number } }">
+              :to="{ name: 'round-pair-results', params: { pair: result[line as keyof BoardResult], round: props.round.number } }">
               {{ tournament.getPair(result[line as 'ns' | 'ew'])?.title }}
             </router-link>
           </td>
           <template v-if="result.status === 'played'">
             <td>
-              <Contract :contract="(result as CompleteBoardResult).contract"
-                        :declarer="(result as CompleteBoardResult).declarer" />
+              <Contract :contract="(result as PlayedBoardResult).contract"
+                :declarer="(result as PlayedBoardResult).declarer" />
             </td>
-            <td>{{ (result as CompleteBoardResult).result }}</td>
-            <td>{{ (result as CompleteBoardResult).points }}</td>
-            <td>{{ (result as CompleteBoardResult).res_ns }}</td>
+            <td>{{ (result as PlayedBoardResult).result }}</td>
+            <td>{{ (result as PlayedBoardResult).points }}</td>
+            <td>{{ (result as PlayedBoardResult).res_ns }}</td>
           </template>
           <template v-else-if="result.status === 'not-played'">
             <td colspan="5">Nehráno</td>
           </template>
+          <template v-else-if="result.status === 'adjusted'">
+            <td colspan="4" :title="result.text ?? ''">UV</td>
+            <td>{{ (result as AdjustedBoardResult).res_ns }}/{{ (result as AdjustedBoardResult).ew }}</td>
+          </template>
         </tr>
         <tr v-if="average">
-
           <td colspan="2"></td>
           <td colspan="4">Průměr: {{ average }}</td>
         </tr>
-
       </table>
     </div>
   </div>
