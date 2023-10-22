@@ -22,6 +22,9 @@ jobs:
       - name: get-npm-version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1  
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.FRONTEND_ENV }}" >> ./frontend/.env
       - name: Build
         working-directory: ./frontend
         run: | 
