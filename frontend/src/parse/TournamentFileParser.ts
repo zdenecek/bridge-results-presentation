@@ -76,7 +76,7 @@ export default class TournamentFileParser {
             const res = Number.parseInt(values[8]);
 
             let output = {
-                status: "played",
+                status: "played" as "played",
                 deal: boardNumber,
                 ns: rotation["ns"],
                 ew: rotation["ew"],

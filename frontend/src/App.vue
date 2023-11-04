@@ -44,13 +44,32 @@ nav {
   justify-content: center;
 }
 
-nav a {
+nav a, .nav-button {
   display: flex;
   align-items: center;
   justify-content: center;
 
   border: 1px solid #2c3e50;
   border-radius: 5px;
+  padding: 2px 8px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    /* Firefox */
+}
+
+.button {
+  border-radius: 5px;
+  border: 1px solid #2c3e50;
   padding: 2px 8px;
 }
 
@@ -61,7 +80,7 @@ nav a.router-link-exact-active {
   background-color: #1a881a;
 }
 
-nav a:hover {
+nav a:hover, .nav-button:hover {
   border: 1px solid #1a881a;
   background-color: #1a881a ;
   color: white;

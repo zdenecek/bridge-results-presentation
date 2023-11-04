@@ -3,21 +3,20 @@
       <h2>Upravit turnaj</h2>
       <form @submit.prevent="submit">
         <div class="fields">
-        <label for="key">Heslo</label>
-        <input id="key" type="password" v-model="password" required>
         <label for="title">Název turnaje</label>
         <input id="title" type="text" v-model="title" required>
         <label for="title">slug (název v url adrese)</label>
         <input id="title" type="text" v-model="slug" required>
         </div>
+        <tournament-data-editor :tournamentData="(initialData as TournamentData)" @change="updateData">
+        </tournament-data-editor>
+        
+        <div class="fields">
+          <label for="key">Heslo</label>
+          <input id="key" type="password" v-model="password" required>
+        </div>
         <input type="submit">
       </form>
-
-      <h3>Data turnaje</h3>
-
-      <tournament-data-editor :tournamentData="(initialData as TournamentData)" @change="updateData">
-      </tournament-data-editor>
-
     </div>
 </template>
 

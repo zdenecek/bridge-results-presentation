@@ -20,7 +20,7 @@ export type ResultOverwritePlayer = {
     type: "player";
     ns?: string;
     ew?: string;
-}& TableOverwrite;
+} & TableOverwrite;
 
 export type ResultOverwriteIgnore = {
     type: "ignore";
@@ -35,9 +35,16 @@ export type ResultOverwritePostponed = {
 } & TableOverwrite;
 
 export type OverwrittenResult = (
-     ResultOverwriteVP
+    ResultOverwriteVP
     | ResultOverwriteIMP
     | ResultOverwritePlayer
     | ResultOverwriteIgnore
     | ResultOverwritePostponed
 );
+
+
+export const OverwriteTypes = ["vp",
+    "imp",
+    "player",
+    "ignore",
+    "postponed"];

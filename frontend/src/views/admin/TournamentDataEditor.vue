@@ -1,42 +1,50 @@
 <template>
     <div class="flex">
-        <div class="grid">
-            <div> Kolo </div>
-            <div> Výsledky </div>
-            <div> Rozdání </div>
-            <div> Průměry </div>
-            <div> Datum kola </div>
-            <div> Nahrát soubory </div>
-            <div></div>
-            <div class="small"> Opis_Rozdani_Excel </div>
-            <div class="small"> .pbn </div>
-            <div class="small"> Opis_Rozdani </div>
-            <div></div>
-            <div class="small">jeden či více souborů</div>
-            <template v-if="data?.rounds">
-                <template v-for="round in data?.totalRounds ?? 0" :key="round">
+        <TabView class="tabs">
+            <tab-panel header="Přehled">
+                <div class="grid">
+                    <div> Kolo </div>
+                    <div> Výsledky </div>
+                    <div> Rozdání </div>
+                    <div> Průměry </div>
+                    <div> Datum kola </div>
+                    <div> Nahrát soubory </div>
+                    <div></div>
+                    <div class="small"> Opis_Rozdani_Excel </div>
+                    <div class="small"> .pbn </div>
+                    <div class="small"> Opis_Rozdani </div>
+                    <div></div>
+                    <div class="small">jeden či více souborů</div>
+                    <template v-if="data?.rounds">
+                        <template v-for="round in data?.totalRounds ?? 0" :key="round">
 
-                    <div> {{ round }}</div>
-                    <div class="horizontal">
-                        <checkmark class="tick" :value="results(round) > 1" />
-                        <span  v-show="results(round)">
-                            {{ results(round) }}
-                        </span>
-                    </div>
-                    <checkmark class="tick" :value="deals(round) > 1" />
-                    <checkmark class="tick" :value="averages(round) > 1" />
-                    <div>
-                        <input type="date" v-model="data.rounds[round].date" v-if="data.rounds[round]" />
-                    </div>
-                    <input multiple="true" accept=".txt,.csv,.pbn" :id="'fileinput-' + round" type="file"
-                           @input="(e) => addFilesToRound(round, e as InputEvent)">
-                </template>
-            </template>
-        </div>
+                            <div> {{ round }}</div>
+                            <div class="horizontal">
+                                <checkmark class="tick" :value="results(round) > 1" />
+                                <span v-show="results(round)">
+                                    {{ results(round) }}
+                                </span>
+                            </div>
+                            <checkmark class="tick" :value="deals(round) > 1" />
+                            <checkmark class="tick" :value="averages(round) > 1" />
+                            <div>
+                                <input type="date" v-model="data.rounds[round].date" v-if="data.rounds[round]" />
+                                <button type="button" v-else @click="()=>createRound(round)">Vytvořit prázdné</button>
+                            </div>
+                            <input multiple="true" accept=".txt,.csv,.pbn" :id="'fileinput-' + round" type="file"
+                                @input="(e) => addFilesToRound(round, e as InputEvent)">
+                        </template>
+                    </template>
+                </div>
+            </tab-panel>
+            <tab-panel v-for="r in tournamentData.totalRounds" :key="r" :header="r + '. kolo'">
+                <tournament-round-editor :tournament-data="tournamentData" :round="r"></tournament-round-editor>
+            </tab-panel>
+        </TabView>
+
         <div class="horizontal">
             <input id="advanced" type="checkbox" v-model="showData">
             <label for="advanced">Pokročilý režim</label>
-
         </div>
         <div class="flex" v-show="showData">
             <checkmark class="tick" :value="jsonState" />
@@ -51,6 +59,9 @@ import Checkmark from '@/components/partial/CheckmarkPartial.vue';
 import { TournamentData } from '@/model/Tournament';
 import { ref, watchEffect } from 'vue';
 import TournamentFileParser from '@/parse/TournamentFileParser';
+import TournamentRoundEditor from '@/views/admin/TournamentRoundEditor.vue';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
 
 function results(round: number): number {
     return data.value?.rounds[round]?.boardResults?.length ?? 0;
@@ -80,6 +91,11 @@ const props = defineProps({
         required: true
     }
 });
+
+function createRound(round: number) {
+    const data = TournamentFileParser.createRoundData(round);
+    props.tournamentData.rounds[round.toString()] = data;
+}
 
 watchEffect(() => {
     dataJson.value = JSON.stringify(props.tournamentData, null, 2);
@@ -131,7 +147,13 @@ async function addFilesToRound(round: number, event: InputEvent) {
     flex-direction: column;
     gap: 10px;
     align-items: center;
+
 }
+
+.tabs {
+    width: 1000px;
+}
+
 
 .horizontal {
     display: flex;
