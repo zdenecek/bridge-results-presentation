@@ -78,7 +78,7 @@ function remove()
                     {{ overwrite.vp_ns !== undefined ? 'X' : "+" }}</button>
             </div>
             <div>
-                <input v-if="overwrite.vp_ns !== undefined" type="text" v-model="overwrite.vp_ns">
+                <input v-if="overwrite.vp_ns !== undefined" type="number" v-model="overwrite.vp_ns">
             </div>
             <div>
             <label for="postponed-vp-ew-toggle">VP EW</label>
@@ -86,7 +86,7 @@ function remove()
                     {{ overwrite.vp_ew !== undefined ? 'X' : "+" }}</button>
             </div>
             <div>
-                <input v-if="overwrite.vp_ew !== undefined" type="text" v-model="overwrite.vp_ew">
+                <input v-if="overwrite.vp_ew !== undefined" type="number" v-model="overwrite.vp_ew">
             </div>
         </template>
         <template v-if="overwrite.type === 'imp'">
@@ -96,7 +96,7 @@ function remove()
                     {{ overwrite.imp_diff_ns !== undefined ? 'X' : "+" }}</button>
             </div>
             <div>
-                <input v-if="overwrite.imp_diff_ns !== undefined" type="text" v-model="overwrite.imp_diff_ns">
+                <input v-if="overwrite.imp_diff_ns !== undefined" type="number" v-model="overwrite.imp_diff_ns">
             </div>
             <div>
             <label for="postponed-vp-ew-toggle">IMP EW &pm;</label>
@@ -104,7 +104,7 @@ function remove()
                     {{ overwrite.imp_diff_ew !== undefined ? 'X' : "+" }}</button>
             </div>
             <div>
-                <input v-if="overwrite.imp_diff_ew !== undefined" type="text" v-model="overwrite.imp_diff_ew">
+                <input v-if="overwrite.imp_diff_ew !== undefined" type="number" v-model="overwrite.imp_diff_ew">
             </div>
         </template>
         <template v-if="overwrite.type === 'player'">

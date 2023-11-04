@@ -195,13 +195,13 @@ export class Round {
                 if (!result) return;
 
                 const overwrite = o as ResultOverwriteVP;
-                const newResult = {
-                    ...result,
-                    vp_ns: overwrite.vp_ns,
-                    vp_ew: overwrite.vp_ew,
-                    status: "scratched",
-                } as TableRoundResult;
-                resultsByTable.set(o.table, newResult);
+                const new_result = { ...result };
+
+                if(overwrite.vp_ns !== undefined) (new_result as any).vp_ns = overwrite.vp_ns;
+                if(overwrite.vp_ew !== undefined) (new_result as any).vp_ew = overwrite.vp_ew;
+                if(overwrite.vp_ns !== undefined && overwrite.vp_ew !== undefined) new_result.status = "scratched";
+
+                resultsByTable.set(o.table, new_result);
             });
 
         overwrites
