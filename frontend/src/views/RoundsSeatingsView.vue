@@ -1,6 +1,7 @@
 <template>
   <div>
     <h2>Nasazení</h2>
+    <h2 class="print-header"> {{ tournament?.title }} - {{ round }}. kolo - {{ date?.toLocaleDateString() }}</h2>
     <nav>
       <router-link :to="{ name: 'tournament-results' }">Výsledky</router-link>
     </nav>
@@ -15,7 +16,7 @@
                      :class="{ 'router-link-exact-active': round === next }">Aktuální</router-link>
       </nav>
 
-      <div v-if="date">
+      <div class="date-header" v-if="date">
         <h3>{{ round }}. kolo - {{ date.toLocaleDateString() }}</h3>
       </div>
       <RoundSeatings :round="round" :tournament="tournament" />
@@ -46,4 +47,40 @@ const date = computed(() => tournament.value?.rounds.get(round.value)?.date);
 
 </script>
 
-<style scoped></style>
+<style>
+@media print {
+  h2:not(.print-header), .date-header {
+    display: none;
+  }
+
+  * {
+    color: black !important;
+  }
+
+  tr:nth-child(2n) {
+    background-color: #efefef;
+  }
+
+  @page  
+  { 
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 0;  
+  } 
+
+  .gap {
+    gap: 1em !important;
+  }
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: 0.3em;
+  }
+}
+
+@media screen {
+  .print-header {
+    display: none;
+  }
+}
+</style>

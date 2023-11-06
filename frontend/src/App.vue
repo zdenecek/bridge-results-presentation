@@ -54,18 +54,6 @@ nav a, .nav-button {
   padding: 2px 8px;
 }
 
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    /* display: none; <- Crashes Chrome on hover */
-    -webkit-appearance: none;
-    margin: 0;
-    /* <-- Apparently some margin are still there even though it's hidden */
-}
-
-input[type=number] {
-    -moz-appearance: textfield;
-    /* Firefox */
-}
 
 .button {
   border-radius: 5px;
@@ -135,6 +123,30 @@ td.col-name {
 
 .table tr:hover {
   background-color: #f5f5f5;
+}
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0;
+    /* <-- Apparently some margin are still there even though it's hidden */
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+    /* Firefox */
+}
+
+@media print {
+  nav {
+    display: none;
+  }
+
+  footer, .header {
+    display: none !important;
+  }
 }
 
 </style>
