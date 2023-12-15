@@ -1,10 +1,10 @@
 <template>
        <div>
+        <h2>Upravit turnaj</h2>
          <nav>
            <router-link v-if="slug" :to="{ name: 'tournament-results', params: { tournament: slug } }">Zobrazit turnaj</router-link>
           </nav>
-          <h2>Upravit turnaj</h2>
-      <form @submit.prevent="submit">
+        <form @submit.prevent="submit">
         <div class="fields">
         <label for="title">Název turnaje</label>
         <input id="title" type="text" v-model="title" required>

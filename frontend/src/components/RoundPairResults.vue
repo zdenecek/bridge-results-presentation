@@ -49,7 +49,7 @@ const averages = computed(() => props.round.hasAverages);
 </script>
 
 <template>
-  <div class="flex flex-column flex-center" v-if="results">
+  <div class="flex flex-column justify-center" v-if="results">
     <table class="table" v-if="mergeNames">
       <tr>
         <th colspan="2">Výsledek</th>
@@ -131,7 +131,6 @@ const averages = computed(() => props.round.hasAverages);
 <style scoped>
 .flex {
   padding-top: 20px;
-  gap: 20px;
 }
 
 .spacer {

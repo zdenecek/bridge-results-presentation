@@ -6,7 +6,7 @@
     <template #default>
 
       <h2>Seznam turnajů</h2>
-      <div class="flex flex-column">
+      <div class="flex flex-column gap-small">
       <div v-for="tournament in tournaments" :key="tournament.slug">
         <router-link :to="{ name: 'tournament-results', params: { tournament: tournament.slug } }">{{ tournament.name }}</router-link>
       </div>
@@ -36,10 +36,3 @@ TournamentApi.getTournaments().then((data) => {
 });
 
 </script>
-
-<style>
-.flex {
-  gap: 10px;
-}
-</style>
-

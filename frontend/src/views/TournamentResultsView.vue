@@ -23,10 +23,3 @@ import TournamentTotals from '@/components/TournamentTotals.vue';
 const tournament = inject('tournament') as Ref<Tournament | undefined>;
 
 </script>
-
-<style scoped>
-.flex {
-  gap: 20px;
-}
-</style>
-

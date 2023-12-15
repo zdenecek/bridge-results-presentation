@@ -1,10 +1,10 @@
 <template>
     <div>
-      <h2>Seznam turnajů</h2>
-      <div  class="flex flex-col">
-      <div class="flex"  v-for="tournament in tournaments" :key="tournament.slug">
+      <div  class="flex flex-column justify-center gap-small">
+      <div class="flex justify-center gap-small"  v-for="tournament in tournaments" :key="tournament.slug">
       <router-link :to="{ name: 'admin-tournament-edit', params: { tournament: tournament.id } }">{{ tournament.name }} ({{  tournament.slug }})</router-link>
       <router-link class="nav-button" :to="{ name: 'tournament-results', params: { tournament: tournament.slug } }">Zobrazit</router-link>
+      <router-link class="nav-button" :to="{ name: 'print-results', params: { tournament: tournament.slug } }">Tisk výsledků</router-link>
       <button class="button delete" @click="deleteTournament(tournament.id)">Smazat</button>
       </div>
 
@@ -63,14 +63,4 @@ function deleteTournament(id: number) {
   background-color: rgb(255, 0, 0);
 }
 
-.flex {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-}
-
-.flex-col {
-  flex-direction: column;
-}
 </style>

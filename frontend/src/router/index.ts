@@ -22,6 +22,7 @@ import CreateTournamentView from "../views/admin/CreateTournamentView.vue";
 import IndexTournamentsView from "../views/admin/IndexTournamentsView.vue";
 import EditTournamentView from "../views/admin/EditTournamentView.vue";
 import RoundsSeatingsViewVue from "@/views/RoundsSeatingsView.vue";
+import FinalResultsViewVue from "@/views/prints/FinalResultsPrint.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -96,6 +97,11 @@ const routes: Array<RouteRecordRaw> = [
                 name: "round-pair-results",
                 component: RoundPairResultsView,
             },
+            {
+                path: "print-results",
+                name: "print-results",
+                component: FinalResultsViewVue,
+            }
         ],
     },
 ];

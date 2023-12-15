@@ -29,16 +29,11 @@ const wasPlayed = computed(() => props.tournament.wasRoundPlayed(props.round));
 </script>
 
 <template>
-  <div>
-    <h3>Skupina {{ group.name }}</h3>
 
-    <div class="flex flex-column flex-center">
-      
 
+    <div class="flex flex-column justify-center gap-small">
       <template v-if="results.length && wasPlayed">
     <TournamentGroupTotals class="totals" :tournament="tournament" :groupIndex="groupIndex" :untilRound="round" :showMatches="false">
-      <template v-slot:header><span></span>
-      </template>
     </TournamentGroupTotals>
 
     <table  class="table table-totals">
@@ -75,13 +70,10 @@ const wasPlayed = computed(() => props.tournament.wasRoundPlayed(props.round));
     </div>
   </div>
     
-  </div>
 </template>
 
 <style scoped>
-.flex {
-  gap: 10px;
-}
+
 
 .totals {
   padding-bottom: 20px;

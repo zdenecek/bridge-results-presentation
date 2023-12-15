@@ -9,17 +9,18 @@
 
       <nav>
         <router-link :to="{ params: { round: rnd } }"
-                     :class="{ 'router-link-exact-active': round === rnd, disabled: false }"
-                     v-for="rnd in tournament.totalRounds" :key="rnd">
+          :class="{ 'router-link-exact-active': round === rnd, disabled: false }" v-for="rnd in tournament.totalRounds"
+          :key="rnd">
           {{ rnd }}</router-link>
         <router-link :to="{ params: { round: next } }" v-if="!tournament.isFinished"
-                     :class="{ 'router-link-exact-active': round === next }">Aktuální</router-link>
+          :class="{ 'router-link-exact-active': round === next }">Aktuální</router-link>
       </nav>
 
-      <div class="date-header" v-if="date">
-        <h3>{{ round }}. kolo - {{ date.toLocaleDateString() }}</h3>
+      <div class="flex flex-column">
+        <h3 class="date-header" v-if="date">{{ round }}. kolo - {{ date.toLocaleDateString() }}</h3>
+        <RoundSeatings :round="round" :tournament="tournament" />
       </div>
-      <RoundSeatings :round="round" :tournament="tournament" />
+
     </template>
   </div>
 </template>
@@ -47,9 +48,11 @@ const date = computed(() => tournament.value?.rounds.get(round.value)?.date);
 
 </script>
 
-<style>
+<style scoped>
 @media print {
-  h2:not(.print-header), .date-header {
+
+  h2:not(.print-header),
+  .date-header {
     display: none;
   }
 
@@ -61,12 +64,11 @@ const date = computed(() => tournament.value?.rounds.get(round.value)?.date);
     background-color: #efefef;
   }
 
-  @page  
-  { 
+  @page {
     margin-top: 0;
     margin-bottom: 0;
-    padding: 0;  
-  } 
+    padding: 0;
+  }
 
   .gap {
     gap: 1em !important;

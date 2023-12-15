@@ -16,15 +16,13 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class=" gap flex flex-column flex-center">
+  <div class="flex flex-column justify-center">
+    <template v-for="group, i in props.tournament.groups" :key="i">
 
-    <RoundGroupSeatings v-for="_, i in props.tournament.groups" :key="i" :round="props.round" :tournament="props.tournament"
-                      :groupIndex="i" />
+      <h3>Skupina {{ group.name }} </h3>
+      <RoundGroupSeatings :round="props.round" :tournament="props.tournament" :groupIndex="i" />
+    </template>
+
   </div>
 </template>
 
-<style scoped>
-.gap {
-  gap: 30px;
-}
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-column">
+  <div class="flex gap-small flex-column">
 
     <table>
       <tr>
@@ -23,7 +23,7 @@
       <tr v-for="[pos, i] in [['N', 0], ['S', 2], ['E', 1], ['W', 3]]" :key="i">
         <td>{{ pos }}</td>
         <td v-for="s in 5" :key="s">
-          {{ dd[ 5 * (i as number) + s - 1] }}
+          {{ dd[5 * (i as number) + s - 1] }}
         </td>
       </tr>
     </table>
@@ -80,11 +80,6 @@ th {
   border-bottom: 1px solid lightgray;
 }
 
-.flex {
-  gap: 10px;
-}
-
-
 td:first-child {
   padding-right: 10px;
 }
@@ -97,4 +92,5 @@ td {
 
 tr:nth-child(2n) {
   background-color: #f2f2f2;
-}</style>
+}
+</style>

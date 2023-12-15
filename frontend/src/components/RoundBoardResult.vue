@@ -40,10 +40,10 @@ const boardData = computed(() => props.round.boards?.get(props.board));
 </script>
 
 <template>
-  <div class="flex flex-column flex-center">
+  <div class="flex flex-column justify-center">
     <h3>Rozdání číslo {{ props.board }}</h3>
 
-    <div class="flex flex-column flex-center">
+    <div class="flex flex-column justify-center">
       <BoardPartial v-if="boardData" :board="boardData" :number="board" />
       <div v-else>Detaily rozdání nejsou k dispozici.</div>
 
@@ -90,9 +90,4 @@ const boardData = computed(() => props.round.boards?.get(props.board));
   </div>
 </template>
 
-
-<style scoped>
-.flex {
-  gap: 20px;
-}
-</style>
+=

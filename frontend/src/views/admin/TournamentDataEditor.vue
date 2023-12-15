@@ -1,5 +1,5 @@
 <template>
-    <div class="flex">
+    <div class="flex flex-column align-center gap-small">
         <TabView class="tabs">
             <tab-panel header="Přehled">
                 <div class="grid">
@@ -29,7 +29,7 @@
                             <checkmark class="tick" :value="averages(round) > 1" />
                             <div>
                                 <input type="date" v-model="data.rounds[round].date" v-if="data.rounds[round]" />
-                                <button type="button" v-else @click="()=>createRound(round)">Vytvořit prázdné</button>
+                                <button type="button" v-else @click="() => createRound(round)">Vytvořit prázdné</button>
                             </div>
                             <input multiple="true" accept=".txt,.csv,.pbn" :id="'fileinput-' + round" type="file"
                                 @input="(e) => addFilesToRound(round, e as InputEvent)">
@@ -142,18 +142,9 @@ async function addFilesToRound(round: number, event: InputEvent) {
 
 
 <style scoped>
-.flex {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-
-}
-
 .tabs {
     width: 1000px;
 }
-
 
 .horizontal {
     display: flex;

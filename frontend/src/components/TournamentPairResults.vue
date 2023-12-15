@@ -22,7 +22,7 @@ const players = props.tournament.getPair(props.pair)?.players;
 </script>
 
 <template>
-  <div class="flex flex-column flex-center">
+  <div class="flex flex-column justify-center padding">
 
     <table class="table">
       <tr>
@@ -85,10 +85,7 @@ const players = props.tournament.getPair(props.pair)?.players;
 </template>
 
 <style scoped>
-.flex {
-  padding-top: 20px;
-  gap: 20px;
-}
+
 
 .bold {
   font-weight: bold;

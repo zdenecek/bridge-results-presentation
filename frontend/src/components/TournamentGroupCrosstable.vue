@@ -58,13 +58,7 @@ const pairResults = computed(() => props.tournament.getPairResults());
 </script>
 
 <template>
-  <div>
-    <h3>Skupina {{ group.name }}</h3>
-
-    <div class="flex flex-column flex-center">
-
-
-      <table class="table table-totals">
+ <table class="table table-totals">
         <tr>
           <th colspan="2"></th>
           <th v-for="player in group.players" :key="player" :title="tournament.getPair(player)?.title">{{ player }}</th>
@@ -118,22 +112,16 @@ const pairResults = computed(() => props.tournament.getPairResults());
         </tr>
 
       </table>
-    </div>
-
-  </div>
 </template>
 
-<style scoped>
-.flex {
-  gap: 10px;
-}
+<style scoped lang="scss">
 
 .totals {
   padding-bottom: 20px;
 }
 
 .empty {
-  background-color: lightgray;
+  background-color: lighten(black, 90%);
 }
 
 .missing {

@@ -17,7 +17,7 @@
         <router-link v-if="anyPlayed" :to="{ params: { round: standing } }"
                      :class="{ 'router-link-exact-active': round === standing }">poslední hrané</router-link>
       </nav>
-      <RoundTotals :round="round" :tournament="tournament" />
+      <RoundTotals class="pad-top" :round="round" :tournament="tournament" />
     </template>
   </div>
 </template>

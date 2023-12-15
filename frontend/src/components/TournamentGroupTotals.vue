@@ -43,45 +43,41 @@ const results = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-column flex-center">
-    <slot name="header">
-      <h3>Skupina {{ group.name }}</h3>
-    </slot>
-    <slot>
-      <table class="table table-totals">
-        <tr>
-          <th>Pořadí</th>
-          <th>Pár</th>
-          <th>Průměr</th>
-          <th>VP</th>
-          <th v-if="!tournament.isFinished && showMatches">zápasy</th>
-        </tr>
-        <tr v-for="result in results" :key="result.pair">
-          <td class="col-rank">{{ result.rank }}</td>
-          <td class="col-name">
-            <winner-cup-icon-partial  class="cup cup-left" :place="result.rank.rank" v-if="showCups && result.rank.rank <= 3"></winner-cup-icon-partial>
-            <router-link :to="{ name: 'pair-results', params: { pair: result.pair } }">
-              {{ tournament.getPair(result.pair)?.title }}
-            </router-link>
-            <winner-cup-icon-partial class="cup cup-right" :place="result.rank.rank" v-if="showCups && result.rank.rank <= 3"></winner-cup-icon-partial>
+  <table class="table table-totals print-no-break">
+    <tr>
+      <th>Pořadí</th>
+      <th>Pár</th>
+      <th>Průměr</th>
+      <th>VP</th>
+      <th v-if="!tournament.isFinished && showMatches">zápasy</th>
+    </tr>
+    <tr v-for="result in results" :key="result.pair">
+      <td class="col-rank">{{ result.rank }}</td>
+      <td class="col-name">
+        <div class="flex gap-small justify-center align-center gap-none">
 
-          </td>
-          <td> {{ result.averageAsNumber.toFixed(2) }} </td>
-          <td> {{ result.vp.toFixed(2) }} </td>
-          <td v-if="!tournament.isFinished && showMatches"> {{ result.matchCount }} </td>
-        </tr>
-      </table>
-    </slot>
+        <winner-cup-icon-partial class="cup cup-left" :place="result.rank.rank"
+          v-if="showCups && result.rank.rank <= 3"></winner-cup-icon-partial>
+        <router-link :to="{ name: 'pair-results', params: { pair: result.pair } }">
+          {{ tournament.getPair(result.pair)?.title }}
+        </router-link>
+        <winner-cup-icon-partial class="cup cup-right" :place="result.rank.rank"
+          v-if="showCups && result.rank.rank <= 3"></winner-cup-icon-partial>
+      </div>
 
-  </div>
+      </td>
+      <td> {{ result.averageAsNumber.toFixed(2) }} </td>
+      <td> {{ result.vp.toFixed(2) }} </td>
+      <td v-if="!tournament.isFinished && showMatches"> {{ result.matchCount }} </td>
+    </tr>
+  </table>
 </template>
 
 <style scoped>
 
-.cup {
-  width: .6em;
+.center {
+  margin: auto;
 }
-
 .cup-left {
   margin-right: 0.5em;
 }
@@ -89,5 +85,4 @@ const results = computed(() => {
 .cup-right {
   margin-left: 0.5em;
 }
-
 </style>

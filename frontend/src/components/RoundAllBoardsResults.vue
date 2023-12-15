@@ -29,7 +29,7 @@ const boards = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-column flex-center gap" v-if="boards">
+  <div class="flex flex-column justify-center gap" v-if="boards">
     <RoundBoardResult  v-for="board in boards" :key="board" :board="board" :round="round"
                       :tournament="tournament" />
   </div>
