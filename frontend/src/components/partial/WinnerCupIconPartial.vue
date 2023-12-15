@@ -1,6 +1,6 @@
 
 <template>
-  <svg v-if="place === 1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <svg v-if="place === 1" viewBox="0 0 24 24" fill="none"  xmlns="http://www.w3.org/2000/svg">
     <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
     <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
     <g id="SVGRepo_iconCarrier">
@@ -67,5 +67,10 @@ defineProps({
 
 .place-3 path {
   fill: #CD7F32;
+}
+
+svg {
+  width: 1em;
+  height: 1em;
 }
 </style>

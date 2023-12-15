@@ -14,8 +14,8 @@ const tournament = inject('tournament') as Ref<Tournament | undefined>;
       <h2>Skupina {{ group.name }}</h2>
 
       <div class="flex align-start">
-        <TournamentGroupTotals :show-cups="true" class="fix" :tournament="tournament" :groupIndex="i" />
-        <TournamentGroupCrosstable :tournament="tournament" :groupIndex="i" />
+        <TournamentGroupTotals :show-cups="true"  :tournament="tournament" :groupIndex="i" />
+        <TournamentGroupCrosstable :tournament="tournament" class="fix" :groupIndex="i" />
       </div>
 
     </div>
@@ -30,12 +30,8 @@ const tournament = inject('tournament') as Ref<Tournament | undefined>;
 
 // this is just so the table rows dont align 
 .fix td {
-  font-size: 1.2em;
+  font-size: 0.8em;
 
-  svg {
-    width: 1.2em;
-    height: 1.2em;
-  }
 }
 
 .content .container {
