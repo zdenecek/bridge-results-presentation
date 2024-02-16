@@ -3,6 +3,7 @@
         <h2>Upravit turnaj</h2>
          <nav>
            <router-link v-if="slug" :to="{ name: 'tournament-results', params: { tournament: slug } }">Zobrazit turnaj</router-link>
+           <button class="nav-button button" @click="copyMatrikaToClipboard">Kopírovat výsledky pro matriku</button>
           </nav>
         <form @submit.prevent="submit">
         <div class="fields">
@@ -29,7 +30,7 @@ import { onMounted, ref  } from 'vue';
 import {  useRoute } from 'vue-router';
 
 import TournamentDataEditor from '@/views/admin/TournamentDataEditor.vue';
-import { TournamentData } from '@/model/Tournament';
+import { Tournament, TournamentData } from '@/model/Tournament';
 
 const title = ref("");
 const slug = ref("");
@@ -68,4 +69,16 @@ function submit() {
   });
 }
 
+function copyMatrikaToClipboard() {
+  const tournament = new Tournament(dataToSend.value as TournamentData);
+  const text = tournament.toMatrikaString();
+  navigator.clipboard.writeText(text).then(() => {
+    console.debug('Matrika copied');
+    window.alert('Matrika zkopírována, vložte jako csv do matriky ctrl+v');
+  }).catch((e) => {
+    console.debug('Error copying matrika');
+    console.error(e);
+    window.alert('Chyba při kopírování matriky');
+  });
+}
 </script>

@@ -6,6 +6,14 @@ import { calculateVP } from "./VP";
 import { Rank } from "./Rank";
 import { Tournament } from "./Tournament";
 
+
+
+export function createPairSumResultComparator(tournament: Tournament): (a: PairSumResult, b: PairSumResult) => number {
+    return tournament.settings.rankByAverage ?
+        (a, b) => b.averageAsNumber - a.averageAsNumber
+        : (a, b) => b.vp - a.vp;
+}
+
 export function calculateResults(
     round: Round,
     data: RoundData
@@ -111,10 +119,7 @@ export function calculateAllPairResult(
     const res = new Map<PairNumber, PairSumResult>();
     pairResults.forEach((r) => res.set(r.pair, r));
 
-    const resultComparator: (a: PairSumResult, b: PairSumResult) => number
-        = tournament.settings.rankByAverage ?
-            (a, b) => b.averageAsNumber - a.averageAsNumber
-            : (a, b) => b.vp - a.vp;
+    const resultComparator = createPairSumResultComparator(tournament);
 
     tournament.groups.forEach((g) => {
         const results = g.players.map((p) => res.get(p)!);

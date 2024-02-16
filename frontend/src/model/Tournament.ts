@@ -15,8 +15,9 @@ import {
     PairTableRoundResult,
     TableRoundResult,
 } from "./MatchResult";
-import { calculateAllPairResult } from "./ResultsCalculation";
+import { calculateAllPairResult, createPairSumResultComparator } from "./ResultsCalculation";
 import { TournamentType } from "./TournamentType";
+import _ from "lodash";
 
 export type TournamentData = {
     type?: TournamentType;
@@ -212,5 +213,22 @@ export class Tournament {
 
     public wasRoundPlayed(round: RoundNumber): boolean {
         return (this.getRound(round)?.boardResults?.length ?? 0) > 0;
+    }
+
+    public toMatrikaString(): string {
+        const results = Array.from( this.getPairResults().values()).filter( res => !this.getPair(res.pair)?.isBye);
+        results.sort(createPairSumResultComparator(this));
+        results.sort( (res,res2) => this.groups.indexOf(this.getPairGroup(res.pair) as Group)  - this.groups.indexOf(this.getPairGroup(res2.pair) as Group))
+
+        return results.map( (res, index) => {
+            const pair = this.getPair(res.pair)!;
+
+            return [
+                index + 1, // rank
+                this.settings.rankByAverage ?  res.average?.toFixed(2) : res.vp,  // result
+                pair.players.some(p => !p.id) ? pair.title :  "", // if some player doesnt have id, use a title, else empty string
+                ... this.getPair(res.pair)?.players.map(p => p.id).filter( p => p) ?? [] // ids
+            ]
+        }).map( row => row.join(",")).join("\n");
     }
 }
