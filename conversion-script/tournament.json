@@ -1,0 +1,1048 @@
+{
+    "title": "",
+    "totalRounds": 9,
+    "groups": [],
+    "rotations": {
+        "1": {
+            "1": {
+                "ns": "Slaninov\u00e1 - Peterka",
+                "ew": "Kupkov\u00e1 - Svoboda"
+            },
+            "2": {
+                "ns": "Ben\u00e1k - Sch\u00e1\u0148ka",
+                "ew": "Sp\u00e1lovsk\u00fd - Bubn\u00edk"
+            },
+            "3": {
+                "ns": "St\u00e1dn\u00edk - Rub\u00e1\u010d",
+                "ew": "Filip - Ruman\u010d\u00edk"
+            },
+            "4": {
+                "ns": "Nul\u00ed\u010dek - \u0160\u00edma",
+                "ew": "Kopeck\u00fd - Te\u0148ak"
+            },
+            "5": {
+                "ns": "Vondr\u00e1\u010dkov\u00e1 - Hradil",
+                "ew": "Dudek - \u0160imek"
+            },
+            "6": {
+                "ns": "pauza",
+                "ew": "Rokosov\u00e1 - Santusov\u00e1"
+            },
+            "7": {
+                "ns": 26,
+                "ew": "Grusov\u00e1 - Gebertov\u00e1"
+            },
+            "8": {
+                "ns": "Dykovi",
+                "ew": "Han\u00e1ci"
+            },
+            "9": {
+                "ns": "Gregor - Hytka",
+                "ew": "Havl\u00ednov\u00e1 - Urban"
+            },
+            "10": {
+                "ns": "V\u00e1clav\u00edk - Baumann",
+                "ew": "Kolac\u00ed - Such\u00e1"
+            },
+            "11": {
+                "ns": "Lan\u010dov\u00e9",
+                "ew": "Tr\u00e1vn\u00ed\u010dkov\u00e1 - \u0158\u00edha"
+            },
+            "12": {
+                "ns": "Sad\u00edlkov\u00e1 - Tomanov\u00e1",
+                "ew": "La\u0148kov\u00e1 - Fo\u0159tov\u00e1"
+            },
+            "13": {
+                "ns": "\u010cernovsk\u00e1 - Havelkov\u00e1",
+                "ew": "Jasn\u00e1 - Kot\u011b\u0161ovcov\u00e1"
+            },
+            "14": {
+                "ns": "Janou\u0161kov\u00e1 - Lurring",
+                "ew": "Frab\u0161a - Loukotka"
+            }
+        },
+        "2": {
+            "1": {
+                "ns": "Kopeck\u00fd - Te\u0148ak",
+                "ew": "Slaninov\u00e1 - Peterka"
+            },
+            "2": {
+                "ns": "Sp\u00e1lovsk\u00fd - Bubn\u00edk",
+                "ew": "Vondr\u00e1\u010dkov\u00e1 - Hradil"
+            },
+            "3": {
+                "ns": "Dudek - \u0160imek",
+                "ew": "Filip - Ruman\u010d\u00edk"
+            },
+            "4": {
+                "ns": "Kupkov\u00e1 - Svoboda",
+                "ew": "Ben\u00e1k - Sch\u00e1\u0148ka"
+            },
+            "5": {
+                "ns": "Nul\u00ed\u010dek - \u0160\u00edma",
+                "ew": "St\u00e1dn\u00edk - Rub\u00e1\u010d"
+            },
+            "6": {
+                "ns": "Havl\u00ednov\u00e1 - Urban",
+                "ew": "pauza"
+            },
+            "7": {
+                "ns": "Grusov\u00e1 - Gebertov\u00e1",
+                "ew": "V\u00e1clav\u00edk - Baumann"
+            },
+            "8": {
+                "ns": "Kolac\u00ed - Such\u00e1",
+                "ew": "Han\u00e1ci"
+            },
+            "9": {
+                "ns": "Rokosov\u00e1 - Santusov\u00e1",
+                "ew": 26
+            },
+            "10": {
+                "ns": "Gregor - Hytka",
+                "ew": "Dykovi"
+            },
+            "11": {
+                "ns": "Tr\u00e1vn\u00ed\u010dkov\u00e1 - \u0158\u00edha",
+                "ew": "Frab\u0161a - Loukotka"
+            },
+            "12": {
+                "ns": "Jasn\u00e1 - Kot\u011b\u0161ovcov\u00e1",
+                "ew": "Janou\u0161kov\u00e1 - Lurring"
+            },
+            "13": {
+                "ns": "La\u0148kov\u00e1 - Fo\u0159tov\u00e1",
+                "ew": "\u010cernovsk\u00e1 - Havelkov\u00e1"
+            },
+            "14": {
+                "ns": "Lan\u010dov\u00e9",
+                "ew": "Sad\u00edlkov\u00e1 - Tomanov\u00e1"
+            }
+        },
+        "3": {
+            "1": {
+                "ns": "Slaninov\u00e1 - Peterka",
+                "ew": "Filip - Ruman\u010d\u00edk"
+            },
+            "2": {
+                "ns": "Ben\u00e1k - Sch\u00e1\u0148ka",
+                "ew": "Nul\u00ed\u010dek - \u0160\u00edma"
+            },
+            "3": {
+                "ns": "Kopeck\u00fd - Te\u0148ak",
+                "ew": "Kupkov\u00e1 - Svoboda"
+            },
+            "4": {
+                "ns": "St\u00e1dn\u00edk - Rub\u00e1\u010d",
+                "ew": "Vondr\u00e1\u010dkov\u00e1 - Hradil"
+            },
+            "5": {
+                "ns": "Dudek - \u0160imek",
+                "ew": "Sp\u00e1lovsk\u00fd - Bubn\u00edk"
+            },
+            "6": {
+                "ns": "pauza",
+                "ew": "Han\u00e1ci"
+            },
+            "7": {
+                "ns": 26,
+                "ew": "Gregor - Hytka"
+            },
+            "8": {
+                "ns": "Havl\u00ednov\u00e1 - Urban",
+                "ew": "Rokosov\u00e1 - Santusov\u00e1"
+            },
+            "9": {
+                "ns": "Dykovi",
+                "ew": "V\u00e1clav\u00edk - Baumann"
+            },
+            "10": {
+                "ns": "Kolac\u00ed - Such\u00e1",
+                "ew": "Grusov\u00e1 - Gebertov\u00e1"
+            },
+            "11": {
+                "ns": "Sad\u00edlkov\u00e1 - Tomanov\u00e1",
+                "ew": "Tr\u00e1vn\u00ed\u010dkov\u00e1 - \u0158\u00edha"
+            },
+            "12": {
+                "ns": "\u010cernovsk\u00e1 - Havelkov\u00e1",
+                "ew": "Lan\u010dov\u00e9"
+            },
+            "13": {
+                "ns": "Janou\u0161kov\u00e1 - Lurring",
+                "ew": "La\u0148kov\u00e1 - Fo\u0159tov\u00e1"
+            },
+            "14": {
+                "ns": "Frab\u0161a - Loukotka",
+                "ew": "Jasn\u00e1 - Kot\u011b\u0161ovcov\u00e1"
+            }
+        },
+        "4": {
+            "1": {
+                "ns": "Vondr\u00e1\u010dkov\u00e1 - Hradil",
+                "ew": "Slaninov\u00e1 - Peterka"
+            },
+            "2": {
+                "ns": "Sp\u00e1lovsk\u00fd - Bubn\u00edk",
+                "ew": "Nul\u00ed\u010dek - \u0160\u00edma"
+            },
+            "3": {
+                "ns": "St\u00e1dn\u00edk - Rub\u00e1\u010d",
+                "ew": "Ben\u00e1k - Sch\u00e1\u0148ka"
+            },
+            "4": {
+                "ns": "Filip - Ruman\u010d\u00edk",
+                "ew": "Kopeck\u00fd - Te\u0148ak"
+            },
+            "5": {
+                "ns": "Kupkov\u00e1 - Svoboda",
+                "ew": "Dudek - \u0160imek"
+            },
+            "6": {
+                "ns": "V\u00e1clav\u00edk - Baumann",
+                "ew": "pauza"
+            },
+            "7": {
+                "ns": "Grusov\u00e1 - Gebertov\u00e1",
+                "ew": "Gregor - Hytka"
+            },
+            "8": {
+                "ns": "Dykovi",
+                "ew": 26
+            },
+            "9": {
+                "ns": "Han\u00e1ci",
+                "ew": "Havl\u00ednov\u00e1 - Urban"
+            },
+            "10": {
+                "ns": "Rokosov\u00e1 - Santusov\u00e1",
+                "ew": "Kolac\u00ed - Such\u00e1"
+            },
+            "11": {
+                "ns": "Tr\u00e1vn\u00ed\u010dkov\u00e1 - \u0158\u00edha",
+                "ew": "Jasn\u00e1 - Kot\u011b\u0161ovcov\u00e1"
+            },
+            "12": {
+                "ns": "La\u0148kov\u00e1 - Fo\u0159tov\u00e1",
+                "ew": "Frab\u0161a - Loukotka"
+            },
+            "13": {
+                "ns": "Lan\u010dov\u00e9",
+                "ew": "Janou\u0161kov\u00e1 - Lurring"
+            },
+            "14": {
+                "ns": "Sad\u00edlkov\u00e1 - Tomanov\u00e1",
+                "ew": "\u010cernovsk\u00e1 - Havelkov\u00e1"
+            }
+        },
+        "5": {
+            "1": {
+                "ns": "Slaninov\u00e1 - Peterka",
+                "ew": "Nul\u00ed\u010dek - \u0160\u00edma"
+            },
+            "2": {
+                "ns": "Ben\u00e1k - Sch\u00e1\u0148ka",
+                "ew": "Dudek - \u0160imek"
+            },
+            "3": {
+                "ns": "Sp\u00e1lovsk\u00fd - Bubn\u00edk",
+                "ew": "Kupkov\u00e1 - Svoboda"
+            },
+            "4": {
+                "ns": "Vondr\u00e1\u010dkov\u00e1 - Hradil",
+                "ew": "Filip - Ruman\u010d\u00edk"
+            },
+            "5": {
+                "ns": "Kopeck\u00fd - Te\u0148ak",
+                "ew": "St\u00e1dn\u00edk - Rub\u00e1\u010d"
+            },
+            "6": {
+                "ns": "pauza",
+                "ew": "Gregor - Hytka"
+            },
+            "7": {
+                "ns": 26,
+                "ew": "Kolac\u00ed - Such\u00e1"
+            },
+            "8": {
+                "ns": "Grusov\u00e1 - Gebertov\u00e1",
+                "ew": "Rokosov\u00e1 - Santusov\u00e1"
+            },
+            "9": {
+                "ns": "V\u00e1clav\u00edk - Baumann",
+                "ew": "Han\u00e1ci"
+            },
+            "10": {
+                "ns": "Havl\u00ednov\u00e1 - Urban",
+                "ew": "Dykovi"
+            },
+            "11": {
+                "ns": "\u010cernovsk\u00e1 - Havelkov\u00e1",
+                "ew": "Tr\u00e1vn\u00ed\u010dkov\u00e1 - \u0158\u00edha"
+            },
+            "12": {
+                "ns": "Janou\u0161kov\u00e1 - Lurring",
+                "ew": "Sad\u00edlkov\u00e1 - Tomanov\u00e1"
+            },
+            "13": {
+                "ns": "Frab\u0161a - Loukotka",
+                "ew": "Lan\u010dov\u00e9"
+            },
+            "14": {
+                "ns": "Jasn\u00e1 - Kot\u011b\u0161ovcov\u00e1",
+                "ew": "La\u0148kov\u00e1 - Fo\u0159tov\u00e1"
+            }
+        },
+        "6": {
+            "1": {
+                "ns": "Dudek - \u0160imek",
+                "ew": "Slaninov\u00e1 - Peterka"
+            },
+            "2": {
+                "ns": "Kupkov\u00e1 - Svoboda",
+                "ew": "St\u00e1dn\u00edk - Rub\u00e1\u010d"
+            },
+            "3": {
+                "ns": "Nul\u00ed\u010dek - \u0160\u00edma",
+                "ew": "Vondr\u00e1\u010dkov\u00e1 - Hradil"
+            },
+            "4": {
+                "ns": "Filip - Ruman\u010d\u00edk",
+                "ew": "Sp\u00e1lovsk\u00fd - Bubn\u00edk"
+            },
+            "5": {
+                "ns": "Ben\u00e1k - Sch\u00e1\u0148ka",
+                "ew": "Kopeck\u00fd - Te\u0148ak"
+            },
+            "6": {
+                "ns": "Kolac\u00ed - Such\u00e1",
+                "ew": "pauza"
+            },
+            "7": {
+                "ns": "Rokosov\u00e1 - Santusov\u00e1",
+                "ew": "Dykovi"
+            },
+            "8": {
+                "ns": "Gregor - Hytka",
+                "ew": "V\u00e1clav\u00edk - Baumann"
+            },
+            "9": {
+                "ns": "Han\u00e1ci",
+                "ew": "Grusov\u00e1 - Gebertov\u00e1"
+            },
+            "10": {
+                "ns": 26,
+                "ew": "Havl\u00ednov\u00e1 - Urban"
+            },
+            "11": {
+                "ns": "Tr\u00e1vn\u00ed\u010dkov\u00e1 - \u0158\u00edha",
+                "ew": "La\u0148kov\u00e1 - Fo\u0159tov\u00e1"
+            },
+            "12": {
+                "ns": "Lan\u010dov\u00e9",
+                "ew": "Jasn\u00e1 - Kot\u011b\u0161ovcov\u00e1"
+            },
+            "13": {
+                "ns": "Sad\u00edlkov\u00e1 - Tomanov\u00e1",
+                "ew": "Frab\u0161a - Loukotka"
+            },
+            "14": {
+                "ns": "\u010cernovsk\u00e1 - Havelkov\u00e1",
+                "ew": "Janou\u0161kov\u00e1 - Lurring"
+            }
+        },
+        "7": {
+            "1": {
+                "ns": "Slaninov\u00e1 - Peterka",
+                "ew": "St\u00e1dn\u00edk - Rub\u00e1\u010d"
+            },
+            "2": {
+                "ns": "Dudek - \u0160imek",
+                "ew": "Nul\u00ed\u010dek - \u0160\u00edma"
+            },
+            "3": {
+                "ns": "Vondr\u00e1\u010dkov\u00e1 - Hradil",
+                "ew": "Ben\u00e1k - Sch\u00e1\u0148ka"
+            },
+            "4": {
+                "ns": "Kopeck\u00fd - Te\u0148ak",
+                "ew": "Sp\u00e1lovsk\u00fd - Bubn\u00edk"
+            },
+            "5": {
+                "ns": "Kupkov\u00e1 - Svoboda",
+                "ew": "Filip - Ruman\u010d\u00edk"
+            },
+            "6": {
+                "ns": "pauza",
+                "ew": "Dykovi"
+            },
+            "7": {
+                "ns": "Kolac\u00ed - Such\u00e1",
+                "ew": "Gregor - Hytka"
+            },
+            "8": {
+                "ns": "V\u00e1clav\u00edk - Baumann",
+                "ew": 26
+            },
+            "9": {
+                "ns": "Havl\u00ednov\u00e1 - Urban",
+                "ew": "Grusov\u00e1 - Gebertov\u00e1"
+            },
+            "10": {
+                "ns": "Rokosov\u00e1 - Santusov\u00e1",
+                "ew": "Han\u00e1ci"
+            },
+            "11": {
+                "ns": "Janou\u0161kov\u00e1 - Lurring",
+                "ew": "Tr\u00e1vn\u00ed\u010dkov\u00e1 - \u0158\u00edha"
+            },
+            "12": {
+                "ns": "Frab\u0161a - Loukotka",
+                "ew": "\u010cernovsk\u00e1 - Havelkov\u00e1"
+            },
+            "13": {
+                "ns": "Jasn\u00e1 - Kot\u011b\u0161ovcov\u00e1",
+                "ew": "Sad\u00edlkov\u00e1 - Tomanov\u00e1"
+            },
+            "14": {
+                "ns": "La\u0148kov\u00e1 - Fo\u0159tov\u00e1",
+                "ew": "Lan\u010dov\u00e9"
+            }
+        },
+        "8": {
+            "1": {
+                "ns": "Sp\u00e1lovsk\u00fd - Bubn\u00edk",
+                "ew": "Slaninov\u00e1 - Peterka"
+            },
+            "2": {
+                "ns": "St\u00e1dn\u00edk - Rub\u00e1\u010d",
+                "ew": "Dudek - \u0160imek"
+            },
+            "3": {
+                "ns": "Nul\u00ed\u010dek - \u0160\u00edma",
+                "ew": "Kupkov\u00e1 - Svoboda"
+            },
+            "4": {
+                "ns": "Filip - Ruman\u010d\u00edk",
+                "ew": "Ben\u00e1k - Sch\u00e1\u0148ka"
+            },
+            "5": {
+                "ns": "Kopeck\u00fd - Te\u0148ak",
+                "ew": "Vondr\u00e1\u010dkov\u00e1 - Hradil"
+            },
+            "6": {
+                "ns": "Grusov\u00e1 - Gebertov\u00e1",
+                "ew": "pauza"
+            },
+            "7": {
+                "ns": "Dykovi",
+                "ew": "Kolac\u00ed - Such\u00e1"
+            },
+            "8": {
+                "ns": "Gregor - Hytka",
+                "ew": "Rokosov\u00e1 - Santusov\u00e1"
+            },
+            "9": {
+                "ns": "Han\u00e1ci",
+                "ew": 26
+            },
+            "10": {
+                "ns": "Havl\u00ednov\u00e1 - Urban",
+                "ew": "V\u00e1clav\u00edk - Baumann"
+            },
+            "11": {
+                "ns": "pauza",
+                "ew": "pauza"
+            },
+            "12": {
+                "ns": "pauza",
+                "ew": "pauza"
+            },
+            "13": {
+                "ns": "pauza",
+                "ew": "pauza"
+            },
+            "14": {
+                "ns": "pauza",
+                "ew": "pauza"
+            }
+        },
+        "9": {
+            "1": {
+                "ns": "Slaninov\u00e1 - Peterka",
+                "ew": "Ben\u00e1k - Sch\u00e1\u0148ka"
+            },
+            "2": {
+                "ns": "Sp\u00e1lovsk\u00fd - Bubn\u00edk",
+                "ew": "St\u00e1dn\u00edk - Rub\u00e1\u010d"
+            },
+            "3": {
+                "ns": "Dudek - \u0160imek",
+                "ew": "Kopeck\u00fd - Te\u0148ak"
+            },
+            "4": {
+                "ns": "Vondr\u00e1\u010dkov\u00e1 - Hradil",
+                "ew": "Kupkov\u00e1 - Svoboda"
+            },
+            "5": {
+                "ns": "Filip - Ruman\u010d\u00edk",
+                "ew": "Nul\u00ed\u010dek - \u0160\u00edma"
+            },
+            "6": {
+                "ns": "pauza",
+                "ew": 26
+            },
+            "7": {
+                "ns": "Grusov\u00e1 - Gebertov\u00e1",
+                "ew": "Dykovi"
+            },
+            "8": {
+                "ns": "Kolac\u00ed - Such\u00e1",
+                "ew": "Havl\u00ednov\u00e1 - Urban"
+            },
+            "9": {
+                "ns": "V\u00e1clav\u00edk - Baumann",
+                "ew": "Rokosov\u00e1 - Santusov\u00e1"
+            },
+            "10": {
+                "ns": "Han\u00e1ci",
+                "ew": "Gregor - Hytka"
+            },
+            "11": {
+                "ns": "pauza",
+                "ew": "pauza"
+            },
+            "12": {
+                "ns": "pauza",
+                "ew": "pauza"
+            },
+            "13": {
+                "ns": "pauza",
+                "ew": "pauza"
+            },
+            "14": {
+                "ns": "pauza",
+                "ew": "pauza"
+            }
+        }
+    },
+    "players": {
+        "1": {
+            "id": 1,
+            "title": "Voz\u00e1bal - Klem\u0161",
+            "players": [
+                {
+                    "id": "1868",
+                    "name": "Voz\u00e1bal David",
+                    "club": "HAV"
+                },
+                {
+                    "id": "2696",
+                    "name": "Klem\u0161 Erik",
+                    "club": "HAV"
+                }
+            ]
+        },
+        "2": {
+            "id": 2,
+            "title": "Kohutov\u00e1 - Sch\u00e1\u0148ka",
+            "players": [
+                {
+                    "id": "2733",
+                    "name": "Kohutov\u00e1 Lucie",
+                    "club": "HAV"
+                },
+                {
+                    "id": "2683",
+                    "name": "Sch\u00e1\u0148ka Martin",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "3": {
+            "id": 3,
+            "title": "Kopeck\u00fd - \u0160lemr",
+            "players": [
+                {
+                    "id": "2292",
+                    "name": "Kopeck\u00fd Michal",
+                    "club": "BKP"
+                },
+                {
+                    "id": "2290",
+                    "name": "\u0160lemr Jakub",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "4": {
+            "id": 4,
+            "title": "Mel\u010d\u00e1k - Vojt\u00edk",
+            "players": [
+                {
+                    "id": "2712",
+                    "name": "Mel\u010d\u00e1k Martin",
+                    "club": "HAV"
+                },
+                {
+                    "id": "2702",
+                    "name": "Vojt\u00edk Jakub",
+                    "club": "HAV"
+                }
+            ]
+        },
+        "5": {
+            "id": 5,
+            "title": "Bahn\u00edk - Kurka",
+            "players": [
+                {
+                    "id": "2095",
+                    "name": "Bahn\u00edk Ond\u0159ej",
+                    "club": "CHB"
+                },
+                {
+                    "id": "314",
+                    "name": "Kurka Josef",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "6": {
+            "id": 6,
+            "title": "\u010c\u00ed\u017ea - Hol\u00fd",
+            "players": [
+                {
+                    "id": "999",
+                    "name": "\u010c\u00ed\u017ea Miroslav",
+                    "club": "BKP"
+                },
+                {
+                    "id": "892",
+                    "name": "Hol\u00fd Jaroslav",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "7": {
+            "id": 7,
+            "title": "Martynek - \u017dylka",
+            "players": [
+                {
+                    "id": "1893",
+                    "name": "Martynek Jan",
+                    "club": "BKP"
+                },
+                {
+                    "id": "2346",
+                    "name": "\u017dylka Kamil",
+                    "club": "UHR"
+                }
+            ]
+        },
+        "8": {
+            "id": 8,
+            "title": "Bahn\u00edkov\u00e1 - Diamant",
+            "players": [
+                {
+                    "id": "337",
+                    "name": "Bahn\u00edkov\u00e1 Eva",
+                    "club": "BKP"
+                },
+                {
+                    "id": "289",
+                    "name": "Diamant Jan",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "9": {
+            "id": 9,
+            "title": "Bahn\u00edk - Svoboda",
+            "players": [
+                {
+                    "id": "695",
+                    "name": "Bahn\u00edk Petr",
+                    "club": "BKP"
+                },
+                {
+                    "id": "341",
+                    "name": "Svoboda Otakar",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "10": {
+            "id": 10,
+            "title": "Kol\u00ednsk\u00fd - Vond\u0159ich",
+            "players": [
+                {
+                    "id": "49",
+                    "name": "Kol\u00ednsk\u00fd Viktor",
+                    "club": "BKP"
+                },
+                {
+                    "id": "70",
+                    "name": "Vond\u0159ich Vladim\u00edr",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "11": {
+            "id": 11,
+            "title": "Svobodov\u00e1 - Sp\u00e1lovsk\u00fd",
+            "players": [
+                {
+                    "id": "342",
+                    "name": "Svobodov\u00e1 Pavla",
+                    "club": "BKP"
+                },
+                {
+                    "id": "1761",
+                    "name": "Sp\u00e1lovsk\u00fd Lubo\u0161",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "12": {
+            "id": 12,
+            "title": "Kop\u0159iva - Mach\u00e1t",
+            "players": [
+                {
+                    "id": "52",
+                    "name": "Kop\u0159iva Ji\u0159\u00ed",
+                    "club": "BKP"
+                },
+                {
+                    "id": "320",
+                    "name": "Mach\u00e1t Vladim\u00edr",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "13": {
+            "id": 13,
+            "title": "Hn\u00e1tov\u00e1 - Zaj\u00ed\u010dek",
+            "players": [
+                {
+                    "id": "187",
+                    "name": "Hn\u00e1tov\u00e1 Daniela",
+                    "club": "BKP"
+                },
+                {
+                    "id": "1747",
+                    "name": "Zaj\u00ed\u010dek Bohum\u00edr",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "14": {
+            "id": 14,
+            "title": "Botur - Kr\u00e1l\u00edk",
+            "players": [
+                {
+                    "id": "2676",
+                    "name": "Botur Michael",
+                    "club": "HAV"
+                },
+                {
+                    "id": "2452",
+                    "name": "Kr\u00e1l\u00edk Jan",
+                    "club": "UHR"
+                }
+            ]
+        },
+        "15": {
+            "id": 15,
+            "title": "Dolansk\u00e1 - P\u00edrek",
+            "players": [
+                {
+                    "id": "2838",
+                    "name": "Dolansk\u00e1 Veronika",
+                    "club": "PAR"
+                },
+                {
+                    "id": "1374",
+                    "name": "P\u00edrek Zden\u011bk",
+                    "club": "CHB"
+                }
+            ]
+        },
+        "16": {
+            "id": 16,
+            "title": "Kuk - Vrko\u010d",
+            "players": [
+                {
+                    "id": "313",
+                    "name": "Kuk Richard",
+                    "club": "BKP"
+                },
+                {
+                    "id": "669",
+                    "name": "Vrko\u010d Petr",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "17": {
+            "id": 17,
+            "title": "Nul\u00ed\u010dek - Filip",
+            "players": [
+                {
+                    "id": "1188",
+                    "name": "Nul\u00ed\u010dek Vladim\u00edr",
+                    "club": "BKP"
+                },
+                {
+                    "id": "1502",
+                    "name": "Filip Anatol",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "18": {
+            "id": 18,
+            "title": "Erdeov\u00e1 - Emmer",
+            "players": [
+                {
+                    "id": "301",
+                    "name": "Erdeov\u00e1 Jana",
+                    "club": "BKP"
+                },
+                {
+                    "id": "2108",
+                    "name": "Emmer Ji\u0159\u00ed",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "19": {
+            "id": 19,
+            "title": "Fo\u0159tov\u00e1 - Hradil",
+            "players": [
+                {
+                    "id": "1985",
+                    "name": "Fo\u0159tov\u00e1 Eva",
+                    "club": "BKP"
+                },
+                {
+                    "id": "44",
+                    "name": "Hradil Miroslav",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "20": {
+            "id": 20,
+            "title": "Volhejni",
+            "players": [
+                {
+                    "id": "280",
+                    "name": "Volhejn V\u00edt",
+                    "club": "TRU"
+                },
+                {
+                    "id": "2909",
+                    "name": "Volhejn Petr",
+                    "club": "TRU"
+                }
+            ]
+        },
+        "21": {
+            "id": 21,
+            "title": "Ma\u0161ek - \u0160tulc",
+            "players": [
+                {
+                    "id": "323",
+                    "name": "Ma\u0161ek Ji\u0159\u00ed",
+                    "club": "BKP"
+                },
+                {
+                    "id": "31",
+                    "name": "\u0160tulc Ji\u0159\u00ed",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "22": {
+            "id": 22,
+            "title": "B\u00f6hmov\u00e1 - Schulzov\u00e1",
+            "players": [
+                {
+                    "id": "1818",
+                    "name": "B\u00f6hmov\u00e1 Ji\u0159ina",
+                    "club": "BKP"
+                },
+                {
+                    "id": "1981",
+                    "name": "Schulzov\u00e1 V\u011bra",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "23": {
+            "id": 23,
+            "title": "Kindl - Kva\u010dek",
+            "players": [
+                {
+                    "id": "3005",
+                    "name": "Kindl Jan",
+                    "club": "BKP"
+                },
+                {
+                    "id": "3004",
+                    "name": "Kva\u010dek Robert",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "24": {
+            "id": 24,
+            "title": "\u010cern\u00fd - Raboch",
+            "players": [
+                {
+                    "id": "1436",
+                    "name": "\u010cern\u00fd Vratislav",
+                    "club": "BKP"
+                },
+                {
+                    "id": "1782",
+                    "name": "Raboch Pavel",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "25": {
+            "id": 25,
+            "title": "La\u0161tovi\u010dka - Stupka",
+            "players": [
+                {
+                    "id": "196",
+                    "name": "La\u0161tovi\u010dka Zden\u011bk",
+                    "club": "BKP"
+                },
+                {
+                    "id": "198",
+                    "name": "Stupka Petr",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "26": {
+            "id": 26,
+            "title": "Kov\u00e1\u0159 - Vajda",
+            "players": [
+                {
+                    "id": "1441",
+                    "name": "Kov\u00e1\u0159 Milan",
+                    "club": "BKP"
+                },
+                {
+                    "id": "2765",
+                    "name": "Vajda Tom\u00e1\u0161",
+                    "club": "CHB"
+                }
+            ]
+        },
+        "27": {
+            "id": 27,
+            "title": "Pe\u0161out - Plhal - \u0160kl\u00edba",
+            "players": [
+                {
+                    "id": "144",
+                    "name": "Pe\u0161out Jan",
+                    "club": "BKP"
+                },
+                {
+                    "id": "146",
+                    "name": "Plhal Petr",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "28": {
+            "id": 28,
+            "title": "Krasavci",
+            "players": [
+                {
+                    "id": "1728",
+                    "name": "Kr\u00e1sa Ond\u0159ej",
+                    "club": "BRN"
+                },
+                {
+                    "id": "3236",
+                    "name": "Kr\u00e1sa Mikul\u00e1\u0161",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "29": {
+            "id": 29,
+            "title": "Bort\u00e1k - Ruman\u010d\u00edk - \u017diak",
+            "players": [
+                {
+                    "id": "3549",
+                    "name": "Bort\u00e1k Peter",
+                    "club": "SVK"
+                },
+                {
+                    "id": "2943",
+                    "name": "Ruman\u010d\u00edk Jakub",
+                    "club": "HAV"
+                }
+            ]
+        },
+        "30": {
+            "id": 30,
+            "title": "Huben\u00ed",
+            "players": [
+                {
+                    "id": "1723",
+                    "name": "Huben\u00e1 Jana",
+                    "club": "BKP"
+                },
+                {
+                    "id": "82",
+                    "name": "Huben\u00fd Petr",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "31": {
+            "id": 31,
+            "title": "Vajdov\u00e1 - Kupkov\u00e1",
+            "players": [
+                {
+                    "id": "2062",
+                    "name": "Vajdov\u00e1 Pavl\u00edna",
+                    "club": "CHB"
+                },
+                {
+                    "id": "878",
+                    "name": "Kupkov\u00e1 Lucie",
+                    "club": "BKP"
+                }
+            ]
+        },
+        "32": {
+            "id": 32,
+            "title": "Kupkov\u00e1 - Schulzov\u00e1",
+            "players": [
+                {
+                    "id": "2890",
+                    "name": "Kupkov\u00e1 Barbora",
+                    "club": "BKP"
+                },
+                {
+                    "id": "2622",
+                    "name": "Schulzov\u00e1 Krist\u00fdna",
+                    "club": "UHR"
+                }
+            ]
+        }
+    },
+    "td": {
+        "name": "",
+        "email": ""
+    },
+    "rounds": {}
+}
