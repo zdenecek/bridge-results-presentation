@@ -74,6 +74,8 @@ function copyMatrikaToClipboard() {
   const text = tournament.toMatrikaString();
   navigator.clipboard.writeText(text).then(() => {
     console.debug('Matrika copied');
+    if(!tournament.isFinished) window.alert('(POZOR!: turnaj není dohrán) Matrika zkopírována, vložte jako csv do matriky ctrl+v'); 
+   
     window.alert('Matrika zkopírována, vložte jako csv do matriky ctrl+v');
   }).catch((e) => {
     console.debug('Error copying matrika');
