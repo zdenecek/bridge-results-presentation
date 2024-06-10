@@ -1,0 +1,919 @@
+{
+  "settings": {
+    "rankByAverage": true
+  },
+  "title": "Skupinová A Léto 2024",
+  "totalRounds": 5,
+  "groups": [
+    {
+      "name": "A1",
+      "players": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ]
+    },
+    {
+      "name": "A21",
+      "players": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ]
+    },
+    {
+      "name": "A22",
+      "players": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18
+      ]
+    },
+    {
+      "name": "A31",
+      "players": [
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26
+      ]
+    },
+    {
+      "name": "A32",
+      "players": [
+        27,
+        28,
+        29,
+        30,
+        31,
+        32
+      ]
+    }
+  ],
+  "rotations": {
+    "1": {
+      "1": {
+        "ns": 1,
+        "ew": 6
+      },
+      "2": {
+        "ns": 4,
+        "ew": 3
+      },
+      "3": {
+        "ns": 2,
+        "ew": 5
+      },
+      "4": {
+        "ns": 7,
+        "ew": 12
+      },
+      "5": {
+        "ns": 10,
+        "ew": 9
+      },
+      "6": {
+        "ns": 8,
+        "ew": 11
+      },
+      "7": {
+        "ns": 18,
+        "ew": 13
+      },
+      "8": {
+        "ns": 15,
+        "ew": 16
+      },
+      "9": {
+        "ns": 17,
+        "ew": 14
+      },
+      "10": {
+        "ns": 19,
+        "ew": 26
+      },
+      "11": {
+        "ns": 25,
+        "ew": 20
+      },
+      "12": {
+        "ns": 21,
+        "ew": 24
+      },
+      "13": {
+        "ns": 23,
+        "ew": 22
+      },
+      "14": {
+        "ns": 32,
+        "ew": 27
+      },
+      "15": {
+        "ns": 29,
+        "ew": 30
+      },
+      "16": {
+        "ns": 31,
+        "ew": 28
+      }
+    },
+    "2": {
+      "1": {
+        "ns": 5,
+        "ew": 1
+      },
+      "2": {
+        "ns": 3,
+        "ew": 6
+      },
+      "3": {
+        "ns": 4,
+        "ew": 2
+      },
+      "4": {
+        "ns": 11,
+        "ew": 7
+      },
+      "5": {
+        "ns": 9,
+        "ew": 12
+      },
+      "6": {
+        "ns": 10,
+        "ew": 8
+      },
+      "7": {
+        "ns": 13,
+        "ew": 17
+      },
+      "8": {
+        "ns": 18,
+        "ew": 15
+      },
+      "9": {
+        "ns": 14,
+        "ew": 16
+      },
+      "10": {
+        "ns": 26,
+        "ew": 19
+      },
+      "11": {
+        "ns": 20,
+        "ew": 25
+      },
+      "12": {
+        "ns": 24,
+        "ew": 21
+      },
+      "13": {
+        "ns": 22,
+        "ew": 23
+      },
+      "14": {
+        "ns": 27,
+        "ew": 31
+      },
+      "15": {
+        "ns": 32,
+        "ew": 29
+      },
+      "16": {
+        "ns": 28,
+        "ew": 30
+      }
+    },
+    "3": {
+      "1": {
+        "ns": 1,
+        "ew": 4
+      },
+      "2": {
+        "ns": 2,
+        "ew": 3
+      },
+      "3": {
+        "ns": 6,
+        "ew": 5
+      },
+      "4": {
+        "ns": 7,
+        "ew": 10
+      },
+      "5": {
+        "ns": 8,
+        "ew": 9
+      },
+      "6": {
+        "ns": 12,
+        "ew": 11
+      },
+      "7": {
+        "ns": 16,
+        "ew": 13
+      },
+      "8": {
+        "ns": 15,
+        "ew": 14
+      },
+      "9": {
+        "ns": 17,
+        "ew": 18
+      },
+      "10": {
+        "ns": 19,
+        "ew": 23
+      },
+      "11": {
+        "ns": 24,
+        "ew": 20
+      },
+      "12": {
+        "ns": 21,
+        "ew": 25
+      },
+      "13": {
+        "ns": 26,
+        "ew": 22
+      },
+      "14": {
+        "ns": 30,
+        "ew": 27
+      },
+      "15": {
+        "ns": 29,
+        "ew": 28
+      },
+      "16": {
+        "ns": 31,
+        "ew": 32
+      }
+    },
+    "4": {
+      "1": {
+        "ns": 3,
+        "ew": 1
+      },
+      "2": {
+        "ns": 6,
+        "ew": 2
+      },
+      "3": {
+        "ns": 5,
+        "ew": 4
+      },
+      "4": {
+        "ns": 9,
+        "ew": 7
+      },
+      "5": {
+        "ns": 12,
+        "ew": 8
+      },
+      "6": {
+        "ns": 11,
+        "ew": 10
+      },
+      "7": {
+        "ns": 13,
+        "ew": 15
+      },
+      "8": {
+        "ns": 14,
+        "ew": 18
+      },
+      "9": {
+        "ns": 16,
+        "ew": 17
+      },
+      "10": {
+        "ns": 22,
+        "ew": 19
+      },
+      "11": {
+        "ns": 20,
+        "ew": 21
+      },
+      "12": {
+        "ns": 26,
+        "ew": 23
+      },
+      "13": {
+        "ns": 24,
+        "ew": 25
+      },
+      "14": {
+        "ns": 27,
+        "ew": 29
+      },
+      "15": {
+        "ns": 28,
+        "ew": 32
+      },
+      "16": {
+        "ns": 30,
+        "ew": 31
+      }
+    },
+    "5": {
+      "1": {
+        "ns": 1,
+        "ew": 2
+      },
+      "2": {
+        "ns": 3,
+        "ew": 5
+      },
+      "3": {
+        "ns": 4,
+        "ew": 6
+      },
+      "4": {
+        "ns": 7,
+        "ew": 8
+      },
+      "5": {
+        "ns": 9,
+        "ew": 11
+      },
+      "6": {
+        "ns": 10,
+        "ew": 12
+      },
+      "7": {
+        "ns": 14,
+        "ew": 13
+      },
+      "8": {
+        "ns": 17,
+        "ew": 15
+      },
+      "9": {
+        "ns": 18,
+        "ew": 16
+      },
+      "10": {
+        "ns": 19,
+        "ew": 21
+      },
+      "11": {
+        "ns": 22,
+        "ew": 20
+      },
+      "12": {
+        "ns": 23,
+        "ew": 25
+      },
+      "13": {
+        "ns": 26,
+        "ew": 24
+      },
+      "14": {
+        "ns": 28,
+        "ew": 27
+      },
+      "15": {
+        "ns": 31,
+        "ew": 29
+      },
+      "16": {
+        "ns": 32,
+        "ew": 30
+      }
+    }
+  },
+  "players": {
+    "1": {
+      "id": 1,
+      "title": "Vozábal - Klemš",
+      "players": [
+        {
+          "id": "1868",
+          "name": "Vozábal David",
+          "club": "HAV"
+        },
+        {
+          "id": "2696",
+          "name": "Klemš Erik",
+          "club": "HAV"
+        }
+      ]
+    },
+    "2": {
+      "id": 2,
+      "title": "Bahník - Kurka",
+      "players": [
+        {
+          "id": "2095",
+          "name": "Bahník Ondřej",
+          "club": "CHB"
+        },
+        {
+          "id": "314",
+          "name": "Kurka Josef",
+          "club": "BKP"
+        }
+      ]
+    },
+    "3": {
+      "id": 3,
+      "title": "Melčák - Vojtík",
+      "players": [
+        {
+          "id": "2712",
+          "name": "Melčák Martin",
+          "club": "HAV"
+        },
+        {
+          "id": "2702",
+          "name": "Vojtík Jakub",
+          "club": "HAV"
+        }
+      ]
+    },
+    "4": {
+      "id": 4,
+      "title": "Kohutová - Macura - Doga",
+      "players": [
+        {
+          "id": "2733",
+          "name": "Kohutová Lucie",
+          "club": "HAV"
+        },
+        {
+          "id": "1933",
+          "name": "Macura Milan",
+          "club": "BKP"
+        }
+      ]
+    },
+    "5": {
+      "id": 5,
+      "title": "Bahník - Svoboda",
+      "players": [
+        {
+          "id": "695",
+          "name": "Bahník Petr",
+          "club": "BKP"
+        },
+        {
+          "id": "341",
+          "name": "Svoboda Otakar",
+          "club": "BKP"
+        }
+      ]
+    },
+    "6": {
+      "id": 6,
+      "title": "Hnátová - Zajíček",
+      "players": [
+        {
+          "id": "187",
+          "name": "Hnátová Daniela",
+          "club": "BKP"
+        },
+        {
+          "id": "1747",
+          "name": "Zajíček Bohumír",
+          "club": "BKP"
+        }
+      ]
+    },
+    "7": {
+      "id": 7,
+      "title": "Šlemr - Kopecký",
+      "players": [
+        {
+          "id": "2290",
+          "name": "Šlemr Jakub",
+          "club": "BKP"
+        },
+        {
+          "id": "2292",
+          "name": "Kopecký Michal",
+          "club": "BKP"
+        }
+      ]
+    },
+    "8": {
+      "id": 8,
+      "title": "Bahníková - Diamant",
+      "players": [
+        {
+          "id": "337",
+          "name": "Bahníková Eva",
+          "club": "BKP"
+        },
+        {
+          "id": "289",
+          "name": "Diamant Jan",
+          "club": "BKP"
+        }
+      ]
+    },
+    "9": {
+      "id": 9,
+      "title": "Dolanská - Pírek",
+      "players": [
+        {
+          "id": "2838",
+          "name": "Dolanská Veronika",
+          "club": "PAR"
+        },
+        {
+          "id": "1374",
+          "name": "Pírek Zdeněk",
+          "club": "CHB"
+        }
+      ]
+    },
+    "10": {
+      "id": 10,
+      "title": "Kolínský - Vondřich",
+      "players": [
+        {
+          "id": "49",
+          "name": "Kolínský Viktor",
+          "club": "BKP"
+        },
+        {
+          "id": "70",
+          "name": "Vondřich Vladimír",
+          "club": "BKP"
+        }
+      ]
+    },
+    "11": {
+      "id": 11,
+      "title": "Kindl - Kvaček",
+      "players": [
+        {
+          "id": "3005",
+          "name": "Kindl Jan",
+          "club": "BKP"
+        },
+        {
+          "id": "3004",
+          "name": "Kvaček Robert",
+          "club": "BKP"
+        }
+      ]
+    },
+    "12": {
+      "id": 12,
+      "title": "Schulzová - Kupková",
+      "players": [
+        {
+          "id": "2622",
+          "name": "Schulzová Kristýna",
+          "club": "UHR"
+        },
+        {
+          "id": "2890",
+          "name": "Kupková Barbora",
+          "club": "BKP"
+        }
+      ]
+    },
+    "13": {
+      "id": 13,
+      "title": "Číža - Holý",
+      "players": [
+        {
+          "id": "999",
+          "name": "Číža Miroslav",
+          "club": "BKP"
+        },
+        {
+          "id": "892",
+          "name": "Holý Jaroslav",
+          "club": "BKP"
+        }
+      ]
+    },
+    "14": {
+      "id": 14,
+      "title": "Filip - Nulíček",
+      "players": [
+        {
+          "id": "1502",
+          "name": "Filip Anatol",
+          "club": "BKP"
+        },
+        {
+          "id": "1188",
+          "name": "Nulíček Vladimír",
+          "club": "BKP"
+        }
+      ]
+    },
+    "15": {
+      "id": 15,
+      "title": "Svobodová - Spálovský",
+      "players": [
+        {
+          "id": "2720",
+          "name": "Svobodová Markéta",
+          "club": "BKP"
+        },
+        {
+          "id": "1761",
+          "name": "Spálovský Luboš",
+          "club": "BKP"
+        }
+      ]
+    },
+    "16": {
+      "id": 16,
+      "title": "Botur - Králík",
+      "players": [
+        {
+          "id": "2676",
+          "name": "Botur Michael",
+          "club": "HAV"
+        },
+        {
+          "id": "2452",
+          "name": "Králík Jan",
+          "club": "UHR"
+        }
+      ]
+    },
+    "17": {
+      "id": 17,
+      "title": "Krasavci",
+      "players": [
+        {
+          "id": "1728",
+          "name": "Krása Ondřej",
+          "club": "BRN"
+        },
+        {
+          "id": "3236",
+          "name": "Krása Mikuláš",
+          "club": "BKP"
+        }
+      ]
+    },
+    "18": {
+      "id": 18,
+      "title": "Mašek - Štulc",
+      "players": [
+        {
+          "id": "323",
+          "name": "Mašek Jiří",
+          "club": "BKP"
+        },
+        {
+          "id": "31",
+          "name": "Štulc Jiří",
+          "club": "BKP"
+        }
+      ]
+    },
+    "19": {
+      "id": 19,
+      "title": "Martynek - Žylka",
+      "players": [
+        {
+          "id": "1893",
+          "name": "Martynek Jan",
+          "club": "BKP"
+        },
+        {
+          "id": "2346",
+          "name": "Žylka Kamil",
+          "club": "UHR"
+        }
+      ]
+    },
+    "20": {
+      "id": 20,
+      "title": "Erdeová - Emmer",
+      "players": [
+        {
+          "id": "301",
+          "name": "Erdeová Jana",
+          "club": "BKP"
+        },
+        {
+          "id": "2108",
+          "name": "Emmer Jiří",
+          "club": "BKP"
+        }
+      ]
+    },
+    "21": {
+      "id": 21,
+      "title": "Fořtová - Hradil",
+      "players": [
+        {
+          "id": "1985",
+          "name": "Fořtová Eva",
+          "club": "BKP"
+        },
+        {
+          "id": "44",
+          "name": "Hradil Miroslav",
+          "club": "BKP"
+        }
+      ]
+    },
+    "22": {
+      "id": 22,
+      "title": "Borták - Rumančík - Žiak",
+      "players": [
+        {
+          "id": "3549",
+          "name": "Borták Peter",
+          "club": "SVK"
+        },
+        {
+          "id": "2943",
+          "name": "Rumančík Jakub",
+          "club": "HAV"
+        },
+        {
+          "id": "2848",
+          "name": "Žiak Matej",
+          "club": "HAV"
+        }
+      ]
+    },
+    "23": {
+      "id": 23,
+      "title": "Volhejni",
+      "players": [
+        {
+          "id": "280",
+          "name": "Volhejn Vít",
+          "club": "TRU"
+        },
+        {
+          "id": "2909",
+          "name": "Volhejn Petr",
+          "club": "TRU"
+        }
+      ]
+    },
+    "24": {
+      "id": 24,
+      "title": "Černý - Raboch",
+      "players": [
+        {
+          "id": "1436",
+          "name": "Černý Vratislav",
+          "club": "BKP"
+        },
+        {
+          "id": "1782",
+          "name": "Raboch Pavel",
+          "club": "BKP"
+        }
+      ]
+    },
+    "25": {
+      "id": 25,
+      "title": "Böhmová - Schulzová",
+      "players": [
+        {
+          "id": "1818",
+          "name": "Böhmová Jiřina",
+          "club": "BKP"
+        },
+        {
+          "id": "2622",
+          "name": "Schulzová Kristýna",
+          "club": "UHR"
+        }
+      ]
+    },
+    "26": {
+      "id": 26,
+      "title": "Suchá - Rangelov",
+      "players": [
+        {
+          "id": "1347",
+          "name": "Suchá Eva",
+          "club": "BKP"
+        }
+      ]
+    },
+    "27": {
+      "id": 27,
+      "title": "Kuk - Vrkoč",
+      "players": [
+        {
+          "id": "313",
+          "name": "Kuk Richard",
+          "club": "BKP"
+        },
+        {
+          "id": "669",
+          "name": "Vrkoč Petr",
+          "club": "BKP"
+        }
+      ]
+    },
+    "28": {
+      "id": 28,
+      "title": "Kopřiva - Machát",
+      "players": [
+        {
+          "id": "52",
+          "name": "Kopřiva Jiří",
+          "club": "BKP"
+        },
+        {
+          "id": "320",
+          "name": "Machát Vladimír",
+          "club": "BKP"
+        }
+      ]
+    },
+    "29": {
+      "id": 29,
+      "title": "Hubení",
+      "players": [
+        {
+          "id": "82",
+          "name": "Hubený Petr",
+          "club": "BKP"
+        },
+        {
+          "id": "1723",
+          "name": "Hubená Jana",
+          "club": "BKP"
+        }
+      ]
+    },
+    "30": {
+      "id": 30,
+      "title": "Kovář - Vajda",
+      "players": [
+        {
+          "id": "1441",
+          "name": "Kovář Milan",
+          "club": "BKP"
+        },
+        {
+          "id": "2765",
+          "name": "Vajda Tomáš",
+          "club": "CHB"
+        }
+      ]
+    },
+    "31": {
+      "id": 31,
+      "title": "Pešout - Plhal",
+      "players": [
+        {
+          "id": "144",
+          "name": "Pešout Jan",
+          "club": "BKP"
+        },
+        {
+          "id": "146",
+          "name": "Plhal Petr",
+          "club": "BKP"
+        }
+      ]
+    },
+    "32": {
+      "id": 32,
+      "title": "Laštovička - Stupka",
+      "players": [
+        {
+          "id": "196",
+          "name": "Laštovička Zdeněk",
+          "club": "BKP"
+        },
+        {
+          "id": "198",
+          "name": "Stupka Petr",
+          "club": "BKP"
+        }
+      ]
+    }
+  },
+  "td": {
+    "name": "Zdeněk Frabša",
+    "email": ""
+  },
+  "rounds": {
+    
+  }
+}

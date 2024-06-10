@@ -78,7 +78,7 @@ function remove()
                     {{ overwrite.vp_ns !== undefined ? 'X' : "+" }}</button>
             </div>
             <div>
-                <input v-if="overwrite.vp_ns !== undefined" type="number" v-model="overwrite.vp_ns">
+                <input v-if="overwrite.vp_ns !== undefined" type="number" step="0.01" v-model="overwrite.vp_ns">
             </div>
             <div>
             <label for="postponed-vp-ew-toggle">VP EW</label>
@@ -86,7 +86,7 @@ function remove()
                     {{ overwrite.vp_ew !== undefined ? 'X' : "+" }}</button>
             </div>
             <div>
-                <input v-if="overwrite.vp_ew !== undefined" type="number" v-model="overwrite.vp_ew">
+                <input v-if="overwrite.vp_ew !== undefined" type="number" step="0.01" v-model="overwrite.vp_ew">
             </div>
         </template>
         <template v-if="overwrite.type === 'imp'">

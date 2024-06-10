@@ -21,7 +21,7 @@
         </template>
     </div>
 </template>
-00
+
 <script setup lang="ts">
 import { TournamentData } from '@/model/Tournament';
 import TournamentFileParser from '@/parse/TournamentFileParser';
