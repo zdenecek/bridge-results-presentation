@@ -29,6 +29,10 @@ Header set Access-Control-Allow-Origin "*"
 RewriteEngine On
 RewriteBase /
 
+# Redirect HTTP to HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 # Redirect /api requests to api/index.php
 RewriteRule ^api(/.*)?$ api/public/index.php [L]
 
