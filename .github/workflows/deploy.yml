@@ -5,8 +5,9 @@ on:
   push:
     paths:
       - frontend/**
+      - api/**
     branches:
-      - master
+      - main
 
 jobs:
   build:
