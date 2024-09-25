@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper flex">
+  <div class="wrapper flex no-break">
 
     <div class="board">
       <BoardCardsPartial class="hand hand-n" :cards="board.deal[0]" />
@@ -48,6 +48,10 @@ const vulEW = props.board.vul === "EW" || props.board.vul === "All";
 </script>
 
 <style scoped>
+.no-break {
+  page-break-inside: avoid;
+}
+
 .board {
   display: grid;
   grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr);

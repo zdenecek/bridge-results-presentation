@@ -89,5 +89,3 @@ const boardData = computed(() => props.round.boards?.get(props.board));
     </div>
   </div>
 </template>
-
-=
