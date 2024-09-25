@@ -3,9 +3,9 @@ import { Round } from "./Round";
 
 export function createPBN(round: Round): string {
     
-    let str = `
-% PBN 1.0
-[Generator "Prezentace Zdenek Tomis 0.2.0"]
+    let str = `% PBN 1.0
+% EXPORT
+% Exported by Zdenek Tomis presentation software, bridge.zdenektomis.eu
 `
     if(!round.boards) return str;
 
