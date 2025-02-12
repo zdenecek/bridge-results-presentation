@@ -22,7 +22,7 @@ const props = defineProps({
   },
 })
 
-const contrct = props.contract.trim().replaceAll(" ", "");
+const contrct = props.contract.trim().replaceAll(" ", "").replaceAll("NT", "N");
 const level = contrct[0];
 const suit = contrct[1];
 const double = computed(() => {
