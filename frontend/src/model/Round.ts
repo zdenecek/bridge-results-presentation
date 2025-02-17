@@ -124,8 +124,8 @@ export class Round {
 
                 let result = resultsByTable.get(o.table);
                 if (!result) {
-                    return;
                     console.warn(`Table ${o.table} not found in round ${this.number}`);
+                    return;
                 }
                 result = {
                     ns:  result.ns,
