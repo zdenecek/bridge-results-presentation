@@ -10,7 +10,7 @@ const tournament = inject('tournament') as Ref<Tournament | undefined>;
 const showCrossTables = ref(false);
 const showCups = ref(false);
 const showSubtitle = ref(true);
-const firstThreeBold = ref(false);
+const firstThreeBold = ref(true);
 const columnLayout = ref(false);
 const logos = ref(2);
 const logoHeight = ref("2.5cm");
@@ -47,7 +47,7 @@ const faintColor = ref("");
 
 
   <div v-if="tournament" class="flex flex-column justify-center align-center print-container"
-    :class="{ 'blue': faintColor === 'blue', 'first-three-bold': firstThreeBold }">
+    :class="{ [faintColor]: true, 'first-three-bold': firstThreeBold }">
 
     <div class="no-print config">
       <h3>Print Config</h3>
@@ -97,6 +97,12 @@ const faintColor = ref("");
         <label>Style</label>
         <input type="radio" v-model="faintColor" value="blue" />
         <label>Blue</label>
+
+        <input type="radio" v-model="faintColor" value="orange" />
+        <label>Orange</label>
+
+        <input type="radio" v-model="faintColor" value="green" />
+        <label>Green</label>
 
         <input type="radio" v-model="faintColor" value="" />
         <label>None</label>
@@ -167,10 +173,27 @@ const faintColor = ref("");
 
   &.blue {
 
-    --primary-color: black;
+    --primary-color: darkblue;
 
     table tr:nth-child(even) {
       background-color: #E0F7FA !important;
+    }
+  }
+
+  &.orange {
+
+    --primary-color: #CC5500;
+
+    table tr:nth-child(even) {
+      background-color: #ffead6 !important;
+    }
+  }
+
+  &.green {
+    --primary-color: green;
+
+    table tr:nth-child(even) {
+      background-color: #E0FFE0 !important;
     }
   }
 
