@@ -19,7 +19,11 @@ export function calculateResults(
     _: RoundData
 ): Map<TableNumber, TableRoundResult> {
 
-    const resultsByNS = new Map<TableNumber, TableRoundResult>();
+    function getKey(ns: PairNumber, ew: PairNumber): string {
+        return ns.toString() + "_" + ew.toString();
+    }
+
+    const resultsByPlayers = new Map<string, TableRoundResult>();
 
     const tables = Object.entries(round.rotation);
 
@@ -32,14 +36,14 @@ export function calculateResults(
             ns: table.ns,
             ew: table.ew,
         };
-        resultsByNS.set(table.ns, matchResult);
+        resultsByPlayers.set(getKey(table.ns, table.ew), matchResult);
     }
 
     round.boardResults
         ?.filter((r) => r.status === "played" || r.status === "adjusted")
         .map((r) => r as CompleteBoardResult)
         .forEach((boardResult) => {
-            let matchResult = resultsByNS.get(boardResult.ns) || resultsByNS.get(boardResult.ew);
+            let matchResult = resultsByPlayers.get(getKey(boardResult.ns, boardResult.ew));
             if (!matchResult) {
                 console.warn(`Result not found: Round: ${round.number}, NS: ${boardResult.ns} EW: ${boardResult.ew}`);
                 return;
@@ -53,7 +57,7 @@ export function calculateResults(
                     vp_ew: 0,
                     vp_ns: 0,
                 };
-                resultsByNS.set(matchResult.ns, matchResult);
+                resultsByPlayers.set(getKey(matchResult.ns, matchResult.ew), matchResult);
             }
 
             if (boardResult.status === "played") {
@@ -79,11 +83,11 @@ export function calculateResults(
 
     for (const [key, table] of tables) {
         const tablenum = Number.parseInt(key);
-        resultsByTable.set(tablenum, resultsByNS.get(table.ns)!);
+        resultsByTable.set(tablenum, resultsByPlayers.get(getKey(table.ns, table.ew))!);
     }
 
 
-    Array.from(resultsByNS.values()).filter((r) => r.status === "played").forEach((r) => {
+    Array.from(resultsByPlayers.values()).filter((r) => r.status === "played").forEach((r) => {
         const result = r as PlayedMatchResult;
         const vp = calculateVP(result.imp_ns - result.imp_ew);
         result.vp_ns = vp.ns;

@@ -36,7 +36,12 @@ const mergeNames = computed(() => {
 }
 
 );
-const finalResult = computed(() => props.tournament.getPairRoundResult(props.pair, props.round.number));
+const finalResult = computed(() => {
+  const results = props.tournament.getPairRoundResult(props.pair, props.round.number);
+  if (!results) return undefined;
+  if (results.length === 1) return results[0];
+  return results.filter(r => r.tableResult.status === "played")[0];
+});
 const ns = computed(() => finalResult.value?.ns);
 
 const imp_ns = computed(() => MatchResults.getImpsNS(finalResult.value?.tableResult));

@@ -13,10 +13,14 @@ import { calculateResults } from "./ResultsCalculation";
 import {  PairNumber, RoundRotation, TableNumber } from "./modelTypes";
 import { calculateVP } from "./VP";
 
+
+type BoardResultOnlyTable = Omit<BoardResult, "ns" | "ew"> & { table: number };
+type BoardResultsPartial = BoardResult | BoardResultOnlyTable;
+
 export interface RoundData {
     date?: string | Date;
     boards?: Record<BoardNumberKey, Board>;
-    boardResults?: BoardResult[];
+    boardResults?: BoardResultsPartial[];
     overwrites?: Overwrite[];
     averages?: Record<BoardNumberKey, number>;
 }
@@ -31,15 +35,16 @@ export class Round {
     readonly boardResults?: BoardResult[];
 
     private matchResultsByTable: Map<TableNumber, TableRoundResult>;
-    private matchResultsByPair: Map<PairNumber, TableRoundResult>;
+    private matchResultsByPair: Map<PairNumber, TableRoundResult[]>;
     private boardAverages?: Map<BoardNumber, number>;
 
     private postponedTables: TableNumber[] = [];
 
     constructor(data: RoundData, public readonly number: number, public readonly rotation: RoundRotation) {
         if(data.date) 
-        this.date = new Date(data.date);
-        this.boardResults = data.boardResults;
+            this.date = new Date(data.date);
+        if (data.boardResults) 
+            this.boardResults = Round.parseBoardResults(data.boardResults, rotation);
 
         this.boards = new Map<BoardNumber, Board>();
         if(data.boards !== undefined) {
@@ -62,16 +67,23 @@ export class Round {
             this.postponedTables.push(o.table);
         });
 
-        this.matchResultsByPair = new Map<PairNumber, TableRoundResult>();
+        this.matchResultsByPair = new Map<PairNumber, TableRoundResult[]>();
         
         this.matchResultsByTable = this.applyOverwrites(
             overwrites,
             results
         );
-        
+
         this.matchResultsByTable.forEach((result, _) => {
-            this.matchResultsByPair!.set(result.ns, result);
-            this.matchResultsByPair!.set(result.ew, result);
+            if (!this.matchResultsByPair!.has(result.ns)) {
+                this.matchResultsByPair!.set(result.ns, []);
+            }
+            if (!this.matchResultsByPair!.has(result.ew)) {
+                this.matchResultsByPair!.set(result.ew, []);
+            }
+
+            this.matchResultsByPair!.get(result.ns)!.push(result);
+            this.matchResultsByPair!.get(result.ew)!.push(result);
         });
 
         if(data.averages !== undefined) {
@@ -99,10 +111,10 @@ export class Round {
         return Array.from(this.matchResultsByTable.values());
     }
 
-    public getPairResult(pairNumber: PairNumber): PairTableRoundResult | undefined {
-        const result = this.matchResultsByPair?.get(pairNumber);
-        if(!result) return undefined;
-        return new PairTableRoundResult(result, pairNumber);
+    public getPairResults(pairNumber: PairNumber): PairTableRoundResult[] {
+        const results = this.matchResultsByPair?.get(pairNumber);
+        if (!results) return [];
+        return results.map(r => new PairTableRoundResult(r, pairNumber));
     }
 
     public getTableResult(
@@ -224,4 +236,16 @@ export class Round {
         return resultsByTable;
     }
 
+    private static parseBoardResults(boardResults: BoardResultsPartial[], rotation: RoundRotation): BoardResult[] {
+        return boardResults.map(r => {
+            if ("table" in r && rotation[r.table] !== undefined) {
+                const tableRotation = rotation[r.table];
+                return { ...r, ns: tableRotation!.ns, ew: tableRotation!.ew } as BoardResult;
+            }
+            if ("ns" in r && "ew" in r && r.ns !== undefined && r.ew !== undefined) {
+                return r as BoardResult;
+            }
+            return undefined;
+        }).filter((r): r is BoardResult => r !== undefined);
+    }
 }

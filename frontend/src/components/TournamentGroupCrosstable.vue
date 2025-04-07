@@ -32,7 +32,7 @@ const additionalColumnResults = computed(() => {
 
   for (let i = 0; i < groupSize; i++) {
     for (let j = 0; j < additionalColumns.value; j++) {
-      res[i]![j] = props.tournament.getPairRoundResult(group.players[i]!, j + groupSize);
+      res[i]![j] = props.tournament.getPairRoundResult(group.players[i]!, j + groupSize)?.[0];
     }
   }
 

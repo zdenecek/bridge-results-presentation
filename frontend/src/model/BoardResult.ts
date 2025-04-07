@@ -9,6 +9,7 @@ type BoardResultPart =  {
     status: string;
 }
 
+
 export type NotPlayedBoardResult = BoardResultPart & { status: "not-played" };
 
 export type CompleteBoardResult = PlayedBoardResult | AdjustedBoardResult;

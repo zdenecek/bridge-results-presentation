@@ -35,15 +35,7 @@ export default class TournamentFileParser {
         };
     }
 
-    static applyResultsFile(
-        text: string,
-        data: TournamentData,
-        round: number
-    ): TournamentData {
-        const rotations = data.rotations[round];
-        const tables = Object.keys(rotations);
-
-        function createResult(values: string[]): BoardResult  | null {
+      static createResultFromLine(values: string[], rotations: RoundRotation): BoardResult  | null {
             /* Opis rozdani Excel
 
             0   Cislo_rozdania 
@@ -59,49 +51,64 @@ export default class TournamentFileParser {
             8   +/- Imp
             */
 
-            const table = values[1];
-            if (!table || tables.includes(table) === false) return null;
-            const rotation = rotations?.[table];
-            if (!rotation) throw new Error("Rotation for table " + table + " not found");
-            const boardNumber = Number.parseInt(values[0]!);
+            const table = Number.parseInt(values[1]);
+            const boardNumber = Number.parseInt(values[0]);
+            // Create base result with table and deal info
+            const baseResult = {
+                deal: boardNumber,
+                table: table,
+                ns: rotations[table]?.ns,
+                ew: rotations[table]?.ew,
+            };
 
-            if (values[6] === "N")
+            // Handle not played case
+
+            if (values[6] === "N") {
                 // not played
                 return {
-                    deal: boardNumber,
-                    ns: rotation["ns"],
-                    ew: rotation["ew"],
+                    ...baseResult,
                     status: "not-played",
                 };
+            }
 
-            
-            const res = Number.parseInt(values[8]!);
-
+            // Create played result
+            const res = Number.parseInt(values[8]);
             let output = {
+                ...baseResult,
                 status: "played" as "played",
-                deal: boardNumber,
-                ns: rotation["ns"],
-                ew: rotation["ew"],
-                contract: values[2]!,
-                declarer: values[4]!,
-                result: values[3]!,
-                points: Number.parseInt(values[5]!),
+                contract: values[2],
+                declarer: values[4],
+                result: values[3],
+                points: Number.parseInt(values[5]),
                 res_ns: res,
                 res_ew: -res,
             };
 
-            if (values[7] === "*")
+            if (values[7] === "*") {
                 output = Object.assign(output, { rotated: true });
+            }
+
+            if (table == 15) {
+                console.log(output);
+            }
 
             return output;
         }
 
+    static applyResultsFile(
+        text: string,
+        data: TournamentData,
+        round: number
+    ): TournamentData {
+        const rotations = data.rotations[round];
+        const tables = Object.keys(rotations);
         const results = [] as BoardResult[];
         const lines = text.replaceAll(`"`, "").split("\r\n");
+        const roundObj = data.rounds[round];
 
         for (const line of lines) {
             const values = line.split(",");
-            const result = createResult(values);
+            const result = TournamentFileParser.createResultFromLine(values, rotations);
             if (result) results.push(result);
         }
 

@@ -174,8 +174,8 @@ export class Tournament {
   getPairRoundResult(
     pair: PairNumber,
     round: RoundNumber
-  ): PairTableRoundResult | undefined {
-    return this.getRound(round)?.getPairResult(pair);
+  ): PairTableRoundResult[] | undefined {
+    return this.getRound(round)?.getPairResults(pair);
   }
 
   getPairRoundResults(
@@ -183,9 +183,9 @@ export class Tournament {
     rounds: Round[] | undefined = undefined
   ): PairTableRoundResult[] {
     const roundsToCheck = rounds ?? this.getRoundsUntil(this.standing);
-
+    console.log("hi")
     const results = roundsToCheck
-      .map((r) => r.getPairResult(pair))
+      .flatMap((r) => r.getPairResults(pair))
       .filter((r) => r !== undefined) as PairTableRoundResult[];
     return results;
   }
