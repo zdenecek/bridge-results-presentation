@@ -1,5 +1,4 @@
 import TournamentEntry from "@/model/TournamentEntry";
-import { Tournament } from "../model/Tournament";
 
 import axios from "axios";
 
@@ -27,14 +26,10 @@ export default class TournamentApi {
     }
 
     public static deleteTournament(id: number, key: string): Promise<void> {
-        return axios.delete(this.url + "tournament/" + id, { headers: { "Apikey": key }}).then((response) => {
-            return;
-        });
+        return axios.delete(this.url + "tournament/" + id, { headers: { "Apikey": key }})
     }
 
     public static updateTournament(id: number, name: string, slug: string, data: any, key: string): Promise<void> {
-        return axios.put(this.url + "tournament/" + id, {name, slug, data}, { headers: { "Apikey": key }}).then((response) => {
-            return;
-        });
+        return axios.put(this.url + "tournament/" + id, {name, slug, data}, { headers: { "Apikey": key }})
     }
 }

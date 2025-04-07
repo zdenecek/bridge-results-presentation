@@ -1,10 +1,11 @@
 <script setup lang="ts">
 
 import { Tournament } from '@/model/Tournament';
-import { Ref, inject, ref, computed } from 'vue';
+import { Ref, inject, ref, computed, ComputedRef } from 'vue';
 
 import TournamentGroupCrosstable from '@/components/TournamentGroupCrosstable.vue';
 import TournamentGroupTotals from '@/components/TournamentGroupTotals.vue';
+import { Group } from '@/model/modelTypes';
 const tournament = inject('tournament') as Ref<Tournament | undefined>;
 
 const showCrossTables = ref(false);
@@ -28,13 +29,17 @@ const customText = ref("");
 
 // groups are grouped by first two letters eg. A21 with A22
 const applySubgroups = ref(true);
-const subgroups = computed(() => {
+type GroupWithIndex = Group & { index: number };
+
+const subgroups: ComputedRef<GroupWithIndex[][]> = computed(() => {
   if (!tournament.value) return [];
 
-  const groupsWithIndex = tournament.value.groups.map((g, i) => ({ ...g, index: i }));
+  const groupsWithIndex = tournament.value.groups.map((g, i) => ({ ...g, index: i } as GroupWithIndex ));
 
   if (applySubgroups.value)
-    return Object.values(Object.groupBy(groupsWithIndex, i => i.name.slice(0, 2)))
+    // group by only in modern browsers
+    // @ts-ignore
+    return Object.values(Object.groupBy(groupsWithIndex, i => i.name.slice(0, 2))) as GroupWithIndex[][]
 
   return groupsWithIndex.map(g => [g]);
 })
@@ -120,7 +125,7 @@ const faintColor = ref("");
     </div>
     <div :class="{ 'flex-column': columnLayout, 'flex-wrap': !columnLayout }" class="flex gap-small align-start">
       <div v-for="subgroup, i in subgroups" :key="i" class="flex gap-small align-start print-no-break">
-        <div v-for="group, j in subgroup" :key="group.index"
+        <div v-for="group in subgroup" :key="group.index"
           class="flex flex-column gap-small align-start print-no-break">
           <h2>Skupina {{ group.name }}</h2>
 

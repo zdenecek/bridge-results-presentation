@@ -1,4 +1,3 @@
-import { RoundData } from "./Round";
 
 export interface Pair {
     title: string;

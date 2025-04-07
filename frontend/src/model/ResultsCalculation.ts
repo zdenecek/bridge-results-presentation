@@ -1,7 +1,7 @@
 import { CompleteBoardResult } from "./BoardResult";
-import { MatchResult, PairSumResult, PairTableRoundResult, PlayedMatchResult, TableRoundResult } from "./MatchResult";
+import {  PairSumResult, PlayedMatchResult, TableRoundResult } from "./MatchResult";
 import { Round, RoundData } from "./Round";
-import { PairNumber, PairNumberKey, TableNumber } from "./modelTypes";
+import { PairNumber, TableNumber } from "./modelTypes";
 import { calculateVP } from "./VP";
 import { Rank } from "./Rank";
 import { Tournament } from "./Tournament";
@@ -16,7 +16,7 @@ export function createPairSumResultComparator(tournament: Tournament): (a: PairS
 
 export function calculateResults(
     round: Round,
-    data: RoundData
+    _: RoundData
 ): Map<TableNumber, TableRoundResult> {
 
     const resultsByNS = new Map<TableNumber, TableRoundResult>();
@@ -100,7 +100,7 @@ export function calculateAllPairResult(
 
     if (rounds.length === 0) return new Map<PairNumber, PairSumResult>();
 
-    const pairs = Object.values(rounds[0].rotation).flatMap((t) => [t.ns, t.ew]).filter((p) => p !== 0);
+    const pairs = Object.values(rounds[0]!.rotation).flatMap((t) => [t.ns, t.ew]).filter((p) => p !== 0);
 
     const pairResults = pairs.map((pair) => {
 
@@ -122,7 +122,7 @@ export function calculateAllPairResult(
     const resultComparator = createPairSumResultComparator(tournament);
 
     tournament.groups.forEach((g) => {
-        const results = g.players.map((p) => res.get(p)!);
+        const results = g.players.map((p) => res.get(p)!) as PairSumResult[];
         results.sort(resultComparator);
 
         const counts = results.reduce((acc, curr) => {
@@ -138,14 +138,14 @@ export function calculateAllPairResult(
         let rankCumm = 0;
 
         for (let i = 0; i < results.length; i++) {
-            if (i !== 0 && results[i].vp !== results[i - 1].vp) {
+            if (i !== 0 && results[i]!.vp !== results[i - 1]!.vp) {
                 rank += rankCumm + 1;
                 rankCumm = 0;
             } else if (i !== 0) {
                 rankCumm++;
             }
 
-            results[i].rank = new Rank(rank, counts.get(results[i].vp)!);
+            results[i]!.rank = new Rank(rank, counts.get(results[i]!.vp)!);
         }
     });
 

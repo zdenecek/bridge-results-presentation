@@ -5,7 +5,7 @@ import { unique } from '@/utils/unique';
 import { computed } from 'vue';
 import Contract from './partial/ContractPartial.vue';
 import { Round } from '@/model/Round';
-import { AdjustedBoardResult, BoardResult, CompleteBoardResult, PlayedBoardResult } from '@/model/BoardResult';
+import { AdjustedBoardResult, BoardResult, PlayedBoardResult } from '@/model/BoardResult';
 import { MatchResults } from '@/model/MatchResult';
 
 const props = defineProps({
@@ -64,7 +64,7 @@ const averages = computed(() => props.round.hasAverages);
 
           <router-link
             :to="{ name: 'round-pair-results', params: { pair: results[0]?.[line as keyof BoardResult], round: props.round.number } }">
-            {{ tournament.getPair(results[0]?.[line as 'ns' | 'ew'])?.title }}
+            {{ tournament.getPair(results[0]?.[line as 'ns' | 'ew']!)?.title }}
           </router-link>
         </td>
         <td>

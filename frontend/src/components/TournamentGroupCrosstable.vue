@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import { PairTableRoundResult } from '@/model/MatchResult';
+import { Group, PairNumber } from '@/model/modelTypes';
 import { Tournament } from '@/model/Tournament';
 import { computed, reactive } from 'vue';
 
@@ -17,7 +18,7 @@ const props = defineProps({
 
 type matrix = (PairTableRoundResult | undefined)[][];
 
-const group = reactive(props.tournament.groups[props.groupIndex]);
+const group = reactive(props.tournament.groups[props.groupIndex] as Group);
 const groupSize = group.players.length;
 
 const additionalColumns = computed(() => Math.max(0,props.tournament.totalRounds - group.players.length + 1));
@@ -31,7 +32,7 @@ const additionalColumnResults = computed(() => {
 
   for (let i = 0; i < groupSize; i++) {
     for (let j = 0; j < additionalColumns.value; j++) {
-      res[i][j] = props.tournament.getPairRoundResult(group.players[i], j + groupSize);
+      res[i]![j] = props.tournament.getPairRoundResult(group.players[i]!, j + groupSize);
     }
   }
 
@@ -41,12 +42,12 @@ const additionalColumnResults = computed(() => {
 const results = computed(() => {
   let res: matrix = Array.from({ length: groupSize }, () => Array(groupSize).map(() => undefined));
 
-  group.players.forEach(player => {
+  group.players.forEach((player: PairNumber) => {
 
     var pairResults = props.tournament.getPairRoundResults(player).filter(result => result.round < groupSize);
     const index = group.players.indexOf(player);
-    pairResults.forEach(result => {
-      res[index][group.players.indexOf(result.ops)] = result;
+    pairResults.forEach((result: PairTableRoundResult) => {
+      res[index]![group.players.indexOf(result.ops)] = result;
     })
   })
   return res;
@@ -72,15 +73,15 @@ const pairResults = computed(() => props.tournament.getPairResults());
           <td class="col-name"> {{ tournament.getPair(player)?.title }} </td>
           <td v-for="player2, i2 in group.players" :key="player2"
               class="col-vp"
-              :class="{ empty: player === player2, missing: (results[i][i2]?.round ?? 100) <= tournament.standing && results[i][i2]?.tableResult.status === 'not-played' }"
-              :title="player !== player2 ? ((results[i][i2]?.round.toString() ?? '?') + '. kolo proti ' + tournament.getPair(player2)?.title) : ''">
-            <template v-if="player !== player2 && results[i][i2] && results[i][i2]?.tableResult.status !== 'not-played'">
-              <router-link v-if="results[i][i2]?.status === 'played'"
-                           :to="{ name: 'round-pair-results', params: { round: results[i][i2]?.round, pair: player } }">
-                {{ results[i][i2]?.vps }}
+              :class="{ empty: player === player2, missing: (results[i]?.[i2]?.round ?? 100) <= tournament.standing && results[i]?.[i2]?.tableResult.status === 'not-played' }"
+              :title="player !== player2 ? ((results[i]?.[i2]?.round.toString() ?? '?') + '. kolo proti ' + tournament.getPair(player2)?.title) : ''">
+            <template v-if="player !== player2 && results[i]?.[i2] && results[i]?.[i2]?.tableResult.status !== 'not-played'">
+              <router-link v-if="results[i]?.[i2]?.status === 'played'"
+                           :to="{ name: 'round-pair-results', params: { round: results[i]?.[i2]?.round, pair: player } }">
+                {{ results[i]?.[i2]?.vps }}
               </router-link>
               <span v-else>
-                {{ results[i][i2]?.vps }}
+                {{ results[i]?.[i2]?.vps }}
               </span>
             </template>
           </td>

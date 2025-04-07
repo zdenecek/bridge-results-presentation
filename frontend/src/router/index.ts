@@ -112,7 +112,7 @@ const router = createRouter({
 });
 
 const defaultTitle = "Výsledky turnaje";
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
     const getter = to.meta["title"] as
         | ((route: RouteLocationNormalized) => string)
         | undefined;

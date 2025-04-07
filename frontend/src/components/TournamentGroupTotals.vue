@@ -3,6 +3,7 @@ import { PairSumResult } from '@/model/MatchResult';
 import { Tournament } from '@/model/Tournament';
 import { computed, reactive } from 'vue';
 import WinnerCupIconPartial from './partial/WinnerCupIconPartial.vue';
+import { Group, PairNumber } from '@/model/modelTypes';
 
 const props = defineProps({
   tournament: {
@@ -31,11 +32,11 @@ const props = defineProps({
 })
 
 
-const group = reactive(props.tournament.groups[props.groupIndex]);
+const group = reactive(props.tournament.groups[props.groupIndex] as Group);
 const results = computed(() => {
   const r = group.players.map(
-    p => props.tournament.getPairResult(p, props.untilRound)
-  ).filter(r => r !== undefined) as PairSumResult[];
+    (p: PairNumber) => props.tournament.getPairResult(p, props.untilRound)
+  ).filter( (r: PairSumResult | undefined) => r !== undefined) as PairSumResult[];
   r.sort((a, b) => a.rank.toOrdinal() - b.rank.toOrdinal())
   return r;
 });

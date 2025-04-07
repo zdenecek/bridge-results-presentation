@@ -42,9 +42,10 @@ const props = defineProps({
 
 const roundData = computed(() => props.tournamentData.rounds[props.round.toString()]);
 const tables = computed(() => {
-    const tables = [];
+    if (!props.tournamentData.rotations[props.round]) return [];
+    // @ts-ignore
     return Object.entries(props.tournamentData.rotations[props.round]).map(([table, rotation]) => {
-        const label = table + ": "+  props.tournamentData.players[rotation.ns].title + "," + props.tournamentData.players[rotation.ew].title;
+        const label = table + ": "+  props.tournamentData.players[rotation.ns]?.title + "," + props.tournamentData.players[rotation.ew]?.title;
         return {
             table: Number.parseInt(table),
             label
@@ -68,6 +69,7 @@ const overwriteTypes = [
 ];
 
 function addOverwrite() {
+    if (!roundData.value) return;
     if (!roundData.value.overwrites) roundData.value.overwrites = [];
     roundData.value.overwrites.push({
         type: "postponed",
@@ -76,6 +78,7 @@ function addOverwrite() {
 }
 
 function remove(o: OverwrittenResult) {
+    if (!roundData.value?.overwrites) return;
     console.log("remove", o);
     roundData.value.overwrites = roundData.value.overwrites?.filter((e) => e !== o);
 }

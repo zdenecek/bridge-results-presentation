@@ -292,14 +292,14 @@ export function impsToVictoryPoints(imps: number, boardCnt: number): number[] {
     ];
 
     // Victory Point calculation
-    const victoryPoints1 = lst_cont[imps][dict_board[boardCnt]];
-    const victoryPoints2 = Math.round((20 - victoryPoints1) * 100) / 100;
+    const victoryPoints1 = lst_cont[imps]![dict_board[boardCnt]!]!;
+    const victoryPoints2 = Math.round((20 - victoryPoints1!) * 100) / 100;
     const victoryPoints = [victoryPoints1, victoryPoints2];
 
     // Positive / Negative
     if (swapIMPs) {
-        return [victoryPoints2, victoryPoints1];
+        return [victoryPoints2, victoryPoints1] as [number, number];
     }
 
-    return victoryPoints;
+    return victoryPoints as [number, number];
 }

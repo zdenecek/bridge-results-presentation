@@ -28,7 +28,8 @@
                             <checkmark class="tick" :value="deals(round) > 1" />
                             <checkmark class="tick" :value="averages(round) > 1" />
                             <div>
-                                <input type="date" v-model="data.rounds[round].date" v-if="data.rounds[round]" />
+                                <input type="date" v-if="data.rounds[round]" v-model="// @ts-ignore
+                                  data.rounds[round].date" />
                                 <button type="button" v-else @click="() => createRound(round)">Vytvořit prázdné</button>
                             </div>
                             <input multiple="true" accept=".txt,.csv,.pbn" :id="'fileinput-' + round" type="file"
@@ -126,13 +127,13 @@ async function addFilesToRound(round: number, event: InputEvent) {
         return;
     }
 
-    for (let i = 0; i < files.length; i++) {
+    for (const file of files) {
+        if (!file) continue;
         try {
-
-            data.value = await TournamentFileParser.applyFile(files[i], data.value, round);
+            data.value = await TournamentFileParser.applyFile(file, data.value, round);
         }
         catch (e) {
-            console.debug('Error parsing file' + files[i].name);
+            console.debug('Error parsing file ' + file.name);
             console.error(e);
         }
     }

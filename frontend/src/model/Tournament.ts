@@ -17,10 +17,9 @@ import {
 } from "./MatchResult";
 import {
   calculateAllPairResult,
-  createPairSumResultComparator,
 } from "./ResultsCalculation";
 import { TournamentType } from "./TournamentType";
-import _, { get } from "lodash";
+import _ from "lodash";
 
 export type TournamentData = {
   type?: TournamentType;
@@ -122,7 +121,7 @@ export class Tournament {
       this.rotations.get(round)?.[table.toString()] ??
       throwError(`Table ${table} not found in round ${round}`);
 
-    const postponed = this.getRound(round)?.isTablePostponed(table);
+    const postponed = this.getRound(round)?.isTablePostponed(table) ?? false;
 
     return {
       ns: res.ns,
@@ -141,7 +140,7 @@ export class Tournament {
 
     return Array.from(this.rounds.entries())
       .filter(([key]) => untilRound === undefined || key <= untilRound)
-      .map(([key, value]) => value);
+      .map(([_, value]) => value);
   }
 
   getPairResult(pair: PairNumber, untilRound?: RoundNumber): PairSumResult {

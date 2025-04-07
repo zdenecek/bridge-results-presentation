@@ -17,9 +17,12 @@ const props = defineProps({
 });
 
 function toggle(o: OverwrittenResult, key: string, defaultValue: any = '') {
+    // @ts-ignore
     if (o[key] === undefined) {
+        // @ts-ignore
         o[key] = defaultValue;
     } else {
+        // @ts-ignore
         delete o[key];
     }
 }

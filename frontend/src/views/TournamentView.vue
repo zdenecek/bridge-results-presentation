@@ -32,13 +32,10 @@
 
 <script setup lang="ts">
 import {   provide, ref, watch } from 'vue';
-// eslint-disable-next-line
 import TournamentApi from '@/api/TournamentApi';
 import { Tournament } from '@/model/Tournament';
 import { useRoute } from 'vue-router';
 import MainLayout from '@/layouts/MainLayout.vue';
-// eslint-disable-next-line
-import { getData } from '@/getTestData';
 
 const route = useRoute();
 let title = ref('Výsledky turnaje');

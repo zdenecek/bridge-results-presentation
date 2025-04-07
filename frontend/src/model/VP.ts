@@ -12,7 +12,7 @@ export function calculateVP(imp: number, boards = 28): VPResult {
     };
 }
 
-function impsToVictoryPoints(imps: number, boardCnt: number): number[] {
+function impsToVictoryPoints(imps: number, boardCnt: number): [number, number] {
     // Exceptions
     if (!(imps % 1 === 0)) throw "IMPs INT!";
     if (!(imps < 200)) throw "IMPs < 200";
@@ -306,14 +306,14 @@ function impsToVictoryPoints(imps: number, boardCnt: number): number[] {
     ];
 
     // Victory Point calculation
-    const victoryPoints1 = lst_cont[imps][dict_board[boardCnt]];
+    const victoryPoints1 = lst_cont[imps]![dict_board[boardCnt]!]!;
     const victoryPoints2 = Math.round((20 - victoryPoints1) * 100) / 100;
     const victoryPoints = [victoryPoints1, victoryPoints2];
 
     // Positive / Negative
     if (swapIMPs) {
-        return [victoryPoints2, victoryPoints1];
+        return [victoryPoints2, victoryPoints1] as [number, number];
     }
 
-    return victoryPoints;
+    return victoryPoints as [number, number];
 }

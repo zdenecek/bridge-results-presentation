@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import Contract from './partial/ContractPartial.vue';
 import BoardPartial from './partial/BoardPartial.vue';
 import { Round } from '@/model/Round';
-import { AdjustedBoardResult, BoardResult, CompleteBoardResult, PlayedBoardResult } from '@/model/BoardResult';
+import { AdjustedBoardResult, BoardResult, PlayedBoardResult } from '@/model/BoardResult';
 
 const props = defineProps({
   tournament: {

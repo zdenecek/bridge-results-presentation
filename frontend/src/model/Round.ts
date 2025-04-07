@@ -1,7 +1,7 @@
 import { throwError } from "@/utils/error";
 import { Board, BoardNumber, BoardNumberKey } from "./Board";
 import { BoardResult } from "./BoardResult";
-import { PairTableRoundResult, PlayedMatchResult, PostponedResult, ScratchedResult, TableRoundResult } from "./MatchResult";
+import { PairTableRoundResult, PlayedMatchResult, TableRoundResult } from "./MatchResult";
 import {
     OverwrittenResult as Overwrite,
     ResultOverwriteIMP,
@@ -10,7 +10,7 @@ import {
     ResultOverwriteVP,
 } from "./Overwrites";
 import { calculateResults } from "./ResultsCalculation";
-import { Pair, PairNumber, RoundRotation, TableNumber } from "./modelTypes";
+import {  PairNumber, RoundRotation, TableNumber } from "./modelTypes";
 import { calculateVP } from "./VP";
 
 export interface RoundData {
@@ -45,12 +45,12 @@ export class Round {
         if(data.boards !== undefined) {
             Object.keys(data.boards).forEach(num => {
 
-                if(data.boards![num].deal.length !== 4) 
+                if(data.boards![num]!.deal.length !== 4) 
                 {
-                    console.warn(`Board ${num} in round ${this.number} has ${data.boards![num].deal.length} cards`);
+                    console.warn(`Board ${num} in round ${this.number} has ${data.boards![num]!.deal.length} cards`);
                     return;
                 }
-                this.boards?.set(Number.parseInt(num), data.boards![num]);
+                this.boards?.set(Number.parseInt(num), data.boards![num]!);
             })
         }
 
@@ -69,7 +69,7 @@ export class Round {
             results
         );
         
-        this.matchResultsByTable.forEach((result, tableNumber) => {
+        this.matchResultsByTable.forEach((result, _) => {
             this.matchResultsByPair!.set(result.ns, result);
             this.matchResultsByPair!.set(result.ew, result);
         });
@@ -77,7 +77,7 @@ export class Round {
         if(data.averages !== undefined) {
             this.boardAverages = new Map<BoardNumber, number>();
             Object.keys(data.averages).forEach(num => {
-                this.boardAverages?.set(Number.parseInt(num), data.averages![num]);
+                this.boardAverages?.set(Number.parseInt(num), data.averages![num]!);
             })
         }
     }
@@ -101,7 +101,8 @@ export class Round {
 
     public getPairResult(pairNumber: PairNumber): PairTableRoundResult | undefined {
         const result = this.matchResultsByPair?.get(pairNumber);
-        if(result) return new PairTableRoundResult(result, pairNumber);
+        if(!result) return undefined;
+        return new PairTableRoundResult(result, pairNumber);
     }
 
     public getTableResult(

@@ -2,10 +2,10 @@
   <div class="wrapper flex no-break">
 
     <div class="board">
-      <BoardCardsPartial class="hand hand-n" :cards="board.deal[0]" />
-      <BoardCardsPartial class="hand hand-e" :cards="board.deal[1]" />
-      <BoardCardsPartial class="hand hand-s" :cards="board.deal[2]" />
-      <BoardCardsPartial class="hand hand-w" :cards="board.deal[3]" />
+      <BoardCardsPartial class="hand hand-n" :cards="board.deal[0]!" />
+      <BoardCardsPartial class="hand hand-e" :cards="board.deal[1]!" />
+      <BoardCardsPartial class="hand hand-s" :cards="board.deal[2]!" />
+      <BoardCardsPartial class="hand hand-w" :cards="board.deal[3]!" />
       <div class="board-header">
         <span class="num">{{ number }}</span>
         <span class="sub"> {{ board.vul }} / {{ board.dealer }}</span>

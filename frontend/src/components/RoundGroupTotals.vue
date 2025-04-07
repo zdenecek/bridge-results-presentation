@@ -4,6 +4,7 @@ import { Tournament } from '@/model/Tournament';
 import { computed, reactive } from 'vue';
 import TournamentGroupTotals from './TournamentGroupTotals.vue';
 import { TableRoundResult } from '@/model/MatchResult';
+import { Group } from '@/model/modelTypes';
 
 const props = defineProps({
   tournament: {
@@ -21,7 +22,7 @@ const props = defineProps({
 })
 
 
-const group = reactive(props.tournament.groups[props.groupIndex]);
+const group = reactive(props.tournament.groups[props.groupIndex] as Group);
 const results = computed(() => props.tournament.getRoundResults(props.round)?.filter(r => group.players.includes(r.ns) || group.players.includes(r.ew)));
 
 const wasPlayed = computed(() => props.tournament.wasRoundPlayed(props.round));

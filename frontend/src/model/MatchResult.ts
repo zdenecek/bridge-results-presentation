@@ -1,6 +1,6 @@
 import { Rank } from "./Rank";
 import { calculateVP } from "./VP";
-import { PairNumber, RoundNumber, TableNumber } from "./modelTypes";
+import { PairNumber, RoundNumber } from "./modelTypes";
 
 export interface MatchResult {
     round: number;
