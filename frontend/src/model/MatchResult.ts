@@ -1,6 +1,7 @@
 import { Rank } from "./Rank";
 import { calculateVP } from "./VP";
 import { PairNumber, RoundNumber } from "./modelTypes";
+import { ResultAdjustment } from "./Round";
 
 export interface MatchResult {
     round: number;
@@ -69,23 +70,27 @@ export interface PairSumResult {
     vp: number;
     rank: Rank;
     matchResults: PairTableRoundResult[];
+    adjusts: ResultAdjustment[];
 }
 export class PairSumResult {
     pair!: PairNumber;
     vp!: number;
     rank!: Rank;
     matchResults: PairTableRoundResult[];
+    adjusts: ResultAdjustment[];
 
     constructor(data: {
         pair: PairNumber,
         vp: number,
         rank: Rank,
         matchResults?: PairTableRoundResult[],
+        adjusts?: ResultAdjustment[],
     }) {
         this.pair = data.pair;
         this.vp = data.vp;
         this.rank = data.rank;
         this.matchResults = data.matchResults ?? [];
+        this.adjusts = data.adjusts ?? [];
     }
 
     get average(): number | undefined {
@@ -100,6 +105,18 @@ export class PairSumResult {
     get matchCount(): number {
         return this.matchResults.filter((r) => r.status !== "not-played")
             .length;
+    }
+
+    get hasAdjusts(): boolean {
+        return this.adjusts.length > 0;
+    }
+
+    get vpAdjustment(): number {
+        return this.adjusts.reduce((acc, curr) => acc + curr.vpAdjustment, 0);
+    }
+
+    get adjustmentExplanation(): string {
+        return this.adjusts.map(a => `${a.reason} (${a.vpAdjustment})`).join("; ");
     }
 
     static Default(player?: number | undefined, groupSize?: number | undefined): PairSumResult {

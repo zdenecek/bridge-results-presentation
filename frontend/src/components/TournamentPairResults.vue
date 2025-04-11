@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
 import { Tournament } from '@/model/Tournament';
+import { computed } from 'vue';
 
 const props = defineProps({
   tournament: {
@@ -18,7 +19,15 @@ const results = props.tournament.getPairRoundResults(props.pair);
 const finalResult = props.tournament.getPairResult(props.pair);
 
 const players = props.tournament.getPair(props.pair)?.players;
+const hasAdjusts = finalResult.hasAdjusts;
 
+const adjusts = computed(() => {
+  return finalResult.adjusts;
+});
+
+function getAdjustsForRound(round: RoundNumber): ResultAdjustment[] {
+  return finalResult.adjusts.filter((a) =>  a.round === round);
+}
 </script>
 
 <template>
@@ -46,6 +55,21 @@ const players = props.tournament.getPair(props.pair)?.players;
         <td>{{ player.club }}</td>
       </tr>
     </table>
+
+    <table class="table" v-if="adjusts.length">
+      <tr>
+        <th colspan="3">Úpravy a penalizace</th>
+      </tr>
+      <tr><th>Kolo</th><th>+/-</th><th>Důvod</th></tr>
+      <tr v-for="adjust in adjusts" :key="adjust.round">
+        <td>{{ adjust.round }}.</td>
+        <td>{{ adjust.vpAdjustment.toFixed(2) }}</td>
+        <td>{{ adjust.reason }}</td>
+      </tr>
+      <tr>
+        <td colspan="3">Celkem: {{ finalResult.vpAdjustment.toFixed(2) }}</td>
+      </tr>
+    </table> 
 
     <table class="table table-totals" v-if="results.length">
       <tr>

@@ -8,6 +8,8 @@ import {
     ResultOverwritePlayer,
     ResultOverwritePostponed,
     ResultOverwriteVP,
+    ResultAdjustment,
+    ResultOverwriteIgnore
 } from "./Overwrites";
 import { calculateResults } from "./ResultsCalculation";
 import {  PairNumber, RoundRotation, TableNumber } from "./modelTypes";
@@ -25,6 +27,19 @@ export interface RoundData {
     averages?: Record<BoardNumberKey, number>;
 }
 
+export class ResultAdjustment {
+    constructor(
+        public readonly round: number,
+        public readonly participant: PairNumber,
+        public readonly vpAdjustment: number,
+        public readonly reason: string,
+    ) {}
+
+    static fromOverwrite(overwrite: ResultAdjustmentOverwrite, round: number): ResultAdjustment {
+        return new ResultAdjustment(round, overwrite.participant, overwrite.vpAdjustment, overwrite.reason);
+    }
+}
+
 /**
  * Represents a round of a match along with its results.
  * Main resposibility is to calculate the match results and store them to matchResultsByTable upon creation.
@@ -33,6 +48,8 @@ export class Round {
     readonly date?: Date;
     readonly boards?: Map<BoardNumber, Board>;
     readonly boardResults?: BoardResult[];
+    readonly adjusts: ResultAdjustment[] = [];
+
 
     private matchResultsByTable: Map<TableNumber, TableRoundResult>;
     private matchResultsByPair: Map<PairNumber, TableRoundResult[]>;
@@ -63,7 +80,8 @@ export class Round {
 
         const overwrites = data.overwrites ?? [];
 
-        overwrites.filter((o) => o.type === "postponed").forEach((o) => {
+        (overwrites.filter((o) => o.type === "postponed") as ResultOverwritePostponed[])
+        .forEach((o) => {
             this.postponedTables.push(o.table);
         });
 
@@ -73,6 +91,10 @@ export class Round {
             overwrites,
             results
         );
+        this.adjusts = overwrites.filter((o) => o.type === "adjust").map(
+            o => ResultAdjustment.fromOverwrite(o, this.number)
+        ) ;
+
 
         this.matchResultsByTable.forEach((result, _) => {
             if (!this.matchResultsByPair!.has(result.ns)) {
@@ -131,8 +153,8 @@ export class Round {
         overwrites: Overwrite[],
         resultsByTable: Map<TableNumber, TableRoundResult>
     ): Map<TableNumber, TableRoundResult> {
-        overwrites
-            .filter((o) => o.type === "ignore")
+        (overwrites
+            .filter((o) => o.type === "ignore") as ResultOverwriteIgnore[])
             .forEach((o) => {
 
                 let result = resultsByTable.get(o.table);
@@ -179,8 +201,8 @@ export class Round {
                 resultsByTable.set(o.table, matchResult);
             });
 
-        overwrites
-            .filter((o) => o.type === "imp")
+        (overwrites
+            .filter((o) => o.type === "imp") as ResultOverwriteIMP[])
             .forEach((o) => {
                 const result = resultsByTable.get(o.table);
                 if (!result) return;
@@ -190,35 +212,33 @@ export class Round {
                 )
                     return;
 
-                const overwrite = o as ResultOverwriteIMP;
-                if (overwrite.imp_diff_ns)
-                    result.imp_ns += overwrite.imp_diff_ns;
-                if (overwrite.imp_diff_ew)
-                    result.imp_ew += overwrite.imp_diff_ew;
+                if (o.imp_diff_ns)
+                    result.imp_ns += o.imp_diff_ns;
+                if (o.imp_diff_ew)
+                    result.imp_ew += o.imp_diff_ew;
 
                 const vps = calculateVP(result.imp_ns - result.imp_ew);
                 result.vp_ns = vps.ns;
                 result.vp_ew = vps.ew;
             });
 
-        overwrites
-            .filter((o) => o.type === "vp")
+        (overwrites
+            .filter((o) => o.type === "vp") as ResultOverwriteVP[])
             .forEach((o) => {
                 const result = resultsByTable.get(o.table);
                 if (!result) return;
 
-                const overwrite = o as ResultOverwriteVP;
                 const new_result = { ...result };
 
-                if(overwrite.vp_ns !== undefined) (new_result as any).vp_ns = overwrite.vp_ns;
-                if(overwrite.vp_ew !== undefined) (new_result as any).vp_ew = overwrite.vp_ew;
-                if(overwrite.vp_ns !== undefined && overwrite.vp_ew !== undefined) new_result.status = "scratched";
+                if(o.vp_ns !== undefined) (new_result as any).vp_ns = o.vp_ns;
+                if(o.vp_ew !== undefined) (new_result as any).vp_ew = o.vp_ew;
+                if(o.vp_ns !== undefined && o.vp_ew !== undefined) new_result.status = "scratched";
 
                 resultsByTable.set(o.table, new_result);
             });
 
-        overwrites
-            .filter((o) => o.type === "player")
+        (overwrites
+            .filter((o) => o.type === "player") as ResultOverwritePlayer[])
             .forEach((o) => {
                 const result = resultsByTable.get(o.table);
                 if (!result) return;
@@ -228,10 +248,10 @@ export class Round {
                 )
                     return;
 
-                const overwrite = o as ResultOverwritePlayer;
-                if (overwrite.ns) result.ns_override = overwrite.ns;
-                if (overwrite.ew) result.ew_override = overwrite.ew;
+                if (o.ns) result.ns_override = o.ns;
+                if (o.ew) result.ew_override = o.ew;
             });
+
 
         return resultsByTable;
     }

@@ -41,13 +41,17 @@ const results = computed(() => {
   return r;
 });
 
+const includeAdjustsColumn = computed(() => results.value.some(r => r.hasAdjusts));
+
 </script>
+
 
 <template>
   <table class="table table-totals print-no-break">
     <tr>
       <th>Pořadí</th>
       <th>Pár</th>
+      <th v-if="includeAdjustsColumn">+/-</th>
       <th>Průměr</th>
       <th>VP</th>
       <th v-if="!tournament.isFinished && showMatches">zápasy</th>
@@ -67,6 +71,7 @@ const results = computed(() => {
       </div>
 
       </td>
+      <td v-if="includeAdjustsColumn" :title="result.adjustmentExplanation"> {{ result.hasAdjusts ? result.vpAdjustment.toFixed(2) : "" }} </td>
       <td> {{ result.averageAsNumber.toFixed(2) }} </td>
       <td> {{ result.vp.toFixed(2) }} </td>
       <td v-if="!tournament.isFinished && showMatches"> {{ result.matchCount }} </td>
@@ -86,4 +91,7 @@ const results = computed(() => {
 .cup-right {
   margin-left: 0.5em;
 }
+
+
+
 </style>

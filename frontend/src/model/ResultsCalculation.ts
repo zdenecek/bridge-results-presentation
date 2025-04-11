@@ -106,15 +106,24 @@ export function calculateAllPairResult(
 
     const pairs = Object.values(rounds[0]!.rotation).flatMap((t) => [t.ns, t.ew]).filter((p) => p !== 0);
 
+    const allAdjusts = rounds.flatMap((r) => r.adjusts);
+
     const pairResults = pairs.map((pair) => {
 
         const results = tournament.getPairRoundResults(pair, rounds);
 
+        const pairAdjusts = allAdjusts.filter((a) => a.participant === pair);
+
+        const vps =  results.reduce((acc, curr) => acc + (curr.vps ?? 0), 0)
+        const adjustsVps = pairAdjusts.reduce((acc, curr) => acc + curr.vpAdjustment, 0);
+        const totalVps = vps + adjustsVps;
+
         return new PairSumResult({
             pair: pair,
-            vp: results.reduce((acc, curr) => acc + (curr.vps ?? 0), 0),
+            vp: totalVps,
             rank: Rank.default(tournament.getPairGroup(pair)?.players.length),
-            matchResults: results
+            matchResults: results,
+            adjusts: pairAdjusts,
         })
     });
 

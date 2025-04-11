@@ -55,6 +55,9 @@ const results = computed(() => {
 
 const pairResults = computed(() => props.tournament.getPairResults());
 
+const hasAdjusts = computed(() => {
+  return group.players.map(p => pairResults.value.get(p)).some(r =>  r?.hasAdjusts);
+});
 
 </script>
 
@@ -64,12 +67,15 @@ const pairResults = computed(() => props.tournament.getPairResults());
           <th colspan="2"></th>
           <th v-for="player in group.players" :key="player" :title="tournament.getPair(player)?.title">{{ player }}</th>
           <th v-for="i in additionalColumnsTitles" :key="i">{{ i }}</th>
+          <th v-if="hasAdjusts">+/-</th>
           <th>Průměr</th>
           <th>Celkem</th>
           <th>Pořadí</th>
         </tr>
         <tr v-for="player, i in group.players" :key="player">
-          <td>{{ player }}</td>
+          <td>
+            <router-link :to="{ name: 'pair-results', params: { pair: player } }">{{ player }}</router-link>
+          </td>
           <td class="col-name"> {{ tournament.getPair(player)?.title }} </td>
           <td v-for="player2, i2 in group.players" :key="player2"
               class="col-vp"
@@ -106,7 +112,11 @@ const pairResults = computed(() => props.tournament.getPairResults());
             </td>
           </template>
 
+          <td v-if="hasAdjusts"
+          :title="pairResults.get(player)?.adjustmentExplanation ?? ''"
+          >{{  pairResults.get(player)?.hasAdjusts ? pairResults.get(player)?.vpAdjustment.toFixed(2) : "" }}
 
+          </td>
           <td>{{ pairResults.get(player)?.average?.toFixed(2) ?? 'N/A' }}</td>
           <td>{{ pairResults.get(player)?.vp.toFixed(2) }}</td>
           <td>{{ pairResults.get(player)?.rank }}</td>

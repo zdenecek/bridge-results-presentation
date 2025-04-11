@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { OverwrittenResult } from '@/model/Overwrites';
+import { watch } from 'vue';
 
 const props = defineProps({
     overwrite: {
@@ -12,6 +13,10 @@ const props = defineProps({
     },
     tables: {
         type: Array as () => { label: string, table: number }[],
+        required: true
+    },
+    players: {
+        type: Array as () => { id: number, title: string }[],
         required: true
     }
 });
@@ -29,6 +34,15 @@ function toggle(o: OverwrittenResult, key: string, defaultValue: any = '') {
 
 const emits = defineEmits(['remove']);
 
+watch(props.overwrite, (newVal) => {
+    if (newVal.type === 'adjust') {
+        props.overwrite.table = undefined;
+    }
+    if (newVal.type !== 'adjust') {
+        props.overwrite.participant = undefined;
+    }
+}, { deep: true });
+
 function remove()
 {
     emits('remove', props.overwrite);
@@ -38,11 +52,20 @@ function remove()
 
 <template>
     <div class="overwrite-element">
-        <select v-model="overwrite.type">
+        <select v-model="overwrite.type" class="col-span-2">
             <option v-for="t in overwriteTypes" :key="t.name" :value="t.name">{{ t.label }}</option>
             <option value="" @click="remove">Smazat</option>
         </select>
-        <select id="table" v-model="overwrite.table" >
+           <template v-if="overwrite.type === 'adjust'">
+            <select v-model="overwrite.participant" class="col-span-2">
+                <option v-for="p in players" :key="p.id" :value="p.id">{{ p.title }}</option>
+            </select>
+            <label for="adjust-vp-adjustment">VP +/-</label>
+            <input type="number" step="0.1" name="adjust-vp-adjustment"  v-model="overwrite.vpAdjustment">
+            <label for="adjust-reason">Důvod</label>
+            <input type="text" name="adjust-reason" v-model="overwrite.reason">
+        </template> 
+        <select v-else id="table" v-model="overwrite.table" class="col-span-2">
             <option v-for="t in tables" :key="t.table" :value="t.table">{{ t.label }}</option>
         </select>
         <template v-if="overwrite.type === 'postponed'">
@@ -133,17 +156,45 @@ function remove()
 
 <style scoped>
 .overwrite-element {
-    display: inline-grid;
-    grid-template-columns: auto minmax(auto, 220px);
-    grid-gap: 0.5rem;
-    width: 310px;
+    display: grid;
+    grid-template-columns: minmax(100px, auto) minmax(100px, auto);
+    gap: 0.5rem;
+    width: 100%;
+    max-width: 300px;
+    align-items: center;
+}
+
+.col-span-2 {
+    grid-column: span 2;
+    width: 100%;
+}
+
+input, select {
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .short-num-input {
-    width: 35px;
+    width: 45px;
 }
 
 .url {
-    width: 170px;
+    width: 100%;
+    max-width: 200px;
+}
+
+.flex {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+button {
+    white-space: nowrap;
+}
+
+label {
+    white-space: nowrap;
+    margin-right: 0.5rem;
 }
 </style>

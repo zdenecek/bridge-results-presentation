@@ -34,12 +34,22 @@ export type ResultOverwritePostponed = {
     externalUrl?: string;
 } & TableOverwrite;
 
+
+export type ResultAdjustmentOverwrite = {
+    type: "adjust";
+    participant: number;
+    reason: string;
+    vpAdjustment: number;
+}
+
+
 export type OverwrittenResult = (
     ResultOverwriteVP
     | ResultOverwriteIMP
     | ResultOverwritePlayer
     | ResultOverwriteIgnore
     | ResultOverwritePostponed
+    | ResultAdjustmentOverwrite
 );
 
 
@@ -47,4 +57,5 @@ export const OverwriteTypes = ["vp",
     "imp",
     "player",
     "ignore",
-    "postponed"];
+    "postponed",
+    "adjust"];

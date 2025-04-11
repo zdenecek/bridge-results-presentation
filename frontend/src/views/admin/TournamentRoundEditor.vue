@@ -16,7 +16,7 @@
             </div>
             <div v-else class="flex-flow">
                 <OverwriteEditor class="overwrite" v-for="o, index in roundData.overwrites" :key="index" :overwrite="o"
-                    :overwriteTypes="overwriteTypes" :tables="tables" @remove="o => remove(o)" />
+                    :overwriteTypes="overwriteTypes" :tables="tables" :players="players" @remove="o => remove(o)" />
             </div>
         </template>
     </div>
@@ -52,9 +52,15 @@ const tables = computed(() => {
         };
     }
     );
-
 });
-
+const players = computed( () => {
+    return Object.values(props.tournamentData.players).map((p) => {
+        return {
+            id: p.id,
+            title: p.title
+        };
+    });
+});
 function createRound() {
     const data = TournamentFileParser.createRoundData(props.round);
     props.tournamentData.rounds[props.round.toString()] = data;
@@ -65,7 +71,8 @@ const overwriteTypes = [
     { name: "ignore", label: "Přátelák" },
     { name: "player", label: "Náhradník" },
     { name: "imp", label: "Impy +/-" },
-    { name: "vp", label: "Přepsat VP" }
+    { name: "vp", label: "Přepsat VP" },
+    { name: "adjust", label: "Adj/Pen VP" },
 ];
 
 function addOverwrite() {
