@@ -8,7 +8,7 @@ import {
     ResultOverwritePlayer,
     ResultOverwritePostponed,
     ResultOverwriteVP,
-    ResultAdjustment,
+    ResultAdjustmentOverwrite,
     ResultOverwriteIgnore
 } from "./Overwrites";
 import { calculateResults } from "./ResultsCalculation";
@@ -92,7 +92,7 @@ export class Round {
             results
         );
         this.adjusts = overwrites.filter((o) => o.type === "adjust").map(
-            o => ResultAdjustment.fromOverwrite(o, this.number)
+            o => ResultAdjustment.fromOverwrite(o as ResultAdjustmentOverwrite, this.number)
         ) ;
 
 

@@ -35,10 +35,12 @@ function toggle(o: OverwrittenResult, key: string, defaultValue: any = '') {
 const emits = defineEmits(['remove']);
 
 watch(props.overwrite, (newVal) => {
-    if (newVal.type === 'adjust') {
+    if (newVal.type === 'adjust' ) {
+        // @ts-ignore
         props.overwrite.table = undefined;
     }
     if (newVal.type !== 'adjust') {
+        // @ts-ignore
         props.overwrite.participant = undefined;
     }
 }, { deep: true });

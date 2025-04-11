@@ -19,15 +19,10 @@ const results = props.tournament.getPairRoundResults(props.pair);
 const finalResult = props.tournament.getPairResult(props.pair);
 
 const players = props.tournament.getPair(props.pair)?.players;
-const hasAdjusts = finalResult.hasAdjusts;
 
 const adjusts = computed(() => {
   return finalResult.adjusts;
 });
-
-function getAdjustsForRound(round: RoundNumber): ResultAdjustment[] {
-  return finalResult.adjusts.filter((a) =>  a.round === round);
-}
 </script>
 
 <template>
