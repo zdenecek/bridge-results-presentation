@@ -158,7 +158,7 @@ export default class TournamentFileParser {
         const lines = text.split("\r\n");
         for (const line of lines) {
             const t = line.split('"')[1];
-            if (!t) throw new Error("Malformed pbn line: " + line);
+            if (!t) continue;
             if (line.startsWith("[Board")) {
                 if (state) save();
 
