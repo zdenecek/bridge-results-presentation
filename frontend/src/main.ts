@@ -10,6 +10,7 @@ import "primevue/resources/themes/saga-green/theme.css";
 axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 
 
+
 createApp(App)
     .use(router)
     .use(PrimeVue)

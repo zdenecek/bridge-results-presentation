@@ -111,7 +111,7 @@ const router = createRouter({
     routes,
 });
 
-const defaultTitle = "Výsledky turnaje";
+const defaultTitle = (window.location.hostname === 'localhost') ? "(DEV) Výsledky turnaje " : "Výsledky turnaje";
 router.beforeEach((to, _, next) => {
     const getter = to.meta["title"] as
         | ((route: RouteLocationNormalized) => string)

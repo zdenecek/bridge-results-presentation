@@ -18,8 +18,8 @@ export default class TournamentApi {
         });
     }
 
-    public static createTournament(name: string, slug: string, key: string): Promise<number> {
-        return axios.post(this.url + "tournament", {name, slug}, { headers: { "Apikey": key }}).then((response) => {
+    public static createTournament(name: string, slug: string, data: any, key: string): Promise<number> {
+        return axios.post(this.url + "tournament", {name, slug, data}, { headers: { "Apikey": key }}).then((response) => {
             return response.data.id;
         });
     

@@ -87,14 +87,16 @@ $app->post("$prefix/tournament", function (Request $request, Response $response)
 
     $name = $data['name'];
     $slug = $data['slug'];
+    $jsonData = $data['data'] ? json_encode($data['data']) : '{}';
 
     try {
 
         // Insert data into the "tournaments" table
-        $query = "INSERT INTO tournaments (name, slug) VALUES (:name, :slug)";
+        $query = "INSERT INTO tournaments (name, slug, data) VALUES (:name, :slug, :data)";
         $statement = $pdo->prepare($query);
         $statement->bindParam(':name', $name);
         $statement->bindParam(':slug', $slug);
+        $statement->bindParam(':data', $jsonData);
         $statement->execute();
 
         $lastId = $pdo->lastInsertId();
