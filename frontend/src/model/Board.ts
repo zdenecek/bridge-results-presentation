@@ -2,10 +2,11 @@
 
 
 
+
 export interface Board {
     vul: "None" | "NS" | "EW" | "All" | string;
     dealer: "N" | "S" | "E" | "W" | string;
-    deal: string[],
+    deal: [string, string, string, string],
     ability?: BoardAnalysis;
     minimax?: string;
 }

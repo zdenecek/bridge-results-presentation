@@ -18,18 +18,19 @@
       </div>
 
     </div>
-    <div class="board-down-right" v-if="board.ability && board.minimax">
-      <DoubleDummyPartial :dd="board.ability" :minimax="board.minimax" />
+    <div class="board-down-right" >
+      <DoubleDummyPartial v-if="board.ability && board.minimax" :dd="board.ability" :minimax="board.minimax" />
+      <a :href="bridgesolverLink" target="_blank" class="bridgesolver-link">Otevřít v Bridge Solveru</a>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-
+import { computed } from 'vue';
 import BoardCardsPartial from './BoardCardsPartial.vue';
 import { Board } from '@/model/Board';
 import DoubleDummyPartial from './DoubleDummyPartial.vue';
-
+import { getBSHandviewerUrl } from '@/utils/handviewers';
 // eslint-disable-next-line
 const props = defineProps({
   number: {
@@ -42,8 +43,12 @@ const props = defineProps({
   },
 })
 
+
 const vulNS = props.board.vul === "NS" || props.board.vul === "All";
 const vulEW = props.board.vul === "EW" || props.board.vul === "All";
+
+const bridgesolverLink = computed(() => getBSHandviewerUrl(props.board, props.number ));
+  
 
 </script>
 
@@ -129,6 +134,18 @@ const vulEW = props.board.vul === "EW" || props.board.vul === "All";
 .board-down-right {
   grid-column: 3;
   grid-row: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.bridgesolver-link {
+  text-decoration: none;
+  text-align: center;
+  color: #000;
+  font-size: 0.7rem;
 }
 
 .num {
