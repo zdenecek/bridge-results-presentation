@@ -10,9 +10,11 @@
             </button>
         </div>
         <template v-else>
-            <div class="flex" v-if="roundData.date">
-                Hráno {{ roundData.date }}
+            <div class="flex-row" v-if="roundData.date">
+                <span> Hráno {{ roundData.date }}</span>
+                 <button type="button" @click="addOverwrite">Přidat</button>
             </div>
+           
             <div v-if="!roundData.overwrites || roundData.overwrites.length === 0" class="flex">
                 Žádné dohrávky nebo změny
             </div>
@@ -122,5 +124,13 @@ function remove(o: OverwrittenResult) {
     background-color: white;
     border-radius: 5px;
     outline: 1px solid #1a881a;
+}
+
+
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
 }
 </style>
