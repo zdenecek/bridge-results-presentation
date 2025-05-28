@@ -18,7 +18,7 @@
                      :class="{ 'router-link-exact-active': round === standing }">poslední hrané</router-link>
       </nav>
       <div class="pad-top">
-        <h3>Výsledky {{ round }}. kola hraného {{ tournament.getRound(round)?.date.toLocaleDateString() }}</h3>
+        <h3 v-if="tournament.getRound(round)?.date">Výsledky {{ round }}. kola hraného {{ tournament.getRound(round)?.date?.toLocaleDateString() }}</h3>
         <RoundTotals :round="round" :tournament="tournament" />
       </div>
     </template>
