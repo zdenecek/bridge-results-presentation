@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>Výsledky kol a průběžné celkové výsledky</h2>
+    <h2 class="no-print">Výsledky kol a průběžné celkové výsledky</h2>
     <nav>
       <router-link :to="{ name: 'seatings' }" v-if="!tournament?.isFinished">Nasazení</router-link>
       <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
@@ -17,7 +17,10 @@
         <router-link v-if="anyPlayed" :to="{ params: { round: standing } }"
                      :class="{ 'router-link-exact-active': round === standing }">poslední hrané</router-link>
       </nav>
-      <RoundTotals class="pad-top" :round="round" :tournament="tournament" />
+      <div class="pad-top">
+        <h3>Výsledky {{ round }}. kola hraného {{ tournament.getRound(round)?.date.toLocaleDateString() }}</h3>
+        <RoundTotals :round="round" :tournament="tournament" />
+      </div>
     </template>
   </div>
 </template>
@@ -49,5 +52,3 @@ const played = computed(() => tournament.value?.wasRoundPlayed(round.value) );
 const anyPlayed = computed(() => tournament.value?.wasRoundPlayed(1) );
 
 </script>
-
-<style scoped></style>

@@ -10,7 +10,9 @@
             </button>
         </div>
         <template v-else>
-            <button type="button" @click="addOverwrite">Přidat</button>
+            <div class="flex" v-if="roundData.date">
+                Hráno {{ roundData.date }}
+            </div>
             <div v-if="!roundData.overwrites || roundData.overwrites.length === 0" class="flex">
                 Žádné dohrávky nebo změny
             </div>
