@@ -32,8 +32,11 @@
                                   data.rounds[round].date" />
                                 <button type="button" v-else @click="() => createRound(round)">Vytvořit prázdné</button>
                             </div>
-                            <input multiple="true" accept=".txt,.csv,.pbn" :id="'fileinput-' + round" type="file"
+                            <div><input multiple="true" accept=".txt,.csv,.pbn" :id="'fileinput-' + round" type="file"
                                 @input="(e) => addFilesToRound(round, e as InputEvent)">
+                            <button type="button" v-if="hasAverages(round)" @click="copyAverages(round)">Kopírovat průměry</button>
+                            </div>
+                      
                         </template>
                     </template>
                 </div>
@@ -138,6 +141,23 @@ async function addFilesToRound(round: number, event: InputEvent) {
         }
     }
 }
+
+function hasAverages(round: number): boolean {
+    return data.value?.rounds?.[round.toString()]?.averages !== undefined;
+}
+
+function copyAverages(round: number) {
+    const averages = data.value?.rounds?.[round]?.averages;
+    if (!averages) return;
+    const str = Object.entries(averages).map(([k,v]) => `${k}\t${v}`).join('\n');
+    const input = document.createElement('textarea');
+    input.value = str;
+    document.body.appendChild(input);
+    input.select();
+    document.execCommand('copy');
+    document.body.removeChild(input);
+}
+
 
 </script>
 
