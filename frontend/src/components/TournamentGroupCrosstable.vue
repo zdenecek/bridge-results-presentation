@@ -144,4 +144,10 @@ const hasAdjusts = computed(() => {
 .col-vp {
   min-width: 55px;
 }
+
+@media (max-width: 640px) {
+  .col-vp {
+    min-width: 0;
+  }
+}
 </style>

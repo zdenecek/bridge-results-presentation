@@ -52,6 +52,12 @@
   margin: 0 auto;
 }
 
+@media (max-width: 640px) {
+  .content {
+    padding: 20px 4px 60px;
+  }
+}
+
 
 nav {
   padding: 10px 30px;
