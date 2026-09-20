@@ -62,67 +62,69 @@ const hasAdjusts = computed(() => {
 </script>
 
 <template>
- <table class="table table-totals">
-        <tr>
-          <th colspan="2"></th>
-          <th v-for="player in group.players" :key="player" :title="tournament.getPair(player)?.title">{{ player }}</th>
-          <th v-for="i in additionalColumnsTitles" :key="i">{{ i }}</th>
-          <th v-if="hasAdjusts">+/-</th>
-          <th>Průměr</th>
-          <th>Celkem</th>
-          <th>Pořadí</th>
-        </tr>
-        <tr v-for="player, i in group.players" :key="player">
-          <td>
-            <router-link :to="{ name: 'pair-results', params: { pair: player } }">{{ player }}</router-link>
-          </td>
-          <td class="col-name"> {{ tournament.getPair(player)?.title }} </td>
-          <td v-for="player2, i2 in group.players" :key="player2"
-              class="col-vp"
-              :class="{ empty: player === player2, missing: (results[i]?.[i2]?.round ?? 100) <= tournament.standing && results[i]?.[i2]?.tableResult.status === 'not-played' && !tournament.isFinished }"
-              :title="player !== player2 ? ((results[i]?.[i2]?.round.toString() ?? '?') + '. kolo proti ' + tournament.getPair(player2)?.title) : ''">
-            <template v-if="player !== player2 && results[i]?.[i2] && results[i]?.[i2]?.tableResult.status !== 'not-played'">
-              <router-link v-if="results[i]?.[i2]?.status === 'played'"
-                           :to="{ name: 'round-pair-results', params: { round: results[i]?.[i2]?.round, pair: player } }">
-                {{ results[i]?.[i2]?.vps }}
-              </router-link>
-              <span v-else>
-                {{ results[i]?.[i2]?.vps }}
-              </span>
-            </template>
-          </td>
-
-          <template v-if="additionalColumns">
-            <td
+ <div class="table-scroll">
+   <table class="table table-totals">
+          <tr>
+            <th colspan="2"></th>
+            <th v-for="player in group.players" :key="player" :title="tournament.getPair(player)?.title">{{ player }}</th>
+            <th v-for="i in additionalColumnsTitles" :key="i">{{ i }}</th>
+            <th v-if="hasAdjusts">+/-</th>
+            <th>Průměr</th>
+            <th>Celkem</th>
+            <th>Pořadí</th>
+          </tr>
+          <tr v-for="player, i in group.players" :key="player">
+            <td>
+              <router-link :to="{ name: 'pair-results', params: { pair: player } }">{{ player }}</router-link>
+            </td>
+            <td class="col-name"> {{ tournament.getPair(player)?.title }} </td>
+            <td v-for="player2, i2 in group.players" :key="player2"
                 class="col-vp"
-                v-for="result, i2 in additionalColumnResults[i]" :key="i2"
-                :title="result ? (result.round + '. kolo proti ' + tournament.getPair(result.ops)?.title) : ''">
-
-              <template v-if="result">
-
-                <router-link v-if="result.status === 'played'"
-
-                             :to="{ name: 'round-pair-results', params: { round: result.round, pair: player } }">
-                  {{ result.vps }}
+                :class="{ empty: player === player2, missing: (results[i]?.[i2]?.round ?? 100) <= tournament.standing && results[i]?.[i2]?.tableResult.status === 'not-played' && !tournament.isFinished }"
+                :title="player !== player2 ? ((results[i]?.[i2]?.round.toString() ?? '?') + '. kolo proti ' + tournament.getPair(player2)?.title) : ''">
+              <template v-if="player !== player2 && results[i]?.[i2] && results[i]?.[i2]?.tableResult.status !== 'not-played'">
+                <router-link v-if="results[i]?.[i2]?.status === 'played'"
+                             :to="{ name: 'round-pair-results', params: { round: results[i]?.[i2]?.round, pair: player } }">
+                  {{ results[i]?.[i2]?.vps }}
                 </router-link>
                 <span v-else>
-                  {{ result.vps }}
+                  {{ results[i]?.[i2]?.vps }}
                 </span>
-            </template>
+              </template>
             </td>
-          </template>
 
-          <td v-if="hasAdjusts"
-          :title="pairResults.get(player)?.adjustmentExplanation ?? ''"
-          >{{  pairResults.get(player)?.hasAdjusts ? pairResults.get(player)?.vpAdjustment.toFixed(2) : "" }}
+            <template v-if="additionalColumns">
+              <td
+                  class="col-vp"
+                  v-for="result, i2 in additionalColumnResults[i]" :key="i2"
+                  :title="result ? (result.round + '. kolo proti ' + tournament.getPair(result.ops)?.title) : ''">
 
-          </td>
-          <td>{{ pairResults.get(player)?.average?.toFixed(2) ?? 'N/A' }}</td>
-          <td>{{ pairResults.get(player)?.vp.toFixed(2) }}</td>
-          <td>{{ pairResults.get(player)?.rank }}</td>
-        </tr>
+                <template v-if="result">
 
-      </table>
+                  <router-link v-if="result.status === 'played'"
+
+                               :to="{ name: 'round-pair-results', params: { round: result.round, pair: player } }">
+                    {{ result.vps }}
+                  </router-link>
+                  <span v-else>
+                    {{ result.vps }}
+                  </span>
+              </template>
+              </td>
+            </template>
+
+            <td v-if="hasAdjusts"
+            :title="pairResults.get(player)?.adjustmentExplanation ?? ''"
+            >{{  pairResults.get(player)?.hasAdjusts ? pairResults.get(player)?.vpAdjustment.toFixed(2) : "" }}
+
+            </td>
+            <td>{{ pairResults.get(player)?.average?.toFixed(2) ?? 'N/A' }}</td>
+            <td>{{ pairResults.get(player)?.vp.toFixed(2) }}</td>
+            <td>{{ pairResults.get(player)?.rank }}</td>
+          </tr>
+
+        </table>
+ </div>
 </template>
 
 <style scoped lang="scss">

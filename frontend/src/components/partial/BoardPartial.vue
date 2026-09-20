@@ -57,6 +57,11 @@ const bridgesolverLink = computed(() => getBSHandviewerUrl(props.board, props.nu
   page-break-inside: avoid;
 }
 
+.wrapper {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 .board {
   display: grid;
   grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr);

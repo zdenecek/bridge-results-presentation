@@ -37,34 +37,36 @@ console.log(results.value);
     <TournamentGroupTotals class="totals" :tournament="tournament" :groupIndex="groupIndex" :untilRound="round" :showMatches="false">
     </TournamentGroupTotals>
 
-    <table  class="table table-totals">
-      <tr>
-        <th>Stůl</th>
-        <th>NS</th>
-        <th>EW</th>
-        <th colspan="2">IMP</th>
-        <th colspan="2">VP</th>
-      </tr>
-      <tr v-for="result in results" :key="result.ns">
-        <td>{{ result.table }}</td>
-        <td class="col-name" v-for="key in ['ns', 'ew']" :key="key">
-          <router-link 
-                       :to="{ name: 'pair-results', params: { pair: result[key as keyof TableRoundResult] } }">
-            {{ tournament.getPair(result[key as 'ns' | 'ew'])?.title }}
-          </router-link>
-        </td>
-        <td v-for="key in ['ns', 'ew']" :key="key"> 
-          <router-link v-if="result.status === 'played'"
-                       :to="{ name: 'round-pair-results', params: { pair: result[key as keyof TableRoundResult], round: props.round } }">
-                       {{ result['imp_' + key as keyof TableRoundResult] }}
-          </router-link>
-          <span v-else title="Dohrávka">
-            {{ result['imp_' + key as keyof TableRoundResult] }}
-          </span>
-         </td>
-        <td v-for="key in ['vp_ns', 'vp_ew']" :key="key"> {{ result[key as keyof TableRoundResult] }} </td>
-      </tr>
-    </table>
+    <div class="table-scroll">
+      <table  class="table table-totals">
+        <tr>
+          <th>Stůl</th>
+          <th>NS</th>
+          <th>EW</th>
+          <th colspan="2">IMP</th>
+          <th colspan="2">VP</th>
+        </tr>
+        <tr v-for="result in results" :key="result.ns">
+          <td>{{ result.table }}</td>
+          <td class="col-name" v-for="key in ['ns', 'ew']" :key="key">
+            <router-link 
+                         :to="{ name: 'pair-results', params: { pair: result[key as keyof TableRoundResult] } }">
+              {{ tournament.getPair(result[key as 'ns' | 'ew'])?.title }}
+            </router-link>
+          </td>
+          <td v-for="key in ['ns', 'ew']" :key="key"> 
+            <router-link v-if="result.status === 'played'"
+                         :to="{ name: 'round-pair-results', params: { pair: result[key as keyof TableRoundResult], round: props.round } }">
+                         {{ result['imp_' + key as keyof TableRoundResult] }}
+            </router-link>
+            <span v-else title="Dohrávka">
+              {{ result['imp_' + key as keyof TableRoundResult] }}
+            </span>
+           </td>
+          <td v-for="key in ['vp_ns', 'vp_ew']" :key="key"> {{ result[key as keyof TableRoundResult] }} </td>
+        </tr>
+      </table>
+    </div>
       </template>
     <div v-else>
       <p>Výsledky nejsou dostupné.</p>

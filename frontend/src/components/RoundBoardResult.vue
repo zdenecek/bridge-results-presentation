@@ -47,45 +47,47 @@ const boardData = computed(() => props.round.boards?.get(props.board));
       <BoardPartial v-if="boardData" :board="boardData" :number="board" />
       <div v-else>Detaily rozdání nejsou k dispozici.</div>
 
-      <table class="table table-results" v-if="results">
-        <tr>
-          <th>NS</th>
-          <th>EW</th>
-          <th>Závazek</th>
-          <th colspan="2">Výsledek</th>
-          <th>IMP</th>
-        </tr>
+      <div class="table-scroll" v-if="results">
+        <table class="table table-results">
+          <tr>
+            <th>NS</th>
+            <th>EW</th>
+            <th>Závazek</th>
+            <th colspan="2">Výsledek</th>
+            <th>IMP</th>
+          </tr>
 
 
-        <tr v-for="result in results" :key="result.ns">
-          <td class="col-name" v-for="line in ['ns', 'ew']" :key="line">
-            <router-link
-              :to="{ name: 'round-pair-results', params: { pair: result[line as keyof BoardResult], round: props.round.number } }">
-              {{ tournament.getPair(result[line as 'ns' | 'ew'])?.title }}
-            </router-link>
-          </td>
-          <template v-if="result.status === 'played'">
-            <td>
-              <Contract :contract="(result as PlayedBoardResult).contract"
-                :declarer="(result as PlayedBoardResult).declarer" />
+          <tr v-for="result in results" :key="result.ns">
+            <td class="col-name" v-for="line in ['ns', 'ew']" :key="line">
+              <router-link
+                :to="{ name: 'round-pair-results', params: { pair: result[line as keyof BoardResult], round: props.round.number } }">
+                {{ tournament.getPair(result[line as 'ns' | 'ew'])?.title }}
+              </router-link>
             </td>
-            <td>{{ (result as PlayedBoardResult).result }}</td>
-            <td>{{ (result as PlayedBoardResult).points }}</td>
-            <td>{{ (result as PlayedBoardResult).res_ns }}</td>
-          </template>
-          <template v-else-if="result.status === 'not-played'">
-            <td colspan="5">Nehráno</td>
-          </template>
-          <template v-else-if="result.status === 'adjusted'">
-            <td colspan="4" :title="result.text ?? ''">UV</td>
-            <td>{{ (result as AdjustedBoardResult).res_ns }}/{{ (result as AdjustedBoardResult).ew }}</td>
-          </template>
-        </tr>
-        <tr v-if="average">
-          <td colspan="2"></td>
-          <td colspan="4">Průměr: {{ average }}</td>
-        </tr>
-      </table>
+            <template v-if="result.status === 'played'">
+              <td>
+                <Contract :contract="(result as PlayedBoardResult).contract"
+                  :declarer="(result as PlayedBoardResult).declarer" />
+              </td>
+              <td>{{ (result as PlayedBoardResult).result }}</td>
+              <td>{{ (result as PlayedBoardResult).points }}</td>
+              <td>{{ (result as PlayedBoardResult).res_ns }}</td>
+            </template>
+            <template v-else-if="result.status === 'not-played'">
+              <td colspan="5">Nehráno</td>
+            </template>
+            <template v-else-if="result.status === 'adjusted'">
+              <td colspan="4" :title="result.text ?? ''">UV</td>
+              <td>{{ (result as AdjustedBoardResult).res_ns }}/{{ (result as AdjustedBoardResult).ew }}</td>
+            </template>
+          </tr>
+          <tr v-if="average">
+            <td colspan="2"></td>
+            <td colspan="4">Průměr: {{ average }}</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 </template>

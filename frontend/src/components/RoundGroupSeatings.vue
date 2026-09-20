@@ -1,25 +1,27 @@
 
 
 <template>
-  <table v-if="seatings" class="table table-totals">
-    <tr>
-      <th>Stůl</th>
-      <th>NS</th>
-      <th>EW</th>
-      <th v-if="displayPostponedColumn">Odklady</th>
-    </tr>
-    <tr v-for="seating in seatings" :key="seating.table">
-      <td>{{ seating.table }}</td>
-      <td class="col-name" v-for="key in ['ns', 'ew']" :key="key">
-        <router-link :to="{ name: 'pair-results', params: { pair: seating[key as 'ns' | 'ew']?.id ?? 1 } }">
-          {{ seating[key as 'ns' | 'ew']?.title }}
-        </router-link>
-      </td>
-      <td v-if="displayPostponedColumn">
-        <span v-if="seating.postponed"> Odloženo </span>
-      </td>
-    </tr>
-  </table>
+  <div class="table-scroll" v-if="seatings">
+    <table class="table table-totals">
+      <tr>
+        <th>Stůl</th>
+        <th>NS</th>
+        <th>EW</th>
+        <th v-if="displayPostponedColumn">Odklady</th>
+      </tr>
+      <tr v-for="seating in seatings" :key="seating.table">
+        <td>{{ seating.table }}</td>
+        <td class="col-name" v-for="key in ['ns', 'ew']" :key="key">
+          <router-link :to="{ name: 'pair-results', params: { pair: seating[key as 'ns' | 'ew']?.id ?? 1 } }">
+            {{ seating[key as 'ns' | 'ew']?.title }}
+          </router-link>
+        </td>
+        <td v-if="displayPostponedColumn">
+          <span v-if="seating.postponed"> Odloženo </span>
+        </td>
+      </tr>
+    </table>
+  </div>
   <div v-else>
     <p>Posazení není dostupné.</p>
   </div>
