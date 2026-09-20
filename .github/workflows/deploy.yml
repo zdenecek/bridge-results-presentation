@@ -32,7 +32,7 @@ jobs:
           npm install
           npm run build --production
       - name: Upload via FTP
-        uses: airvzxf/ftp-deployment-action@v2.11.14
+        uses: airvzxf/ftp-deployment-action@v2.11.13
         with:
           server: ${{ secrets.FTP_SERVER }}
           user: ${{ secrets.FTP_LOGIN }}
