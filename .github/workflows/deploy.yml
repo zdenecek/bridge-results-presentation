@@ -32,10 +32,30 @@ jobs:
           npm install
           npm run build --production
       - name: Upload via FTP
-        uses: airvzxf/ftp-deployment-action@v2.11.13
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          user: ${{ secrets.FTP_LOGIN }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local_dir: "./frontend/dist"
-          remote_dir: "./app"
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_LOGIN: ${{ secrets.FTP_LOGIN }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+          host="${FTP_SERVER#*://}"
+          host="${host%%/*}"
+
+          trap 'rm -f "$HOME/.netrc"' EXIT
+          umask 077
+          printf 'machine %s\nlogin %s\npassword %s\n' \
+            "${host%%:*}" "$FTP_LOGIN" "$FTP_PASSWORD" > "$HOME/.netrc"
+
+          lftp "ftp://${FTP_LOGIN}@${host}" -e "
+            set ftp:ssl-allow true;
+            set ssl:verify-certificate true;
+            set ssl:check-hostname true;
+            set ftp:passive-mode true;
+            set ftp:use-feat false;
+            set net:max-retries 1;
+            set net:persist-retries 5;
+            set net:timeout 15s;
+            mirror --continue --reverse --verbose=1 --no-symlinks ./frontend/dist ./app;
+            bye"
