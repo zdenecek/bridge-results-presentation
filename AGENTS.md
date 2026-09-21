@@ -3,7 +3,8 @@
 Prezentace výsledků skupinovek Bridžového klubu Praha. Vue 3 + Vite frontend,
 tenké PHP (Slim) API nad jednou tabulkou `tournaments` (`id, name, slug, data JSON`).
 
-- Provoz: <https://vysledky.zdenektomis.eu>, API na `/api/`
+- Provoz: <https://vysledky.bkpraha.cz>, API na `/api/`. `vysledky.zdenektomis.eu`
+  je starý docroot téhož – viz Nasazení na produkci.
 - Klub a propozice: <https://bkpraha.cz>, kalendář je veřejný Google Calendar
 - Matrika ČBS: <https://www.matrikacbs.cz/Prehled-hracu.aspx>
 
@@ -18,7 +19,7 @@ npm run build
 ```
 
 `frontend/.env` v repozitáři není; zkopíruj si ho z hlavního checkoutu nebo
-nastav `VITE_API_URL=https://vysledky.zdenektomis.eu/api/`, ať máš proti čemu
+nastav `VITE_API_URL=https://vysledky.bkpraha.cz/api/`, ať máš proti čemu
 vyvíjet. Heslo k zápisovým endpointům je `key` v `api/config.php` (necommitnuté).
 
 ## API
@@ -132,9 +133,23 @@ Tabulky jsou široké a stránka se nesmí posouvat vodorovně:
 
 Push do `main`, který sáhne na `frontend/**` nebo `api/**`, spustí
 `.github/workflows/deploy.yml` (jde i ručně přes `workflow_dispatch`). Workflow
-postaví frontend a nahraje `frontend/dist` FTP mirrorem do `./app`. Změna
-samotného workflow deploy nespustí – cesty ve filtru ji nezahrnují, takže ho
-dispatchni ručně.
+postaví frontend a nahraje `frontend/dist` FTP mirrorem do `./app`, což je
+`/www/domains/vysledky.bkpraha.cz/app`. Změna samotného workflow deploy
+nespustí – cesty ve filtru ji nezahrnují, takže ho dispatchni ručně.
+
+Domény (všechny na jedné IP, každá vlastní docroot):
+
+| doména | role |
+| --- | --- |
+| `vysledky.bkpraha.cz` | kanonická – appka, API, `/prezentace/` s exporty z Tournament Calculatoru |
+| `vysledky.zdenektomis.eu` | starý docroot, přesměrovává se; hotový `.htaccess` je v `deploy/` |
+| `bridge.zdenektomis.eu` | osobní stránka Zdeňka Tomise, jiná aplikace, neslučovat |
+
+Do konce září 2026 tu byl rozjezd: CI nahrávalo na `vysledky.zdenektomis.eu`,
+zatímco `FRONTEND_ENV` nastavoval `VITE_API_URL` na `vysledky.bkpraha.cz/api/`,
+takže klubová doména běžela na starém buildu. Kdyby se to mělo opakovat,
+nejjistější je `VITE_API_URL=/api/` – konkatenace v `TournamentApi` to snese
+a build pak není vázaný na hostname.
 
 Nahrává se přes `lftp` volané přímo z kroku, ne přes akci
 `airvzxf/ftp-deployment-action`: ta je rozbitá ve všech verzích (tag `latest`

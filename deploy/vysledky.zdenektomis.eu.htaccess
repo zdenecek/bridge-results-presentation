@@ -1,0 +1,16 @@
+# Patří do docrootu staré domény, tedy /www/domains/vysledky.zdenektomis.eu/.htaccess
+# Nahrazuje původní .htaccess aplikace - odsud se už nic neservíruje, všechno
+# se trvale přesměruje na vysledky.bkpraha.cz se zachováním cesty i query stringu.
+
+RewriteEngine On
+RewriteBase /
+
+# Pojistka proti smyčce, kdyby soubor skončil na cílové doméně.
+RewriteCond %{HTTP_HOST} ^vysledky\.bkpraha\.cz$ [NC]
+RewriteRule ^ - [L]
+
+# API zvlášť s 308, aby POST/PUT nepřišly o metodu ani o tělo požadavku.
+# (Kdyby hosting 308 neuměl, změň na R=301 - pro GET to stačí.)
+RewriteRule ^api(/.*)?$ https://vysledky.bkpraha.cz/api$1 [R=308,L]
+
+RewriteRule ^(.*)$ https://vysledky.bkpraha.cz/$1 [R=301,L]
