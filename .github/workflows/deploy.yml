@@ -66,6 +66,7 @@ jobs:
             set net:timeout 15s;
             mirror --continue --reverse --verbose=1 --no-symlinks ./frontend/dist ./app;
             set cmd:fail-exit yes;
-            cls api/public/index.php;
+            cd api/public;
+            cd ../..;
             mirror --reverse --verbose=1 --no-symlinks --exclude-glob vendor/ --exclude-glob config.php --exclude-glob composer.* --exclude-glob .gitignore ./api ./api;
             bye"

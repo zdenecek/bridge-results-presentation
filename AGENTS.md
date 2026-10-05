@@ -42,7 +42,7 @@ se zkouší postupně (`gemini-flash-latest`, `gemini-3.5-flash`,
 kvóty nebo zrušený. Lite čte výrazně hůř, proto editor ukazuje, který model četl.
 
 Deploy nahrává i `api/` kromě `vendor/` a `config.php` (DB a heslo zůstávají jen
-na serveru). Před nahráním ověří, že na serveru existuje `api/public/index.php`.
+na serveru). Před nahráním ověří, že na serveru existuje `api/public`.
 
 Dvě pasti:
 
