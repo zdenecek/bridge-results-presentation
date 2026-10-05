@@ -15,24 +15,37 @@ export type ParsedSlip = {
 };
 
 const SYMBOLS: Record<string, string> = {
-    "♠": "S", "♤": "S", "♥": "H", "♡": "H", "♦": "D", "♢": "D", "♣": "C", "♧": "C",
+    "♠": "S", "♤": "S", "♥": "H", "♡": "H", "♦": "D", "♢": "D", "♣": "C", "♧": "C", "−": "-", "–": "-",
 };
 
-const LINE_RE = /^(\d{1,2})[.:)]?\s+(.+)$/;
+const LINE_RE = /^(\d+)([.:)]|\s)?\s*(.*)$/;
 const RESULT_RE = /^([1-7])\s*(NT|N|C|D|H|S)\s*(XX|X|R)?\s*([NESW])\s*(XX|X|R)?\s*(=|[+-]\s*\d{1,2})(?:\s+(-?\d+))?$/;
 const PASS_RE = /^(PASS|PAS|P)(?:\s+0)?$/;
 
 type LineOutcome = { result?: SessionLine; error?: string; warning?: string };
 
-function parseLine(normalized: string, boards: Record<BoardNumberKey, Board>): LineOutcome {
+/**
+ * Splits the board number from the rest. A space or `.` ends the board number,
+ * otherwise its last digit is the contract level: `14SW-1` is board 1, `144SW-1` board 14.
+ */
+function splitBoard(normalized: string): { deal: number; rest: string } | undefined {
     const m = LINE_RE.exec(normalized);
-    if (!m) return { error: "Nerozumím řádku, čekám např. „1 4SW -1 50“" };
+    if (!m) return undefined;
+    const digits = m[1]!;
+    const rest = m[3]!;
+    if (m[2] || PASS_RE.test(rest)) return digits.length <= 2 ? { deal: Number.parseInt(digits), rest } : undefined;
+    if (digits.length < 2 || digits.length > 3) return undefined;
+    return { deal: Number.parseInt(digits.slice(0, -1)), rest: digits.slice(-1) + rest };
+}
 
-    const deal = Number.parseInt(m[1]!);
+function parseLine(normalized: string, boards: Record<BoardNumberKey, Board>): LineOutcome {
+    const split = splitBoard(normalized);
+    if (!split) return { error: "Nerozumím řádku, čekám např. „1 4SW -1“" };
+
+    const { deal, rest } = split;
     const board = boards[deal.toString()];
     if (!board) return { error: `Rozdání ${deal} není v PBN` };
 
-    const rest = m[2]!.trim();
     if (PASS_RE.test(rest)) return { result: { deal, contract: "PASS", declarer: "", result: "", points: 0 } };
 
     const r = RESULT_RE.exec(rest);
@@ -58,9 +71,9 @@ function parseLine(normalized: string, boards: Record<BoardNumberKey, Board>): L
 }
 
 /**
- * One board per line, as written on the travelling slip:
- * `1 4SW -1 50`, `2 6♦W+1 940`, `13 3NTS =`, `14 4SXW -2`, `9 pass`.
- * The score is optional and only checked against the contract (sign is ignored).
+ * One board per line, spaces optional: `1 4SW -1`, `14SW-1`, `2 6♦W+1`, `13 3NTS =`, `9pass`.
+ * The score is computed from the contract. A score written after the result
+ * (e.g. by an AI transcribing a photo of the slip) is only checked against it, sign ignored.
  */
 export function parseSlip(text: string, boards: Record<BoardNumberKey, Board>): ParsedSlip {
     const results: SessionLine[] = [];

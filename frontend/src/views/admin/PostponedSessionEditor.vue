@@ -89,7 +89,7 @@ const props = defineProps({
 });
 const emit = defineEmits(['remove']);
 
-const placeholder = "Jeden řádek na rozdání, skóre je jen pro kontrolu:\n1 4SW -1 50\n2 6♦W +1 940\n3 3NTS =\n4 4SxW -2 300\n5 pass";
+const placeholder = "Jeden řádek na rozdání, barvy C D H S (S = piky), skóre se dopočítá:\n1 4SW -1\n2 6DW+1\n3 3NTS =\n144SxW-2  (rozdání 14)\n5 pass\n\nU přepisu z fotky (AI) přidejte skóre z lístečku pro kontrolu:\n2 6♦W +1 940";
 const pbnSkipped = ref(0);
 
 const parsed = computed(() => props.session.matches.map((m) => parseSlip(m.slip, props.session.boards)));

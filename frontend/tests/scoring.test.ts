@@ -75,6 +75,20 @@ describe("slip parser", () => {
         expect(parsed.results[20]!.points).toBe(950);
     });
 
+    it("reads lines without spaces", () => {
+        // A space ends the board number, otherwise its last digit is the level.
+        const parsed = parseSlip("14SW-1\n144SW-1\n53NTS=\n2 6♦W+1\n9pass\n125CxS−3\n20 SW -1", standardBoards(28));
+        expect(parsed.results.map((r) => [r.deal, r.contract, r.declarer, r.result])).toEqual([
+            [1, "4S", "W", "-1"],
+            [14, "4S", "W", "-1"],
+            [5, "3NT", "S", "="],
+            [2, "6D", "W", "+1"],
+            [9, "PASS", "", ""],
+            [12, "5CX", "S", "-3"],
+        ]);
+        expect(parsed.issues.map((i) => [i.line, i.error])).toEqual([[7, true]]);
+    });
+
     it("flags misread lines", () => {
         const parsed = parseSlip("2 6HW +1 940\n3 4XN\n3 4CN =\n3 4CN =\n29 1NTN =\n5 pass", standardBoards(28));
         expect(parsed.issues.map((i) => [i.line, i.error])).toEqual([
