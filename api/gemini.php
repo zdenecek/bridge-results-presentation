@@ -8,8 +8,9 @@ contract & declarer, lead, tricks, score NS, score EW.
 Transcribe every played board as one line, ordered by board number:
 <board> <level><suit><doubling><declarer> <result> <score>
 
-- suit: C, D, H, S or NT. Suits are drawn by hand: clubs may look like "+",
-  no trumps like a circle or "O".
+- suit: C, D, H, S or NT. Suits are drawn by hand: clubs may look like "+".
+  A circle with a dot inside means no trumps, write it as NT (never as a suit);
+  a plain circle or "O" is no trumps too.
 - doubling: x for doubled, xx for redoubled, nothing otherwise.
 - declarer: N, E, S or W.
 - result: "=" when made exactly, "+1", "+2"… for overtricks, "-1", "-2"… for undertricks.
