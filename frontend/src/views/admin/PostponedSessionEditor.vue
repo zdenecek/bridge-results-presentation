@@ -29,8 +29,20 @@
                 <button type="button" @click="removeMatch(index)">Smazat zápis</button>
             </div>
             <div class="row top">
-                <textarea v-model="match.slip" rows="30" :placeholder="placeholder"></textarea>
+                <div class="slip">
+                    <button type="button" :disabled="reading[index]" @click="pickPhoto(index)">
+                        {{ reading[index] ? 'Čtu lísteček…' : 'Načíst z fotky' }}
+                    </button>
+                    <input :id="photoInputId(index)" type="file" accept="image/*" hidden
+                        @change="(e) => readPhoto(match, index, e)">
+                    <textarea v-model="match.slip" rows="30" :placeholder="placeholder"></textarea>
+                </div>
                 <div class="report">
+                    <div v-if="photoErrors[index]" class="error">{{ photoErrors[index] }}</div>
+                    <div v-if="photoModels[index]" class="warning">
+                        Přečteno z fotky ({{ photoModels[index] }}). Barvy zkontrolujte podle lístečku,
+                        chyba v barvě se ve skóre nemusí projevit.
+                    </div>
                     <div v-if="!tournamentData.rounds[match.round]" class="error">{{ match.round }}. kolo není založené.</div>
                     <div v-for="issue in parsed[index]?.issues" :key="issue.line" :class="issue.error ? 'error' : 'warning'">
                         ř. {{ issue.line }} „{{ issue.text }}“: {{ issue.message }}
@@ -75,7 +87,9 @@ import { ResultOverwritePostponed } from '@/model/Overwrites';
 import { calculateVP } from '@/model/VP';
 import { parseJackPbn } from '@/parse/JackPbnParser';
 import { parseSlip } from '@/parse/SlipParser';
-import { computed, ref, watch } from 'vue';
+import TournamentApi from '@/api/TournamentApi';
+import { photoToJpegBase64 } from '@/utils/image';
+import { Ref, computed, inject, reactive, ref, watch } from 'vue';
 
 const props = defineProps({
     tournamentData: {
@@ -91,6 +105,10 @@ const emit = defineEmits(['remove']);
 
 const placeholder = "Jeden řádek na rozdání, barvy C D H S (S = piky), skóre se dopočítá:\n1 4SW -1\n2 6DW+1\n3 3NTS =\n144SxW-2  (rozdání 14)\n5 pass\n\nU přepisu z fotky (AI) přidejte skóre z lístečku pro kontrolu:\n2 6♦W +1 940";
 const pbnSkipped = ref(0);
+const password = inject<Ref<string>>('adminPassword', ref(''));
+const reading = reactive<Record<number, boolean>>({});
+const photoErrors = reactive<Record<number, string>>({});
+const photoModels = reactive<Record<number, string>>({});
 
 const parsed = computed(() => props.session.matches.map((m) => parseSlip(m.slip, props.session.boards)));
 watch(parsed, (all) => all.forEach((p, i) => {
@@ -108,6 +126,39 @@ async function loadPbn(event: Event) {
     props.session.boards = jack.boards;
     props.session.field = jack.field;
     pbnSkipped.value = jack.skipped;
+}
+
+function photoInputId(index: number) {
+    return `photo-${props.session.id}-${index}`;
+}
+
+function pickPhoto(index: number) {
+    (document.getElementById(photoInputId(index)) as HTMLInputElement | null)?.click();
+}
+
+async function readPhoto(match: PostponedMatchData, index: number, event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) return;
+    if (match.slip.trim() && !window.confirm('Přepsat zapsaný lísteček textem z fotky?')) return;
+    if (!password.value) password.value = window.prompt('Heslo k úpravám turnaje') ?? '';
+    if (!password.value) return;
+
+    reading[index] = true;
+    photoErrors[index] = '';
+    photoModels[index] = '';
+    try {
+        const { text, model } = await TournamentApi.transcribeSlip(await photoToJpegBase64(file), 'image/jpeg', password.value);
+        match.slip = text;
+        photoModels[index] = model;
+    } catch (e: any) {
+        photoErrors[index] = e.response?.status === 401
+            ? 'Špatné heslo'
+            : `Fotku se nepodařilo přečíst: ${e.response?.data?.message ?? e.message}`;
+    } finally {
+        reading[index] = false;
+    }
 }
 
 function tables(round: number) {
@@ -176,6 +227,12 @@ function removeMatch(index: number) {
 
 .top {
     align-items: flex-start;
+}
+
+.slip {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
 textarea {

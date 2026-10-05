@@ -26,6 +26,13 @@ jobs:
       - name: Create .env file
         run: |
           echo "${{ secrets.FRONTEND_ENV }}" >> ./frontend/.env
+      - name: Write Gemini config
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ]; then echo "GEMINI_API_KEY not set, skipping"; exit 0; fi
+          if ! printf '%s' "$GEMINI_API_KEY" | grep -Eq '^[A-Za-z0-9_-]+$'; then echo "Unexpected characters in GEMINI_API_KEY"; exit 1; fi
+          printf "<?php\nreturn ['key' => '%s'];\n" "$GEMINI_API_KEY" > api/gemini-config.php
       - name: Build
         working-directory: ./frontend
         run: | 
@@ -58,4 +65,7 @@ jobs:
             set net:persist-retries 5;
             set net:timeout 15s;
             mirror --continue --reverse --verbose=1 --no-symlinks ./frontend/dist ./app;
+            set cmd:fail-exit yes;
+            cls api/public/index.php;
+            mirror --reverse --verbose=1 --no-symlinks --exclude-glob vendor/ --exclude-glob config.php --exclude-glob composer.* --exclude-glob .gitignore ./api ./api;
             bye"

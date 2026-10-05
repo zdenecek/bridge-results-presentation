@@ -33,6 +33,17 @@ vyvíjet. Heslo k zápisovým endpointům je `key` v `api/config.php` (necommitn
 | PUT | `/api/tournament/{id}` | hlavička `Apikey` |
 | DELETE | `/api/tournament/{id}` | hlavička `Apikey` |
 
+`POST /api/transcribe-slip` (hlavička `Apikey`, tělo `{image, mimeType}` s fotkou
+v base64) pošle fotku lístečku do Gemini a vrátí `{text}` s řádky pro zápis
+dohrávky. Klíč je v GitHub secretu `GEMINI_API_KEY`, deploy z něj zapíše
+`api/gemini-config.php` (ten má přednost před `gemini` v `config.php`). Modely
+se zkouší postupně (`gemini-flash-latest`, `gemini-3.5-flash`,
+`gemini-3.5-flash-lite`), další se použije, když je předchozí přetížený, bez
+kvóty nebo zrušený. Lite čte výrazně hůř, proto editor ukazuje, který model četl.
+
+Deploy nahrává i `api/` kromě `vendor/` a `config.php` (DB a heslo zůstávají jen
+na serveru). Před nahráním ověří, že na serveru existuje `api/public/index.php`.
+
 Dvě pasti:
 
 - `data` posílej jako **objekt**, ne jako JSON řetězec. PHP dělá
@@ -141,7 +152,8 @@ Tabulky jsou široké a stránka se nesmí posouvat vodorovně:
 Push do `main`, který sáhne na `frontend/**` nebo `api/**`, spustí
 `.github/workflows/deploy.yml` (jde i ručně přes `workflow_dispatch`). Workflow
 postaví frontend a nahraje `frontend/dist` FTP mirrorem do `./app`, což je
-`/www/domains/vysledky.bkpraha.cz/app`. Změna samotného workflow deploy
+`/www/domains/vysledky.bkpraha.cz/app`, a `api/` (bez `vendor/` a `config.php`)
+do `./api`. Změna samotného workflow deploy
 nespustí – cesty ve filtru ji nezahrnují, takže ho dispatchni ručně.
 
 Domény (všechny na jedné IP, každá vlastní docroot):

@@ -8,10 +8,15 @@ use Psr\Http\Message\ResponseInterface;
 use Slim\Exception\HttpNotFoundException;
 
 $pdo = include(__DIR__ . '/db.php');
+require_once __DIR__ . '/gemini.php';
 $app = AppFactory::create();
 $config = include(__DIR__ . '/config.php');
 
 $apikey = $config['key'];
+
+// Written by the deploy workflow from the GEMINI_API_KEY secret.
+$geminiConfigFile = __DIR__ . '/gemini-config.php';
+$gemini = file_exists($geminiConfigFile) ? include($geminiConfigFile) : ($config['gemini'] ?? []);
 
 
 $prefix = "/api";
@@ -199,6 +204,33 @@ $app->delete("$prefix/tournament/{id}", function (Request $request, Response $re
     }
 })->setName('tournament');
 
+
+
+$app->post("$prefix/transcribe-slip", function (Request $request, Response $response) use ($gemini) {
+    $data = $request->getParsedBody();
+
+    if (empty($gemini['key'])) {
+        $response->getBody()->write(json_encode(['message' => 'Na serveru chybí klíč ke Gemini']));
+        return $response->withStatus(500);
+    }
+    if (empty($data['image'])) {
+        $response->getBody()->write(json_encode(['message' => 'Chybí fotka']));
+        return $response->withStatus(400);
+    }
+
+    set_time_limit(180);
+    try {
+        $response->getBody()->write(json_encode(transcribeSlip($data['image'], $data['mimeType'] ?? 'image/jpeg', $gemini)));
+        return $response;
+    } catch (RuntimeException $e) {
+        $response->getBody()->write(json_encode(['message' => $e->getMessage()]));
+        return $response->withStatus(502);
+    }
+});
+
+$app->options("$prefix/transcribe-slip", function (Request $request, Response $response): Response {
+    return $response;
+});
 
 
 $app->get("$prefix/migrate", function (Request $request, Response $response, $args) use ($pdo) {

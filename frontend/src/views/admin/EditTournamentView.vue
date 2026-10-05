@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import TournamentApi from '@/api/TournamentApi';
-import { onMounted, ref  } from 'vue';
+import { onMounted, provide, ref  } from 'vue';
 import {  useRoute } from 'vue-router';
 
 import TournamentDataEditor from '@/views/admin/TournamentDataEditor.vue';
@@ -35,6 +35,7 @@ import { Tournament, TournamentData } from '@/model/Tournament';
 const title = ref("");
 const slug = ref("");
 const password = ref("");
+provide('adminPassword', password);
 const initialData = ref({});
 const dataToSend = ref({});
 

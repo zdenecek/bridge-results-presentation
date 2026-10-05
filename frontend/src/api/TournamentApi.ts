@@ -29,6 +29,11 @@ export default class TournamentApi {
         return axios.delete(this.url + "tournament/" + id, { headers: { "Apikey": key }})
     }
 
+    public static transcribeSlip(image: string, mimeType: string, key: string): Promise<{ text: string, model: string }> {
+        return axios.post(this.url + "transcribe-slip", { image, mimeType }, { headers: { "Apikey": key }, timeout: 180000 })
+            .then((response) => response.data);
+    }
+
     public static updateTournament(id: number, name: string, slug: string, data: any, key: string): Promise<void> {
         return axios.put(this.url + "tournament/" + id, {name, slug, data}, { headers: { "Apikey": key }})
     }
