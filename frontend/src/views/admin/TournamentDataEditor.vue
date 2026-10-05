@@ -44,6 +44,9 @@
             <tab-panel v-for="r in tournamentData.totalRounds" :key="r" :header="r + '. kolo'">
                 <tournament-round-editor :tournament-data="tournamentData" :round="r"></tournament-round-editor>
             </tab-panel>
+            <tab-panel header="Dohrávky">
+                <postponed-sessions-editor :tournament-data="tournamentData"></postponed-sessions-editor>
+            </tab-panel>
         </TabView>
 
         <div class="horizontal">
@@ -64,6 +67,7 @@ import { TournamentData } from '@/model/Tournament';
 import { ref, watchEffect } from 'vue';
 import TournamentFileParser from '@/parse/TournamentFileParser';
 import TournamentRoundEditor from '@/views/admin/TournamentRoundEditor.vue';
+import PostponedSessionsEditor from '@/views/admin/PostponedSessionsEditor.vue';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 

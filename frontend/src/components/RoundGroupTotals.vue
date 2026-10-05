@@ -59,6 +59,10 @@ console.log(results.value);
                          :to="{ name: 'round-pair-results', params: { pair: result[key as keyof TableRoundResult], round: props.round } }">
                          {{ result['imp_' + key as keyof TableRoundResult] }}
             </router-link>
+            <router-link v-else-if="result.status === 'postponed' && result.session" title="Dohrávka"
+                         :to="{ name: 'postponed-session', params: { session: result.session } }">
+                         {{ result['imp_' + key as keyof TableRoundResult] }}
+            </router-link>
             <span v-else title="Dohrávka">
               {{ result['imp_' + key as keyof TableRoundResult] }}
             </span>

@@ -53,7 +53,7 @@ export class PlayedMatchResult implements ScoredMatchResult {
     }
 }
 
-export type PostponedResult = { status: "postponed" } & PlayedMatchResult;
+export type PostponedResult = { status: "postponed"; session?: string } & PlayedMatchResult;
 export type ScratchedResult = { status: "scratched" } & ScoredMatchResult;
 export type NotplayedResult = { status: "not-played" } & MatchResult;
 export type PlayedResult = { status: "played" } & PlayedMatchResult;

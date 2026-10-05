@@ -15,6 +15,7 @@ cd frontend
 npm install
 npm run dev          # potřebuje .env s VITE_API_URL
 npm run type-check   # vue-tsc, běží i v rámci npm run build
+npm test             # vitest, výpočet průměrů a IMPů
 npm run build
 ```
 
@@ -68,6 +69,12 @@ Dvě pasti:
   Bez výsledků se jen vypíše „Odloženo" v nasazení, což se hodí předvyplnit.
 - Kolo bez výsledků (`boardResults: []`) neposouvá `standing`, takže je bezpečné
   založit všechna kola dopředu jen s datem.
+- **Dohrávka proti Jackovi** je v `postponedSessions[]` (záložka „Dohrávky“
+  v editoru): rozdání a výsledky Jacka z PBN (`field`) a zápisy dohrávek
+  (`matches[]` s kolem, stolem a textem lístečku). Průměr rozdání počítá
+  `trimmedDatum` z Jacka i všech zápisů (z každé strany se ořízne 10 % váhy,
+  zaokrouhlení na desítky), IMPy se propíšou do `postponed` overwritu daného
+  stolu i s odkazem `session`.
 
 ## Rozpisy (movements)
 

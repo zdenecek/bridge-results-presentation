@@ -90,7 +90,10 @@ const adjusts = computed(() => {
             <router-link :to="{ name: 'pair-results', params: { pair: result.ops } }">
               {{ tournament.getPair(result.ops)?.title }}
             </router-link>
-            <span class="small" v-if="result.tableResult.status === 'postponed'"> (dohrávka)</span>
+            <span class="small" v-if="result.tableResult.status === 'postponed'">&nbsp;<router-link
+                v-if="result.tableResult.session"
+                :to="{ name: 'postponed-session', params: { session: result.tableResult.session } }">(dohrávka)</router-link
+              ><template v-else>(dohrávka)</template></span>
           </td>
           <td>
             <router-link v-if="result.tableResult.status === 'played'"

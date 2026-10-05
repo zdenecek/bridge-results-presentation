@@ -19,6 +19,7 @@ import {
   calculateAllPairResult,
 } from "./ResultsCalculation";
 import { TournamentType } from "./TournamentType";
+import { PostponedMatchData, PostponedSession, PostponedSessionData } from "./PostponedSession";
 import _ from "lodash";
 
 export type TournamentData = {
@@ -39,6 +40,7 @@ export type TournamentData = {
   players: Record<PairNumberKey, Pair>;
   rotations: Record<RoundNumberKey, RoundRotation>;
   rounds: Record<RoundNumberKey, RoundData>;
+  postponedSessions?: PostponedSessionData[];
 };
 
 export class Tournament {
@@ -56,6 +58,7 @@ export class Tournament {
   players: Map<PairNumber, Pair>;
   rotations: Map<RoundNumber, RoundRotation>;
   rounds: Map<RoundNumber, Round>;
+  postponedSessions: Map<string, PostponedSession>;
   settings: {
     rankByAverage: boolean;
   };
@@ -95,6 +98,10 @@ export class Tournament {
         new Round(roundData, roundNumber, roundRotation)
       );
     });
+
+    this.postponedSessions = new Map(
+      (tournamentData.postponedSessions ?? []).map((s) => [s.id, new PostponedSession(s)])
+    );
 
     this.pairResults = new Map<
       RoundNumber,
@@ -197,6 +204,13 @@ export class Tournament {
 
   getPair(number: PairNumber): Pair | undefined {
     return this.players.get(number);
+  }
+
+  /** Pairs as they actually sat at the table of a postponed match. */
+  getPostponedSeating(match: PostponedMatchData): { ns?: PairNumber; ew?: PairNumber } {
+    const seating = this.rotations.get(match.round)?.[match.table.toString()];
+    if (!seating) return {};
+    return match.swapped ? { ns: seating.ew, ew: seating.ns } : { ns: seating.ns, ew: seating.ew };
   }
 
   get standing(): RoundNumber {

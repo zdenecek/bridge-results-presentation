@@ -196,6 +196,7 @@ export class Round {
                     }),
                     status: "postponed",
                     table: o.table,
+                    session: overwrite.session,
                 } as TableRoundResult;
 
                 resultsByTable.set(o.table, matchResult);

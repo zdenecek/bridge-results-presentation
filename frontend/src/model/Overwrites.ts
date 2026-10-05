@@ -32,6 +32,8 @@ export type ResultOverwritePostponed = {
     imp_ew?: number;
     date?: string;
     externalUrl?: string;
+    /** Id of the postponed session the IMPs were calculated from. */
+    session?: string;
 } & TableOverwrite;
 
 

@@ -1,0 +1,1074 @@
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+X         4S        Pass      Pass      
+Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+HA H2 H3 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D3 C8 DQ D9 
+D4 C7 DK S2 
+H7 H9 H4 S5 
+HJ HQ HK DJ 
+[BidSystemNS "MAJ5"]
+[BidSystemEW "PCLUB05"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+X         3D        3H        4S        
+Pass      Pass      Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+HA H2 H3 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D3 C8 H4 D9 
+D4 C7 DQ DJ 
+H7 H9 HK S2 
+HJ HQ DK S5 
+[BidSystemNS "ENGA"]
+[BidSystemEW "PCLUB10"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+X         3D        3H        3S        
+Pass      4S        Pass      Pass      
+Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D4 D7 DT D6 
+HA H2 H3 HT 
+D2 S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D3 C8 DQ D9 
+DA C7 DK DJ 
+H7 H9 HK S2 
+HJ HQ H4 S5 
+[BidSystemNS "NACOL"]
+[BidSystemEW "PCLUB10"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+Pass      3D        Pass      4S        
+Pass      Pass      Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+HA H2 H3 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D3 C8 H4 D9 
+D4 C7 DQ DJ 
+H7 H9 HK S2 
+HJ HQ DK S5 
+[BidSystemNS "PREC"]
+[BidSystemEW "BMR"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+Pass      3D        Pass      4S        
+Pass      Pass      Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+HA H2 H3 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D3 C8 H4 D9 
+D4 C7 DQ DJ 
+H7 H9 HK S2 
+HJ HQ DK S5 
+[BidSystemNS "BW41"]
+[BidSystemEW "GERA"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+X         4S        Pass      Pass      
+Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+HA H2 H3 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D3 C8 DQ D9 
+D4 C7 DK S2 
+H7 H9 H4 S5 
+HJ HQ HK DJ 
+[BidSystemNS "AGF"]
+[BidSystemEW "PCLUB05"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      3S        
+Pass      4S        Pass      Pass      
+Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+HA H2 H3 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+D3 CK C6 CT 
+H5 C8 DQ D9 
+D4 C7 DK S2 
+H7 H9 H4 S5 
+HJ HQ HK DJ 
+[BidSystemNS "BW41"]
+[BidSystemEW "JACK"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+Pass      3D        Pass      4S        
+Pass      Pass      Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H8 SJ 
+ST S7 H3 SA 
+D4 D7 DT D6 
+HA H2 H4 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D2 C8 H6 D9 
+D3 C7 DQ DJ 
+H7 H9 HK S2 
+HJ HQ DK S5 
+[BidSystemNS "BMG"]
+[BidSystemEW "BMR"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+Pass      3S        Pass      4S        
+Pass      Pass      Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D4 D7 DT D6 
+HA H2 H3 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+D2 CK C6 CT 
+H5 C8 DQ D9 
+D3 C7 DK S2 
+H7 H9 H4 S5 
+HJ HQ HK DJ 
+[BidSystemNS "GERB"]
+[BidSystemEW "NACOL"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+X         4S        Pass      Pass      
+Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+HA H2 H3 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D3 C8 DQ D9 
+D4 C7 DK S2 
+H7 H9 H4 S5 
+HJ HQ HK DJ 
+[BidSystemNS "PREC"]
+[BidSystemEW "BW52"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      Pass      
+X         Pass      2H        2S        
+4H        Pass      Pass      4S        
+Pass      Pass      Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 C5 SJ 
+ST S7 H6 SA 
+D4 D7 DT D6 
+HA H2 H3 HT 
+H5 H9 HK S2 
+C3 C4 C6 CQ 
+H7 C7 H4 CT 
+D2 S8 D5 D8 
+D3 CK H8 D9 
+HJ HQ DQ DJ 
+DA C8 DK S5 
+[BidSystemNS "GERA"]
+[BidSystemEW "BW51"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+X         3D        3H        4S        
+Pass      Pass      Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+HA H2 H3 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D3 C8 H4 D9 
+D4 C7 DQ DJ 
+H7 H9 HK S2 
+HJ HQ DK S5 
+[BidSystemNS "GF"]
+[BidSystemEW "GERA"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+Pass      3S        Pass      4S        
+Pass      Pass      Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+D4 S8 DK D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D3 C8 D5 D9 
+H7 C7 H3 HT 
+HJ H2 H4 S2 
+HA H9 DQ S5 
+DA HQ HK DJ 
+[BidSystemNS "PREC"]
+[BidSystemEW "SAYC"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+2H        2S        3H        3S        
+Pass      4S        Pass      Pass      
+Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+HA H2 H3 HT 
+DA S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D3 C8 DQ D9 
+D4 C7 H4 DJ 
+H7 H9 HK S2 
+HJ HQ DK S5 
+[BidSystemNS "JACK"]
+[BidSystemEW "ENGB"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "1"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "N"]
+[Vulnerable "None"]
+[Deal "N:Q.K8643.KQT5.J65 AKJ52.T.J986.AQT T96.AJ75.A432.93 8743.Q92.7.K8742"]
+[Scoring ""]
+[Declarer "E"]
+[Contract "4S"]
+[Result "11"]
+[Auction "N"]
+Pass      1S        Pass      2S        
+X         3D        3H        4S        
+Pass      Pass      Pass      
+[Play "S"]
+C9 C2 CJ CA 
+S6 S3 SQ SK 
+S9 S4 H6 SJ 
+ST S7 H8 SA 
+D2 D7 DT D6 
+HA H2 H3 HT 
+D3 S8 D5 D8 
+C3 C4 C5 CQ 
+H5 CK C6 CT 
+D4 C8 H4 D9 
+DA C7 DQ DJ 
+H7 H9 HK S2 
+HJ HQ DK S5 
+[BidSystemNS "BW5B"]
+[BidSystemEW "PREC"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "4SX"]
+[Result "10"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+X         Pass      Pass      Pass      
+[Play "W"]
+HK H2 HJ H7 
+H5 H3 HA HT 
+D8 D4 DA D2 
+D5 D6 D3 D9 
+C8 SK S4 S2 
+H6 S5 S8 SQ 
+H8 H4 S9 SJ 
+H9 D7 ST SA 
+C2 CJ DT S3 
+C4 CQ C3 CT 
+C5 CK C6 S6 
+C7 CA C9 S7 
+HQ DK DQ DJ 
+[BidSystemNS "DD"]
+[BidSystemEW "PCLUB05"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "W"]
+[Contract "5HX"]
+[Result "10"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+Pass      Pass      5H        X         
+Pass      Pass      Pass      
+[Play "N"]
+CA C3 CT C4 
+CK C6 S3 C5 
+H2 HJ H7 H8 
+CJ C9 HT C2 
+S5 S4 SA H5 
+D4 DQ D2 D5 
+D6 DA D9 D8 
+D7 D3 DJ H6 
+CQ HA S2 C7 
+SK S8 S6 H9 
+H3 S9 S7 HQ 
+H4 DT SJ HK 
+DK ST SQ C8 
+[BidSystemNS "PREC"]
+[BidSystemEW "BW42"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "5SX"]
+[Result "10"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+Pass      Pass      5H        5S        
+X         Pass      Pass      Pass      
+[Play "W"]
+C4 CJ C3 CT 
+H9 S5 S8 SQ 
+H6 SK S4 S2 
+C5 CQ C9 H7 
+C2 CK C6 HT 
+H8 H2 HA S7 
+C7 H3 S9 SJ 
+H5 D4 ST SA 
+D5 DK DA D2 
+HQ H4 HJ S3 
+D8 D6 DQ DJ 
+C8 D7 DT D9 
+HK CA D3 S6 
+[BidSystemNS "SAYC"]
+[BidSystemEW "TBW"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "4SX"]
+[Result "9"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+X         Pass      Pass      Pass      
+[Play "W"]
+HK H2 HA H7 
+HQ H3 HJ HT 
+D8 D4 DQ D2 
+D5 D6 DA D9 
+C8 D7 DT DJ 
+H5 SK S4 S2 
+H6 S5 S8 SQ 
+H8 H4 S9 SJ 
+C2 CJ ST SA 
+C4 CQ C3 S3 
+C5 CK C6 CT 
+C7 DK D3 S6 
+H9 CA C9 S7 
+[BidSystemNS "PCLUB10"]
+[BidSystemEW "PREC"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "W"]
+[Contract "5HX"]
+[Result "9"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+Pass      Pass      5H        X         
+Pass      Pass      Pass      
+[Play "N"]
+SK S4 SA H5 
+H3 HA H7 H6 
+H2 HJ HT HK 
+H4 D3 S3 H8 
+CJ C3 CT C2 
+CA C6 S2 C5 
+CK C9 S6 C4 
+D4 DQ D2 D5 
+D6 DA D9 D8 
+S5 S8 SJ H9 
+CQ S9 S7 C7 
+DK DT DJ HQ 
+D7 ST SQ C8 
+[BidSystemNS "GF"]
+[BidSystemEW "BW5B"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "4SX"]
+[Result "9"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+X         Pass      Pass      Pass      
+[Play "W"]
+D8 D4 DQ D2 
+H5 H2 HA H7 
+D5 D6 DA D9 
+HQ H3 HJ HT 
+HK H4 S4 S6 
+C8 SK S8 S2 
+H6 S5 S9 SQ 
+H8 CJ ST SJ 
+C2 D7 D3 S3 
+C4 CQ C3 CT 
+C5 CK C6 S7 
+C7 DK C9 SA 
+H9 CA DT DJ 
+[BidSystemNS "BW52"]
+[BidSystemEW "JACK"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "5SX"]
+[Result "10"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+Pass      Pass      5H        5S        
+X         Pass      Pass      Pass      
+[Play "W"]
+C8 CJ C3 CT 
+H5 S5 S8 SQ 
+H6 SK S4 S2 
+C4 CQ C6 H7 
+C2 CK C9 HT 
+H9 H2 HA S7 
+C5 H3 S9 SJ 
+H8 D4 ST SA 
+D5 DK DA D2 
+HQ H4 HJ S3 
+D8 D6 DT D9 
+C7 D7 DQ DJ 
+HK CA D3 S6 
+[BidSystemNS "SAYC"]
+[BidSystemEW "BW5B"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "4SX"]
+[Result "9"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+X         Pass      Pass      Pass      
+[Play "W"]
+D8 D4 DQ D2 
+H9 H2 HA H7 
+HQ H3 HJ HT 
+D5 D6 DA D9 
+H8 D7 DT DJ 
+C8 SK S4 S2 
+H5 S5 S8 SQ 
+H6 H4 S9 SJ 
+C2 CJ ST SA 
+C4 CQ C3 S3 
+C5 CK C6 CT 
+C7 DK D3 S6 
+HK CA C9 S7 
+[BidSystemNS "GERB"]
+[BidSystemEW "TBW"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "4SX"]
+[Result "11"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+X         Pass      Pass      Pass      
+[Play "W"]
+C7 CJ C9 CT 
+C5 CQ C6 H7 
+C2 CK C3 HT 
+H5 H2 HJ S6 
+C8 S5 S9 SJ 
+H6 SK S4 S2 
+D5 D6 D3 D9 
+H8 H3 S8 SQ 
+H9 D4 ST SA 
+D8 DK DA D2 
+HQ D7 DQ DJ 
+C4 H4 DT S3 
+HK CA HA S7 
+[BidSystemNS "JACKBALI"]
+[BidSystemEW "PCLUB10"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "5SX"]
+[Result "10"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+Pass      Pass      5H        5S        
+X         Pass      Pass      Pass      
+[Play "W"]
+HK H2 HA H7 
+C4 S5 S4 S2 
+H9 SK S8 S6 
+C2 CJ C9 CT 
+C5 CQ C6 HT 
+C7 CK C3 D2 
+C8 CA S9 SJ 
+H5 H3 ST SQ 
+H6 D4 D3 S3 
+D5 DK DA D9 
+H8 H4 HJ S7 
+D8 D6 DT SA 
+HQ D7 DQ DJ 
+[BidSystemNS "BMB"]
+[BidSystemEW "PCLUB10"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "W"]
+[Contract "5HX"]
+[Result "10"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+Pass      Pass      5H        X         
+Pass      Pass      Pass      
+[Play "N"]
+CA C3 CT C4 
+CK C6 S7 C5 
+H2 HJ H7 H8 
+CJ C9 HT C2 
+S5 S4 SA H5 
+D7 DQ D2 D5 
+SK S8 S2 H6 
+CQ HA S3 C7 
+D4 DA D9 D8 
+D6 D3 DJ H9 
+H3 S9 S6 HQ 
+H4 DT SJ HK 
+DK ST SQ C8 
+[BidSystemNS "SAYC"]
+[BidSystemEW "BW42"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "4SX"]
+[Result "10"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+X         Pass      Pass      Pass      
+[Play "W"]
+C8 CJ C3 CT 
+H5 S5 S8 SQ 
+H6 SK S4 S2 
+C4 CQ C6 H7 
+C2 CK C9 HT 
+H9 H2 HA S7 
+C5 H3 S9 SJ 
+H8 D4 ST SA 
+D5 D6 DT D2 
+HQ H4 HJ S3 
+D8 D7 DQ D9 
+C7 DK DA DJ 
+HK CA D3 S6 
+[BidSystemNS "NACOL"]
+[BidSystemEW "BW42"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "4SX"]
+[Result "9"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+X         Pass      Pass      Pass      
+[Play "W"]
+HK H2 HA H7 
+HQ H3 HJ HT 
+D8 D4 DQ D2 
+D5 D6 DA D9 
+C4 D7 DT DJ 
+H5 SK S4 S2 
+H6 S5 S8 SQ 
+H8 H4 S9 SJ 
+C2 CJ ST SA 
+C5 CQ C3 S3 
+C7 CK C6 CT 
+C8 DK D3 S6 
+H9 CA C9 S7 
+[BidSystemNS "GERA"]
+[BidSystemEW "GERA"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "5SX"]
+[Result "10"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+Pass      Pass      5H        5S        
+X         Pass      Pass      Pass      
+[Play "W"]
+HK H2 HA H7 
+C2 S5 S4 S2 
+H9 SK S8 S6 
+C7 CJ C3 CT 
+C4 CQ C6 HT 
+H5 H3 HJ S7 
+H6 D4 S9 SJ 
+H8 H4 ST SQ 
+D8 DK DA D2 
+D5 D6 DQ D9 
+C5 CK C9 S3 
+C8 D7 D3 SA 
+HQ CA DT DJ 
+[BidSystemNS "NACOL"]
+[BidSystemEW "BWB"]
+
+[Event "Jack Saved Deal"]
+[Site ""]
+[Date "2026.04.21"]
+[Board "2"]
+[West "Jack"]
+[North "Jack"]
+[East "Jack"]
+[South "Jack"]
+[Dealer "E"]
+[Vulnerable "NS"]
+[Deal "E:T984.AJ.AQT3.963 AQJ7632.T7.J92.T .KQ9865.85.87542 K5.432.K764.AKQJ"]
+[Scoring ""]
+[Declarer "S"]
+[Contract "4SX"]
+[Result "11"]
+[Auction "E"]
+Pass      3S        Pass      4S        
+X         Pass      Pass      Pass      
+[Play "W"]
+C4 CJ C3 CT 
+C5 CQ C9 H7 
+C2 CK C6 HT 
+H6 H2 HA S6 
+H8 S5 S9 SJ 
+H9 SK S4 S2 
+D5 D6 D3 D9 
+H5 H3 S8 SQ 
+C7 D4 ST SA 
+D8 DK DA D2 
+HQ H4 HJ S3 
+C8 D7 DT S7 
+HK CA DQ DJ 
+[BidSystemNS "NACOL"]
+[BidSystemEW "ENGB"]
+
