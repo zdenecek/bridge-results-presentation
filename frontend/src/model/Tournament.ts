@@ -107,9 +107,6 @@ export class Tournament {
       RoundNumber,
       Map<PairNumber, PairSumResult> | undefined
     >();
-    Array.from(Array(this.totalRounds).keys()).forEach((r) => {
-      this.pairResults.set(r, undefined);
-    });
   }
 
   public get isFinished(): boolean {
@@ -151,31 +148,22 @@ export class Tournament {
   }
 
   getPairResult(pair: PairNumber, untilRound?: RoundNumber): PairSumResult {
-    let round = untilRound ?? this.standing;
-
-    if (round > this.standing) round = this.standing;
-    if (this.pairResults.get(round - 1) === undefined)
-      this.pairResults.set(
-        round - 1,
-        calculateAllPairResult(this.getRoundsUntil(untilRound), this)
-      );
-
     return (
-      this.pairResults.get(round - 1)!.get(pair) ??
+      this.getPairResults(untilRound).get(pair) ??
       PairSumResult.Default(pair, this.getPairGroup(pair)?.players.length)
     );
   }
 
+  /** Keyed by the rounds included: a match played ahead of its round counts only with all rounds. */
   getPairResults(untilRound?: RoundNumber): Map<PairNumber, PairSumResult> {
-    let round = untilRound ?? this.standing;
-    if (round > this.standing) round = this.standing;
-    if (this.pairResults.get(round - 1) === undefined)
+    const key = untilRound ?? Number.POSITIVE_INFINITY;
+    if (this.pairResults.get(key) === undefined)
       this.pairResults.set(
-        round - 1,
+        key,
         calculateAllPairResult(this.getRoundsUntil(untilRound), this)
       );
 
-    return this.pairResults.get(round - 1)!;
+    return this.pairResults.get(key)!;
   }
 
   getPairRoundResult(
@@ -189,12 +177,11 @@ export class Tournament {
     pair: PairNumber,
     rounds: Round[] | undefined = undefined
   ): PairTableRoundResult[] {
-    const roundsToCheck = rounds ?? this.getRoundsUntil(this.standing);
-    console.log("hi")
-    const results = roundsToCheck
+    if (rounds) return rounds.flatMap((r) => r.getPairResults(pair));
+    // Rounds not played yet only count with matches played ahead of them.
+    return this.getRoundsUntil()
       .flatMap((r) => r.getPairResults(pair))
-      .filter((r) => r !== undefined) as PairTableRoundResult[];
-    return results;
+      .filter((r) => r.round <= this.standing || r.status !== "not-played");
   }
 
   getRoundResults(round: RoundNumber): TableRoundResult[] {

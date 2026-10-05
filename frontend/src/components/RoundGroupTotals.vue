@@ -25,7 +25,7 @@ const props = defineProps({
 const group = reactive(props.tournament.groups[props.groupIndex] as Group);
 const results = computed(() => props.tournament.getRoundResults(props.round)?.filter(r => group.players.includes(r.ns) || group.players.includes(r.ew)));
 
-const wasPlayed = computed(() => props.tournament.wasRoundPlayed(props.round));
+const wasPlayed = computed(() => props.tournament.getRound(props.round)?.hasMatchResults ?? false);
 console.log(results.value);
 </script>
 

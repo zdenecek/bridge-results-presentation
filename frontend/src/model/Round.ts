@@ -124,6 +124,11 @@ export class Round {
         return (this.boardResults?.length ?? 0) > 0;
     }
 
+    /** True also for a round not played yet with a match played ahead of it. */
+    public get hasMatchResults(): boolean {
+        return this.wasPlayed || this.getMatchResults().some((r) => r.status !== "not-played");
+    }
+
     public getBoardAverage(boardNumber: number) : number | undefined {
         return this.boardAverages?.get(boardNumber);
     }
