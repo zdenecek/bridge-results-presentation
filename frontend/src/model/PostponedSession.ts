@@ -10,6 +10,10 @@ export type SessionLine = {
     declarer: string;
     result: string;
     points: number;
+    /** Bids from the dealer in BBO notation: "p 1S p 2S d 4S p p p". */
+    auction?: string;
+    /** Cards in the order they were played: "C9C2CJCASKS6…". */
+    play?: string;
 };
 
 export type PostponedMatchData = {
@@ -43,6 +47,9 @@ export type PostponedMatchResult = {
     /** IMPs of the pairs as seated in the rotation. */
     imp_ns: number;
     imp_ew: number;
+    /** IMPs of the pairs as they sat at the table. */
+    seated_imp_ns: number;
+    seated_imp_ew: number;
 };
 
 export class PostponedSession {
@@ -85,6 +92,8 @@ export class PostponedSession {
                 lines,
                 imp_ns: match.swapped ? seatedEw : seatedNs,
                 imp_ew: match.swapped ? seatedNs : seatedEw,
+                seated_imp_ns: seatedNs,
+                seated_imp_ew: seatedEw,
             };
         });
     }

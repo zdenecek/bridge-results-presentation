@@ -24,8 +24,11 @@
                 {{ tournament.getPair(pair)?.title }}
               </router-link>
             </td>
-            <td>{{ m.imp_ns }}</td>
-            <td>{{ m.imp_ew }}</td>
+            <td v-for="[pair, imps] in [[m.ns, m.imp_ns], [m.ew, m.imp_ew]]" :key="pair">
+              <router-link v-if="pair" :to="{ name: 'postponed-session-pair', params: { session: session.id, pair } }">
+                {{ imps }}
+              </router-link>
+            </td>
             <td>{{ m.vp.ns.toFixed(2) }}</td>
             <td>{{ m.vp.ew.toFixed(2) }}</td>
           </tr>
@@ -73,17 +76,14 @@ const shownBoards = computed(() => {
   return board.value === undefined ? [] : [board.value];
 });
 
-const matches = computed(() => (session.value?.matchResults ?? []).filter((r) => r.lines.length > 0).map((r) => {
-  const seated = r.match.swapped ? { ns: r.imp_ew, ew: r.imp_ns } : { ns: r.imp_ns, ew: r.imp_ew };
-  return {
-    index: r.index,
-    round: r.match.round,
-    ...tournament.value!.getPostponedSeating(r.match),
-    imp_ns: seated.ns,
-    imp_ew: seated.ew,
-    vp: calculateVP(seated.ns - seated.ew),
-  };
-}));
+const matches = computed(() => (session.value?.matchResults ?? []).filter((r) => r.lines.length > 0).map((r) => ({
+  index: r.index,
+  round: r.match.round,
+  ...tournament.value!.getPostponedSeating(r.match),
+  imp_ns: r.seated_imp_ns,
+  imp_ew: r.seated_imp_ew,
+  vp: calculateVP(r.seated_imp_ns - r.seated_imp_ew),
+})));
 </script>
 
 <style scoped>

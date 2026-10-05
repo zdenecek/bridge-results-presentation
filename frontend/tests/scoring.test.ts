@@ -7,6 +7,7 @@ import { TournamentData } from "@/model/Tournament";
 import { impsForDifference, trimmedDatum } from "@/model/Scoring";
 import { parseJackPbn } from "@/parse/JackPbnParser";
 import { parseSlip } from "@/parse/SlipParser";
+import { getBBOPlayUrl } from "@/utils/handviewers";
 
 const fixture = (name: string) => readFileSync(resolve(__dirname, "fixtures", name), "utf-8");
 
@@ -114,6 +115,22 @@ describe("Jack PBN", () => {
         expect(jack.field.filter((l) => l.deal === 2).map((l) => l.points)).toEqual([
             790, 100, -200, -200, 300, -200, -200, -200, 990, -200, 100, 790, -200, -200, 990,
         ]);
+    });
+
+    it("keeps the auction and puts the play in the order it was played", () => {
+        const first = jack.field[0]!;
+        expect(first.auction).toBe("p 1S p 2S d 4S p p p");
+        // PBN columns are S W N E every trick; East wins trick 1 and leads trick 2 and 3.
+        expect(first.play!.slice(0, 24)).toBe("C9C2CJCA" + "SKS6S3SQ" + "SJS9S4H6");
+        expect(first.play).toHaveLength(104);
+        expect(jack.field.every((l) => l.auction && l.play?.length === 104)).toBe(true);
+    });
+
+    it("links the play to the BBO handviewer", () => {
+        const first = jack.field[0]!;
+        const url = getBBOPlayUrl(jack.boards["1"]!, 1, first.auction!, first.play!);
+        expect(url).toMatch(/^https:\/\/www\.bridgebase\.com\/tools\/handviewer\.html\?lin=pn\|Jack,Jack,Jack,Jack\|md\|3S/);
+        expect(url).toContain("|sv|0|mb|p|mb|1S|mb|p|mb|2S|mb|d|mb|4S|mb|p|mb|p|mb|p|pg||pc|C9|pc|C2|pc|CJ|pc|CA|pc|SK|");
     });
 
     it("rotates deals that do not start with North", () => {

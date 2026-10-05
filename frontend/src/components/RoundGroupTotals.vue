@@ -60,7 +60,7 @@ console.log(results.value);
                          {{ result['imp_' + key as keyof TableRoundResult] }}
             </router-link>
             <router-link v-else-if="result.status === 'postponed' && result.session" title="Dohrávka"
-                         :to="{ name: 'postponed-session', params: { session: result.session } }">
+                         :to="{ name: 'postponed-session-pair', params: { session: result.session, pair: result[key as keyof TableRoundResult] } }">
                          {{ result['imp_' + key as keyof TableRoundResult] }}
             </router-link>
             <span v-else title="Dohrávka">

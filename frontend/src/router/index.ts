@@ -14,6 +14,7 @@ import RoundsResultsView from "../views/RoundsResultsView.vue";
 import RoundPairResultsView from "../views/RoundPairResultsView.vue";
 import RoundBoardResultsView from "../views/RoundBoardResultsView.vue";
 import PostponedSessionView from "../views/PostponedSessionView.vue";
+import PostponedSessionPairView from "../views/PostponedSessionPairView.vue";
 import TournamentCrosstablesView from "../views/TournamentCrosstablesView.vue";
 
 import TournamentsIndexView from "../views/index/TournamentsIndexView.vue";
@@ -97,6 +98,11 @@ const routes: Array<RouteRecordRaw> = [
                 path: "round/:round/pair/:pair",
                 name: "round-pair-results",
                 component: RoundPairResultsView,
+            },
+            {
+                path: "dohravka/:session/pair/:pair",
+                name: "postponed-session-pair",
+                component: PostponedSessionPairView,
             },
             {
                 path: "dohravka/:session/:board?",

@@ -101,7 +101,7 @@ const adjusts = computed(() => {
                          {{ result.imps }} : {{ result.oppResult.imps }}
             </router-link>
             <router-link v-else-if="result.tableResult.status === 'postponed' && result.tableResult.session"
-                         :to="{ name: 'postponed-session', params: { session: result.tableResult.session } }">
+                         :to="{ name: 'postponed-session-pair', params: { session: result.tableResult.session, pair } }">
                          {{ result.imps }} : {{ result.oppResult.imps }}
             </router-link>
             <template v-else-if="result.tableResult.status === 'postponed' ">

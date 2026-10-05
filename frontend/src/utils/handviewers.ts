@@ -143,6 +143,22 @@ export function getBBOHandviewerUrl(board: Board, boardNumber: number, contract:
 }
 
 /**
+ * BBO handviewer replaying one table: `auction` in BBO notation ("p 1S d"),
+ * `play` as cards in the order played ("C9C2CJCA…").
+ */
+export function getBBOPlayUrl(board: Board, boardNumber: number, auction: string, play: string, player = "Jack"): string {
+  const bboDealer: "3" | "4" | "1" | "2" = board.dealer ? positionToBBOCode(board.dealer as PositionString) : getBboDealer(boardNumber);
+  const [north, east, south, west] = board.deal.map(parseDealPart);
+  const hands = [south!, west!, north!, east!].map((h) => `S${h.S}H${h.H}D${h.D}C${h.C}`).join(",");
+  const vulnerability = board.vul ? vulnerabilityToBBOCode(board.vul) : bboVulnerable(boardNumber);
+  const bids = auction.split(" ").map((bid) => `mb|${bid}|`).join("");
+  const cards = (play.match(/../g) ?? []).map((card) => `pc|${card}|`).join("");
+  const players = Array(4).fill(player).join(",");
+
+  return `https://www.bridgebase.com/tools/handviewer.html?lin=pn|${players}|md|${bboDealer}${hands}|rh||ah|Board ${boardNumber}|sv|${vulnerability}|${bids}pg||${cards}`;
+}
+
+/**
  * Generates BS handviewer URL
  */
 export function getBSHandviewerUrl(board: Board, boardNumber: number): string {
