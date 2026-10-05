@@ -31,7 +31,7 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           if [ -z "$GEMINI_API_KEY" ]; then echo "GEMINI_API_KEY not set, skipping"; exit 0; fi
-          if ! printf '%s' "$GEMINI_API_KEY" | grep -Eq '^[A-Za-z0-9_-]+$'; then echo "Unexpected characters in GEMINI_API_KEY"; exit 1; fi
+          if ! printf '%s' "$GEMINI_API_KEY" | grep -Eq '^[A-Za-z0-9._-]+$'; then echo "Unexpected characters in GEMINI_API_KEY"; exit 1; fi
           printf "<?php\nreturn ['key' => '%s'];\n" "$GEMINI_API_KEY" > api/gemini-config.php
       - name: Build
         working-directory: ./frontend
