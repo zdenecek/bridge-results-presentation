@@ -15,7 +15,10 @@ const props = defineProps({
 })
 
 
-const results = props.tournament.getPairRoundResults(props.pair);
+// A pending postponed match is listed with the matches to be played.
+const results = props.tournament.getPairRoundResults(props.pair)
+  .filter((r) => !(r.status === "not-played" && props.tournament.getRound(r.round)?.isTablePending(r.tableResult.table)));
+const upcoming = props.tournament.getPairUpcomingMatches(props.pair);
 const finalResult = props.tournament.getPairResult(props.pair);
 
 const players = props.tournament.getPair(props.pair)?.players;
@@ -114,6 +117,33 @@ const adjusts = computed(() => {
     </div>
     <div v-else>
       <p>Zatím nejsou dostupné žádné výsledky</p>
+    </div>
+
+    <div class="table-scroll" v-if="upcoming.length">
+      <table class="table table-totals">
+        <tr>
+          <th colspan="4">Zápasy k odehrání</th>
+        </tr>
+        <tr>
+          <th>Kolo</th>
+          <th>Datum</th>
+          <th>Stůl</th>
+          <th>Soupeři</th>
+        </tr>
+        <tr v-for="match in upcoming" :key="`${match.round}-${match.table}`">
+          <td>
+            <router-link :to="{ name: 'seatings', params: { round: match.round } }">{{ match.round }}.</router-link>
+          </td>
+          <td>{{ match.date?.toLocaleDateString('cs-CZ') }}</td>
+          <td>{{ match.table }} {{ match.ns ? 'NS' : 'EW' }}</td>
+          <td class="col-name">
+            <router-link :to="{ name: 'pair-results', params: { pair: match.opponent } }">
+              {{ tournament.getPair(match.opponent)?.title }}
+            </router-link>
+            <span class="small" v-if="match.postponed">&nbsp;(odloženo)</span>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>

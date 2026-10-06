@@ -56,6 +56,7 @@ export class Round {
     private boardAverages?: Map<BoardNumber, number>;
 
     private postponedTables: TableNumber[] = [];
+    private postponedDates = new Map<TableNumber, Date>();
 
     constructor(data: RoundData, public readonly number: number, public readonly rotation: RoundRotation) {
         if(data.date) 
@@ -83,6 +84,7 @@ export class Round {
         (overwrites.filter((o) => o.type === "postponed") as ResultOverwritePostponed[])
         .forEach((o) => {
             this.postponedTables.push(o.table);
+            if (o.date) this.postponedDates.set(o.table, new Date(o.date));
         });
 
         this.matchResultsByPair = new Map<PairNumber, TableRoundResult[]>();
@@ -152,6 +154,15 @@ export class Round {
 
     public isTablePostponed(tableNumber: TableNumber): boolean {
         return this.postponedTables.includes(tableNumber);
+    }
+
+    /** True for a postponed match whose result is not in yet. */
+    public isTablePending(tableNumber: TableNumber): boolean {
+        return this.isTablePostponed(tableNumber) && this.getTableResult(tableNumber)?.status === "not-played";
+    }
+
+    public getPostponedDate(tableNumber: TableNumber): Date | undefined {
+        return this.postponedDates.get(tableNumber);
     }
 
     private applyOverwrites(

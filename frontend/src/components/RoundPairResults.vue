@@ -7,6 +7,7 @@ import Contract from './partial/ContractPartial.vue';
 import { Round } from '@/model/Round';
 import { AdjustedBoardResult, BoardResult, PlayedBoardResult } from '@/model/BoardResult';
 import { MatchResults } from '@/model/MatchResult';
+import { useImpSort } from '@/utils/impSort';
 
 const props = defineProps({
   tournament: {
@@ -51,6 +52,11 @@ const vp_ew = computed(() => MatchResults.getVpsEW(finalResult.value?.tableResul
 
 const averages = computed(() => props.round.hasAverages);
 
+const { sorted, sortBy, indicator } = useImpSort(results, (r) => r.deal, (r) => {
+  if (r.status === 'not-played') return undefined;
+  return ns.value ? r.res_ns : r.res_ew;
+});
+
 </script>
 
 <template>
@@ -88,7 +94,9 @@ const averages = computed(() => props.round.hasAverages);
     <div class="table-scroll">
       <table class="table table-results">
         <tr>
-          <th>Rozdání</th>
+          <th class="sortable" title="Seřadit podle čísla rozdání" @click="sortBy('board')">
+            Rozdání <span class="sort">{{ indicator('board') }}</span>
+          </th>
           <template v-if="!mergeNames">
             <th>NS</th>
             <th>EW</th>
@@ -96,9 +104,11 @@ const averages = computed(() => props.round.hasAverages);
           <th>Závazek</th>
           <th colspan="2">Výsledek</th>
           <th v-if="averages">Průměr</th>
-          <th>IMPy</th>
+          <th class="sortable" title="Seřadit podle IMPů" @click="sortBy('imp')">
+            IMPy <span class="sort">{{ indicator('imp') }}</span>
+          </th>
         </tr>
-        <tr v-for="result in results" :key="result.ns">
+        <tr v-for="result in sorted" :key="result.deal">
           <td class="col-board-num">
             <router-link :to="{ name: 'round-board-results', params: { round: round.number, board: result.deal } }">
               {{ result.deal }}
@@ -149,5 +159,16 @@ const averages = computed(() => props.round.hasAverages);
 
 .names-header * {
   padding: 2px 10px;
+}
+
+.sortable {
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sort {
+  font-size: 0.7em;
+  opacity: 0.6;
 }
 </style>

@@ -43,6 +43,16 @@ export type TournamentData = {
   postponedSessions?: PostponedSessionData[];
 };
 
+export type UpcomingMatch = {
+  round: RoundNumber;
+  table: TableNumber;
+  date?: Date;
+  opponent: PairNumber;
+  ns: boolean;
+  /** A postponed match of a round already played. */
+  postponed: boolean;
+};
+
 export class Tournament {
   type: TournamentType;
   title: string;
@@ -182,6 +192,32 @@ export class Tournament {
     return this.getRoundsUntil()
       .flatMap((r) => r.getPairResults(pair))
       .filter((r) => r.round <= this.standing || r.status !== "not-played");
+  }
+
+  /** Future rounds and pending postponed matches, in round order. */
+  getPairUpcomingMatches(pair: PairNumber): UpcomingMatch[] {
+    return Array.from(this.rotations.entries())
+      .sort(([a], [b]) => a - b)
+      .flatMap(([roundNumber, rotation]) =>
+        Object.entries(rotation)
+          .filter(([, seating]) => seating.ns === pair || seating.ew === pair)
+          .flatMap(([tableKey, seating]) => {
+            const table = Number.parseInt(tableKey);
+            const round = this.getRound(roundNumber);
+            const result = round?.getTableResult(table);
+            if (result && result.status !== "not-played") return [];
+            const postponed = roundNumber <= this.standing;
+            if (postponed && !round?.isTablePending(table)) return [];
+            return [{
+              round: roundNumber,
+              table,
+              date: postponed ? round?.getPostponedDate(table) : round?.date,
+              opponent: seating.ns === pair ? seating.ew : seating.ns,
+              ns: seating.ns === pair,
+              postponed,
+            }];
+          })
+      );
   }
 
   getRoundResults(round: RoundNumber): TableRoundResult[] {

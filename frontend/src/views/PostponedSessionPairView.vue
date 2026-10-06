@@ -33,13 +33,17 @@
       <div class="table-scroll">
         <table class="table table-results">
           <tr>
-            <th>Rozdání</th>
+            <th class="sortable" title="Seřadit podle čísla rozdání" @click="sortBy('board')">
+              Rozdání <span class="sort">{{ indicator('board') }}</span>
+            </th>
             <th>Závazek</th>
             <th colspan="2">Výsledek</th>
             <th>Průměr</th>
-            <th>IMPy</th>
+            <th class="sortable" title="Seřadit podle IMPů" @click="sortBy('imp')">
+              IMPy <span class="sort">{{ indicator('imp') }}</span>
+            </th>
           </tr>
-          <tr v-for="board in session.boardNumbers" :key="board">
+          <tr v-for="board in sorted" :key="board">
             <td class="col-board-num">
               <router-link :to="{ name: 'postponed-session', params: { session: session.id, board } }">
                 {{ board }}
@@ -52,7 +56,7 @@
               <td>{{ lines.get(board)!.result }}</td>
               <td>{{ lines.get(board)!.points }}</td>
               <td>{{ session.averages.get(board) }}</td>
-              <td>{{ sitsNs ? lines.get(board)!.imp : -lines.get(board)!.imp }}</td>
+              <td>{{ pairImps(board) }}</td>
             </template>
             <td v-else colspan="5">Nehráno</td>
           </tr>
@@ -70,6 +74,7 @@ import { Tournament } from "@/model/Tournament";
 import { ScoredLine } from "@/model/PostponedSession";
 import { calculateVP } from "@/model/VP";
 import Contract from "@/components/partial/ContractPartial.vue";
+import { useImpSort } from "@/utils/impSort";
 
 const route = useRoute();
 const tournament = inject("tournament") as Ref<Tournament | undefined>;
@@ -85,10 +90,29 @@ const seating = computed(() => result.value && tournament.value!.getPostponedSea
 const sitsNs = computed(() => seating.value?.ns === pairNumber.value);
 const vp = computed(() => calculateVP((result.value?.seated_imp_ns ?? 0) - (result.value?.seated_imp_ew ?? 0)));
 const lines = computed(() => new Map<number, ScoredLine>((result.value?.lines ?? []).map((l) => [l.deal, l])));
+
+function pairImps(board: number): number | undefined {
+  const line = lines.value.get(board);
+  if (!line) return undefined;
+  return sitsNs.value ? line.imp : -line.imp;
+}
+
+const { sorted, sortBy, indicator } = useImpSort(computed(() => session.value?.boardNumbers), (b) => b, pairImps);
 </script>
 
 <style scoped>
 .padding {
   padding-top: 20px;
+}
+
+.sortable {
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sort {
+  font-size: 0.7em;
+  opacity: 0.6;
 }
 </style>
