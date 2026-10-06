@@ -40,6 +40,9 @@ dohrávky. Klíč je v GitHub secretu `GEMINI_API_KEY`, deploy z něj zapíše
 se zkouší postupně (`gemini-flash-latest`, `gemini-3.5-flash`,
 `gemini-3.5-flash-lite`), další se použije, když je předchozí přetížený, bez
 kvóty nebo zrušený. Lite čte výrazně hůř, proto editor ukazuje, který model četl.
+Nevyzkoušený nápad: v promptu nechat model kontrolovat každý řádek proti zapsanému
+skóre a při neshodě přečíst barvu znovu – na Flash-Lite to v jednom pokusu snížilo
+chyby měnící body ze 4 na 2.
 
 Deploy nahrává i `api/` kromě `vendor/` a `config.php` (DB a heslo zůstávají jen
 na serveru). Před nahráním ověří, že na serveru existuje `api/public`.
@@ -50,7 +53,9 @@ Dvě pasti:
   `json_encode($data['data'])`, takže z řetězce vznikne dvojitě zakódovaný JSON
   a frontend ho pak nepřečte.
 - GET turnaje má `Cache-Control: max-age=540`. Po zápisu ověřuj s parametrem
-  navíc (`?cb=…`), jinak devět minut čteš starou verzi.
+  navíc (`?cb=…`), jinak devět minut čteš starou verzi. Frontend to dělá sám:
+  editor turnaje načítá vždy čerstvě a prohlížeč, ze kterého se 10 minut zpátky
+  ukládalo, přidává `?cb=` ke každému načtení turnaje.
 
 ## Datový model turnaje
 

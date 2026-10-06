@@ -46,7 +46,8 @@ function updateData(newData: any) {
 }
 
 onMounted(() => {
-  TournamentApi.getTournament(route.params['tournament'] as string).then((tournament) => {
+  // Always fresh: editing a cached copy and saving it would undo a recent save.
+  TournamentApi.getTournament(route.params['tournament'] as string, true).then((tournament) => {
     title.value = tournament.name;
     slug.value = tournament.slug;
     initialData.value = tournament.data;
