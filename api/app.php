@@ -202,7 +202,7 @@ $app->delete("$prefix/tournament/{id}", function (Request $request, Response $re
         $response->getBody()->write('Error: ' . $e->getMessage());
         return $response->withStatus(500); // Internal Server Error status code
     }
-})->setName('tournament');
+});
 
 
 
