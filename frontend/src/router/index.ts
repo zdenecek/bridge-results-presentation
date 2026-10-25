@@ -25,6 +25,8 @@ import IndexTournamentsView from "../views/admin/IndexTournamentsView.vue";
 import EditTournamentView from "../views/admin/EditTournamentView.vue";
 import RoundsSeatingsViewVue from "@/views/RoundsSeatingsView.vue";
 import FinalResultsViewVue from "@/views/prints/FinalResultsPrint.vue";
+import BavlnkaRankingView from "@/views/BavlnkaRankingView.vue";
+import BavlnkaAdminView from "@/views/admin/BavlnkaAdminView.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -52,7 +54,18 @@ const routes: Array<RouteRecordRaw> = [
                 name: "admin-tournament-edit",
                 component: EditTournamentView,
             },
+            {
+                path: "bavlnka",
+                name: "admin-bavlnka",
+                component: BavlnkaAdminView,
+            },
         ]
+    },
+    {
+        path: "/bavlnka",
+        name: "bavlnka-ranking",
+        component: BavlnkaRankingView,
+        meta: { title: () => "Bavlnka – žebříček" },
     },
     {
         path: "/tournament/:tournament",

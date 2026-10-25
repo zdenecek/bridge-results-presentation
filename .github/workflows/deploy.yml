@@ -68,5 +68,5 @@ jobs:
             set cmd:fail-exit yes;
             cd api/public;
             cd ../..;
-            mirror --reverse --verbose=1 --no-symlinks --exclude-glob vendor/ --exclude-glob config.php --exclude-glob composer.* --exclude-glob .gitignore ./api ./api;
+            mirror --reverse --verbose=1 --no-symlinks --exclude-glob vendor/ --exclude-glob config.php --exclude-glob composer.* --exclude-glob .gitignore --exclude-glob tests/ ./api ./api;
             bye"

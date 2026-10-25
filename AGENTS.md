@@ -33,6 +33,11 @@ vyvíjet. Heslo k zápisovým endpointům je `key` v `api/config.php` (necommitn
 | PUT | `/api/tournament/{id}` | hlavička `Apikey` |
 | DELETE | `/api/tournament/{id}` | hlavička `Apikey` |
 
+| GET | `/api/bavlnka/ranking` | žebříček Bavlnky (JSON) |
+| GET | `/api/bavlnka/ranking.csv` | totéž ve tvaru Google Sheetu, který čte widget na bkpraha.cz |
+| GET/POST | `/api/bavlnka/update` | hlavička `Apikey` nebo `?key=` |
+| GET | `/api/bavlnka/admin` | hlavička `Apikey` |
+
 `POST /api/transcribe-slip` (hlavička `Apikey`, tělo `{image, mimeType}` s fotkou
 v base64) pošle fotku lístečku do Gemini a vrátí `{text}` s řádky pro zápis
 dohrávky. Klíč je v GitHub secretu `GEMINI_API_KEY`, deploy z něj zapíše
@@ -138,6 +143,33 @@ Formulář `/admin/create` bere nasazení jako jednu tabulku
 odvodí skupiny a jejich velikosti, řádek `pauza` udělá bye a tlačítkem doplní
 matriční čísla podle jmen z minulých turnajů. Odklady a data dalších kol se
 dodělávají v editoru turnaje.
+
+## Žebříček Bavlnky
+
+Úterní párové turnaje Bavlnka. `api/bavlnka.php` čte sekci „Párové turnaje Bavlnka"
+na <https://www.bkpraha.cz/vysledky/> a archivních stránkách (u každého turnaje
+odstavec s datem a odkaz „Výsledky“), odkazy přes 1url.cz rozbalí a stáhne výsledky:
+
+- **Tournament Calculator** (`bridge.zdenektomis.eu/vysledky/<rok>/bkp-bavlnka/MMDDbavlnka/`):
+  `results.json.gz`, u starších exportů `results.json`. Datum se bere ze složky, titulek
+  stránky se píše ručně a bývá špatně.
+- **Giborg/GoodLuck** (`bridgebase.6f.sk/results/ZF/<rok>/RRMMDD/result.php`): HTML tabulka,
+  shodné pořadí jako „4-5“, jména „Příjmení Jméno“, hosté často jen příjmením.
+
+Data jsou v tabulkách `bavlnka_tournaments`, `bavlnka_results` a `bavlnka_aliases`,
+založí se samy. Jeden běh `update` zpracuje, co stihne za minutu (hosting má limit 90 s),
+nejnovější turnaje první; na WEDOSu ho volá plánovaná úloha na
+`https://vysledky.bkpraha.cz/api/bavlnka/update?key=…`. Admin je na `/admin/bavlnka`.
+
+Body: 10 za účast + 20 za každou dvojici za sebou, při shodě průměr sdílených míst;
+posledních 5 turnajů plně, každých dalších 5 o 10 % méně, celkem posledních 50.
+Sčítá se nezaokrouhleně a zaokrouhluje až součet. `api/tests/bavlnka_test.php`
+(`php api/tests/bavlnka_test.php`) to ověřuje proti žebříčku Ondry Krásy po 13. 10. 2026.
+
+Jména se slučují přes aliasy (výchozí jsou ruční opravy z původního sešitu), pak bez
+ohledu na diakritiku a samotné příjmení k jedinému hráči s tím příjmením. Matriční
+čísla z TC se ukládají, ale ke slučování se nepoužívají – u neregistrovaných hráčů
+se mezi turnaji mění.
 
 ## CSS
 

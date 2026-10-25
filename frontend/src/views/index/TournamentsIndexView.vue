@@ -5,6 +5,10 @@
     </template>
     <template #default>
 
+      <p>
+        <router-link :to="{ name: 'bavlnka-ranking' }">Bavlnka – žebříček</router-link>
+      </p>
+
       <h2>Seznam turnajů</h2>
       <p v-if="!tournaments" class="note">Načítám turnaje ...</p>
       <div class="years">

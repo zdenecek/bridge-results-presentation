@@ -1,0 +1,402 @@
+T 2025-04-22
+1;61.25;Trávníčková Jana#1132 / Chlouba Jan#3486
+2;58.75;Růžičková Blanka#3577 / Padruňková Daniela#3035
+3;53.75;Markvartová Kateřina#3757 / Bochinská Hana#3813
+4;52.5;Hejduková Jolana#3205 / Voborný Radek#2598
+5;40;Kolářová Dana#3576 / Luňáčková Jana#3654
+6;33.75;Laňková Zdeňka#3758 / Matějková Jana#3793
+T 2025-04-29
+1;61.25;Trávníčková Jana#1132 / Chlouba Jan#3486
+2;58.75;Fořtová Eva#1985 / Benák Jaroslav#1087
+3;56.25;Růžičková Blanka#3577 / Padruňková Daniela#3035
+4;45;Blahůšková Jana#3037 / Čížek Pavel#3036
+5;42.5;Bochinská Hana#3813 / Nosková Markéta#2596
+6;36.25;Markvartová Kateřina#3757 / Matoušek Martin#3763
+T 2025-05-06
+1;61.11;Markvartová Kateřina#3757 / Matoušek Martin#3763
+2;56.94;Trávníčková Jana#1132 / Chlouba Jan#3486
+3;54.17;Růžičková Blanka#3577 / Padruňková Daniela#3035
+3;54.17;Luňáčková Jana#3654 / Kolářová Dana#3576
+5;44.44;Nosková Markéta#2596 / Sušický Jiří#3796
+5;44.44;Blahůšková Jana#3037 / Čížek Pavel#3036
+7;34.72;Laňková Zdeňka#3758 / Matějková Jana#3793
+T 2025-05-13
+1;66.25;Kovář Milan#1441 / Plánička Michal#863
+2;61.25;Růžičková Blanka#3577 / Padruňková Daniela#3035
+3;51.56;Švejnar Jakub#n100023 / Navrátil Ian#n100024
+4;51.25;Blahůšková Jana#3037 / Čížek Pavel#3036
+5;38.75;Hejduková Jolana#3205 / Voborný Radek#2598
+6;37.5;Laňková Zdeňka#3758 / Matějková Jana#3793
+7;18.75;Bochinská Hana#3813 / Tomis Zdeněk#2876
+T 2025-05-27
+1;59.38;Bosáková Zdenka#2916 / Sadílková Hana#3033
+2;53.13;Plánička Michal#863 / Kovář Milan#1441
+3;50;Markvartová Kateřina#3757 / Laňková Zdeňka#3758
+3;50;Trávníčková Jana#1132 / Chlouba Jan#3486
+5;37.5;Blahůšková Jana#3037 / Čížek Pavel#3036
+T 2025-06-03
+1;71.88;Bosáková Zdenka#2916 / Sadílková Hana#3033
+2;56.25;Luňáčková Jana#3654 / Kolářová Dana#3576
+3;50;Růžičková Blanka#3577 / Padruňková Daniela#3035
+4;37.5;Wirthová Daniela#2866 / Chlouba Jan#3486
+5;34.38;Markvartová Kateřina#3757 / Laňková Zdeňka#3758
+T 2025-06-10
+1;52.38;Trávníčková Jana#1132 / Chlouba Jan#3486
+1;52.38;Růžičková Blanka#3577 / Padruňková Daniela#3035
+3;47.62;Hejduková Jolana#3205 / Voborný Radek#2598
+3;47.62;Markvartová Kateřina#3757 / Táborský Michal#3795
+T 2025-06-17
+1;63.89;Havelková Eva#3261 / Hytka Jakub#3253
+2;54.17;Bochinská Hana#3813 / Nosková Markéta#2596
+3;51.39;Wirthová Daniela#2866 / Trávníčková Jana#1132
+4;47.22;Růžičková Blanka#3577 / Padruňková Daniela#3035
+4;47.22;Weston #n100025 / Hawley #n100026
+6;43.06;Kolářová Dana#3576 / Luňáčková Jana#3654
+6;43.06;Davidová Zdenka#n100016 / Svatoň Jiří#n100017
+T 2025-09-23
+1;65.63;Luňáčková Jana#3654 / Kolářová Dana#3576
+2;62.5;Markvartová Kateřina#3757 / Matoušek Martin#3763
+3;56.25;Trávníčková Jana#1132 / Chlouba Jan#3486
+4;34.38;Voborný Radek#2598 / Táborský Michal#3795
+5;31.25;Bochinská Hana#3813 / Nosková Markéta#2596
+T 2025-09-30
+1;68.06;Rokosová Eva#2555 / Olmer Adam#3102
+2;58.33;Voborný Radek#2598 / Táborský Michal#3795
+3;56.94;Laňková Zdeňka#3758 / Davidová Zdenka#n100016
+4;51.39;Kolářová Dana#3576 / Luňáčková Jana#3654
+5;41.67;Věrtelářová Anna#3760 / Fišerová Milada#n100020
+6;38.89;Trávníčková Jana#1132 / Chlouba Jan#3486
+7;34.72;Russell Duncan#n100028 / Cater John#n100032
+T 2025-11-18
+1;65.32;Václavík František#2864 / Baumann Martin#2582
+2;56.27;Wirthová Daniela#2866 / Chlouba Jan#3486
+3;53.17;Laňková Zdeňka#3758 / Davidová Zdenka#n100016
+4;51.59;Růžičková Blanka#3577 / Padruňková Daniela#3035
+5;49.92;Blahůšková Jana#3037 / Čížek Pavel#3036
+6;46.83;Matějková Jana#3793 / Dušková #n100047
+7;40.48;Markvartová Kateřina#3757 / Matoušek Martin#3763
+8;38.33;Svatoň Jiří#n100017 / Táborský Michal#3795
+T 2025-12-02
+1;57.5;Markvartová Kateřina#3757 / Matoušek Martin#3763
+2;53.75;Václavík František#2864 / Baumann Martin#2582
+2;53.75;Růžičková Blanka#3577 / Nosková Markéta#2596
+4;48.75;Blahůšková Jana#3037 / Čížek Pavel#3036
+5;46.25;Wirthová Daniela#2866 / Chlouba Jan#3486
+6;40;Dušková Světla#n100047 / Matějková Jana#3793
+T 2026-01-20
+1;62.5;Blahůšková Jana#3037 / Čížek Pavel#3036
+1;62.5;Wirthová Daniela#2866 / Chlouba Jan#3486
+3;49.5;Nosková Markéta#2596 / Matoušek Martin#3763
+4;44.5;Kolářová Dana#3576 / Luňáčková Jana#3654
+5;42;Růžičková Blanka#3577 / Padruňková Daniela#3035
+T 2026-01-27
+1;1.31;Luňáčková Jana#3654 / Kolářová Dana#3576
+2;0.94;Růžičková Blanka#3577 / Padruňková Daniela#3035
+3;-0.38;Markvartová Kateřina#3757 / Frabša Zdeněk#926
+4;-0.56;Stádníková Monika#n100051 / Kovaříková Jarka#n100052
+5;-1.31;Bochinská Hana#3813 / Nosková Markéta#2596
+T 2026-02-03
+1;57.5;Wirthová Daniela#2866 / Chlouba Jan#3486
+2;56.25;Růžičková Blanka#3577 / Padruňková Daniela#3035
+3;50;Luňáčková Jana#3654 / Kolářová Dana#3576
+4;47.5;Blahůšková Jana#3037 / Čížek Pavel#3036
+5;45;Bochinská Hana#3813 / Nosková Markéta#2596
+6;43.75;Markvartová Kateřina#3757 / Kovaříková Jarka#n100052
+T 2026-02-17
+1;55.56;Blahůšková Jana#3037 / Čížek Pavel#3036
+2;54.76;Wirthová Daniela#2866 / Chlouba Jan#3486
+3;53.97;Věrtelářová Anna#3760 / Fišerová Milada#n100020
+3;53.97;Markvartová Kateřina#3757 / Matoušek Martin#3763
+5;51.59;Laňková Zdeňka#3758 / Davidová Zdeňka#2695
+6;50;Bochinská Hana#3813 / Nosková Markéta#2596
+7;40.48;Kolářová Dana#3576 / Luňáčková Jana#3654
+8;39.68;Kovaříková Jarka#3834 / Stádníková Monika#n100051
+T 2026-05-19
+1;49;Věrtelářová Anna#3760 / Fišerová Milada#n100020
+2;21.33;Kabelková Iveta#n100122 / Kabelková Alena#n100123
+3;10;Nosková Markéta#2596 / Davidová Zdeňka#2695
+4;4;Kabelková Monika#n100120 / Martinšová Henrieta#n100121
+5;-28;Diklić Nikola#n100118 / Smrček Jakub#n100119
+6;-29;Durdilová Eva#n100126 / Todorov Petr#n100127
+7;-42;Čermáková Gabriela#n100124 / Stará Blanka#n100125
+T 2026-09-15
+1;19;Věrtelářová Anna#3760 / Fišerová Milada#n100020
+2;13;Kabelková Alena#n100123 / Kabelková Iveta#n100122
+3;-7;Růžičková Blanka#3577 / Kovaříková Jarka#3834
+4;-12;Malý Radek#1907 / Čabrilová Danuše#3157
+5;-13;Todorov Petr#3846 / Mowell Ken#n100171
+T 2026-09-29
+1;58.73;Matoušek Martin#3763 / Avsar Ahmet#n100232
+2;53.97;Kabelková Alena#n100123 / Kabelková Iveta#n100122
+2;53.97;Todorov Petr#3846 / Mowell Ken#n100171
+4;53.17;Sušický Jiří#3796 / Al Achkar Rabie#n100170
+5;47.62;Růžičková Blanka#3577 / Padruňková Daniela#3035
+6;46.83;Malý Radek#1907 / Čabrilová Danuše#3157
+7;45.24;Kovaříková Jarka#3834 / Chlouba Jan#3486
+8;40.48;Kolářová Dana#3576 / Luňáčková Jana#3654
+T 2026-10-06
+1;57.41;Malý Radek#1907 / Čabrilová Danuše#3157
+2;56.48;Hašková #n100317 / Čech Jaroslav#n100168
+3;54.63;Sušický Jiří#3796 / Al Achkar Rabie#n100170
+4;50.93;Spálovský Luboš#1761 / Bubník Gerhardt#3025
+5;47.62;Čížek Pavel#3036 / Blahůšková Jana#3037
+6;47.22;Falis Jiří#3759 / Avsar Ahmet#n100232
+6;47.22;Matoušek Martin#3763 / Markvartová Kateřina#3757
+8;46.03;Kabelková Alena#n100123 / Kabelková Iveta#n100122
+9;43.52;Mowell Ken#n100171 / Todorov Petr#3846
+T 2026-10-13
+1;67.59;Olmer Adam#3102 / Lemmon Bela#n100318
+2;58.33;Fišerová Milada#n100020 / Věrtelářová Anna#3760
+3;50.93;Blahůšková Jana#3037 / Čížek Pavel#3036
+4;49.07;Al Achkar Rabie#n100170 / Sušický Jiří#3796
+4;49.07;Matoušek Martin#3763 / Markvartová Kateřina#3757
+6;46.83;Padruňková Daniela#3035 / Růžičková Blanka#3577
+7;45.37;Kovaříková Jarka#3834 / Chlouba Jan#3486
+8;45.24;Čabrilová Danuše#3157 / Malý Radek#1907
+9;38.89;Todorov Petr#3846 / Mowll Ken#n100171
+G 2025-06-24
+1;63.75;Růžičková Blanka - Padruňková Daniela
+2-3;60.00;Voborný Radek - Hejduková Jolana
+2-3;60.00;Chlouba Jan - Trávníčková Jana
+4;48.68;Svatoň - Davidová
+5;35.00;Luňáčková Jana - Kolářová Dana
+6;31.58;Bochinská Hana - Nosková Markéta
+G 2025-07-08
+1;70.14;Olmer Adam - Kubát František
+2;60.42;Kotěšovcová Jitka - Kovalczik
+3;55.56;Plánička Michal - Kovář Milan
+4;52.78;Věrtelářová Anna - Fišerová
+5;50.69;Karlík Petr - Vellios
+6;41.67;Chlouba Jan - Trávníčková Jana
+7;38.19;Luňáčková Jana - Kolářová Dana
+8;30.56;Markvartová Kateřina - Růžičková Blanka
+G 2025-07-22
+1;81.58;Kovář Milan - Vajda Tomáš
+2;60.53;Chlouba Jan - Trávníčková Jana
+3;52.63;Bochinská Hana - Nosková Markéta
+4;28.95;Davidová Zdeňka - Svatoň Jiří
+5;27.50;Markvartová Kateřina - Růžičková Blanka
+G 2025-08-05
+1;62.50;Spálovský Luboš - Bubník Gerhardt
+2;58.75;Chlouba Jan - Trávníčková Jana
+3;55.00;Věrtelářová Anna - Fišerová
+4;47.50;Růžičková Blanka - Olmer Adam
+5;40.00;Plánička Michal - Kovář Milan
+6;36.25;Davidová - Svatoň
+G 2025-08-12
+1;71.25;Raguso - Minardi
+2-3;60.00;Spálovský Luboš - Bubník Gerhardt
+2-3;60.00;Chlouba Jan - Trávníčková Jana
+4;47.50;Vajda Tomáš - Kovář Milan
+5;31.25;Nosková Markéta - Bochinská Hana
+6;30.00;Davidová - Svatoň
+G 2025-09-16
+1;66.67;Věrtelářová Anna - Fišerová
+2;54.17;Táborský Michal - Voborný Radek
+3;51.39;Lencová - Herstusová
+4-5;47.22;Laňková Zdeňka - Šaržíková Hana
+4-5;47.22;Markvartová Kateřina - Matoušek Martin
+6;45.83;Wirthová Daniela - Růžičková Blanka
+7;37.50;Kolářová Dana - Luňáčková Jana
+G 2025-11-04
+1;59.38;Čížek Pavel - Blahůšková Jana
+2;55.63;Kolářová Dana - Luňáčková Jana
+3;50.00;Matějková Jana - Dušková Zlata
+4;48.13;Padruňková Daniela - Růžičková Blanka
+5;36.88;Davidová Zdeňka - Svatoň Jiří
+G 2025-11-11
+1;71.05;Sušický Jiří - Russell Duncan
+2;60.00;Blahůšková Jana - Čížek Pavel
+3;50.00;Olmer Adam - Rokosová Eva
+4;36.84;Padruňková Daniela - Růžičková Blanka
+5;31.58;Luňáčková Jana - Kolářová Dana
+G 2025-11-25
+1;57.50;Olmer Adam - Hradil Miroslav
+2;52.50;Luňáčková Jana - Kolářová Dana
+3-4;47.50;Čížek Pavel - Blahůšková Jana
+3-4;47.50;Wirthová Daniela - Chlouba Jan
+5;45.00;Růžičková Blanka - Markvartová Kateřina
+G 2025-12-09
+1;66.67;Horna Pavel - Johnová Jana
+2;61.90;Hradil Miroslav - Olmer Adam
+3;52.38;Růžičková Blanka - Padruňková Daniela
+4;19.05;Pšeničková Jana - Svatoň Jiří
+G 2026-01-06
+1;65.63;Wirthová Daniela - Chlouba Jan
+2;56.25;Padruňková Daniela - Růžičková Blanka
+3;50.00;Laňková Zdeňka - Markvartová Kateřina
+4;43.75;Luňáčková Jana - Kolářová Dana
+5;34.38;Čížek Pavel - Blahůšková Jana
+G 2026-01-13
+1;58.33;Růžičková Blanka - Padruňková Daniela
+2-3;54.17;Blahůšková Jana - Čížek Pavel
+2-3;54.17;Olmer Adam - Stádníková Monika
+4-5;41.67;Markvartová Kateřina - Píšová Verica
+4-5;41.67;Frabša Zdeněk - Kovaříková Jarka
+G 2026-02-10
+1-2;65.87;Jerzak - Zapiór
+1-2;65.87;Wirthová Daniela - Chlouba Jan
+3;55.56;Václavík František - Baumann Martin
+4;53.17;Růžičková Blanka - Padruňková Daniela
+5;50.79;Blahůšková Jana - Čížek Pavel
+6;42.86;Matoušek Martin - Markvartová Kateřina
+7;41.27;Kovaříková Jarka - Stádníková Monika
+8;24.60;Nosková Markéta - Bochinská Hana
+G 2026-02-24
+1;64.29;Sadílková Hana - Bosáková Zdenka
+2;59.52;Baumann Martin - Václavík František
+3;55.56;Wirthová Daniela - Chlouba Jan
+4;53.97;Markvartová Kateřina - Matoušek Martin
+5;46.83;Davidová Zdeňka - Laňková Zdeňka
+6;44.44;Padruňková Daniela - Růžičková Blanka
+7;38.10;Kovaříková Jarka - Stádníková Monika
+8;37.30;Bochinská Hana - Nosková Markéta
+G 2026-03-03
+1;61.90;Sušický Jiří - Jerzak Zuzanna
+2;60.32;Olmer Adam - Lálová Stanislava
+3-4;54.76;Markvartová Kateřina - Matoušek Martin
+3-4;54.76;Kolářová Dana - Luňáčková Jana
+5;46.03;Růžičková Blanka - Padruňková Daniela
+6;44.44;Davidová Zdeňka - Laňková Zdeňka
+7;40.48;Kovaříková Jarka - Stádníková Monika
+8;37.30;Čížek Pavel - Blahůšková Jana
+G 2026-03-10
+1;66.25;Věrtelářová Anna - Fišerová Milada
+2;63.75;Baumann Martin - Václavík František
+3;51.25;Sušický Jiří - Jerzak Zuzanna
+4;45.00;Kolářová Dana - Luňáčková Jana
+5;37.50;Kovaříková Jarka - Stádníková Monika
+6;36.25;Davidová Zdeňka - Laňková Zdeňka
+G 2026-03-17
+1-2;17.97;Matoušek Martin - Diklić Nikola
+1-2;17.97;Baumann Martin - Václavík František
+3;7.71;Bosáková Zdenka - Sadílková Hana
+4;6.03;Sušický Jiří - Jerzak Zuzanna
+5;0.39;Luňáčková Jana - Kolářová Dana
+G 2026-03-24
+1;57.14;Sušický Jiří - Russel Duncan
+2;53.17;Růžičková Blanka - Padruňková Daniela
+3-4;52.38;Kovaříková Jarka - Stádníková Monika
+3-4;52.38;Kolářová Dana - Luňáčková Jana
+5;51.59;Diklić Nikola - Jerzak Zuzanna
+6;48.41;Čížek Pavel - Blahůšková Jana
+7;47.62;Wirthová Daniela - Chlouba Jan
+8;37.30;Davidová Zdeňka - Laňková Zdeňka
+G 2026-03-31
+1;72.92;Benák Jaroslav - Scháňka Martin
+2;60.42;Čížek Pavel - Blahůšková Jana
+3;58.33;Kolářová Dana - Luňáčková Jana
+4;57.29;Sadílková Hana - Bosáková Zdenka
+5;46.88;Padruňková Daniela - Růžičková Blanka
+6;43.75;Olmer Adam - Lálová Stanislava
+7;38.54;Markvartová Kateřina - Matoušek Martin
+8;36.46;Kovaříková Jarka - Stádníková Monika
+9;35.42;Nosková Markéta - Bochinská Hana
+G 2026-04-07
+1;61.11;Václavík František - Baumann Martin
+2;58.33;Markvartová Kateřina - Matoušek Martin
+3;56.94;Wirthová Daniela - Chlouba Jan
+4;45.83;Padruňková Daniela - Růžičková Blanka
+5-6;43.06;Kovaříková Jarka - Stádníková Monika
+5-6;43.06;Kolářová Dana - Luňáčková Jana
+7;41.67;Olmer Adam - Lálová Stanislava
+G 2026-04-14
+1;83.33;Věrtelářová Anna - Fišerová Milada
+2;55.00;Růžičková Blanka - Padruňková Daniela
+3;51.67;Vacek Jiří - Tomanová Zuzana
+4;43.33;Olmer Adam - Todorov Petr
+5;40.00;Kovaříková Jarka - Stádníková Monika
+6;26.67;Luňáčková Jana - Kolářová Dana
+G 2026-04-21
+1-2;56.94;Matoušek Martin - Markvartová Kateřina
+1-2;56.94;Baumann Martin - Václavík František
+3-4;52.78;Blahůšková Jana - Čížek Pavel
+3-4;52.78;Veselka Michal - Veselková Hana
+5;50.00;Růžičková Blanka - Padruňková Daniela
+6;43.06;Kolářová Dana - Luňáčková Jana
+7;37.50;Kovaříková Jarka - Stádníková Monika
+G 2026-04-28
+1;63.75;Chlouba Jan - Kovaříková Jarka
+2;55.00;Sušický Jiří - Russell Duncan
+3-4;47.50;Matoušek Martin - Markvartová Kateřina
+3-4;47.50;Bosáková Zdenka - Sadílková Hana
+5;43.75;Kolářová Dana - Luňáčková Jana
+6;42.50;Růžičková Blanka - Padruňková Daniela
+G 2026-05-05
+1;62.50;Matoušek Martin - Kovaříková Jarka
+2;55.00;Chlouba Jan - Olmer Adam
+3;52.50;Veselka Michal - Veselková Hana
+4;50.00;Růžičková Blanka - Padruňková Daniela
+5-6;40.00;Bochinská Hana - Nosková Markéta
+5-6;40.00;Jerzak Zuzanna - Zapiór Maciej
+G 2026-05-12
+1;62.50;Nosková Markéta - Markvartová Kateřina
+2;56.94;Čížek Pavel - Blahůšková Jana
+3;55.56;Suková Marta - Jungová Kateřina
+4;51.39;Chlouba Jan - Wirthová Daniela
+5;44.44;Padruňková Daniela - Růžičková Blanka
+6;43.06;Kovaříková Jarka - Stádníková Monika
+7;36.11;Laňková Zdeňka - Lálová Stanislava
+G 2026-05-26
+1;67.71;Kovaříková Jarka - Stádníková Monika
+2;66.67;Matoušek Martin - Markvartová Kateřina
+3;63.54;Chlouba Jan - Lálová Stanislava
+4-5;54.17;Diklić Nikola - Smrček Jakub
+4-5;54.17;Čabrilová  - Malý Radek
+6;39.58;Kolářová Dana - Luňáčková Jana
+7;36.46;Kabelková Monika - Todorov Petr
+8;35.42;Kabelková Iveta - Kabelková Alena
+9;32.29;Růžičková Blanka - Padruňková Daniela
+G 2026-06-02
+1;62.50;Růžičková Blanka - Padruňková Daniela
+2;57.64;Kabelková Iveta - Kabelková Alena
+3-4;56.25;Kolářová Dana - Luňáčková Jana
+3-4;56.25;Sadílková Hana - Bosáková Zdenka
+5;54.17;Diklić Nikola - Smrček Jakub
+6;46.53;Wirthová Daniela - Chlouba Jan
+7;45.83;Todorov Petr - Malý
+8-9;43.75;Blahůšková Jana - Čížek Pavel
+8-9;43.75;Nosková Markéta - Bochinská Hana
+10;33.33;Kovaříková Jarka - Stádníková Monika
+G 2026-06-09
+1;63.19;Padruňková Daniela - Růžičková Blanka
+2;56.94;Kabelková Iveta - Kabelková Alena
+3;56.25;Šimek Petr - Dudek Jiří
+4;52.78;Chlouba Jan - Markvartová Kateřina
+5;52.08;Čabrilová Danuše - Malý
+6;51.39;Laňková Zdeňka - Bochinská Hana
+7;44.44;Luňáčková Jana - Kolářová Dana
+8;43.75;Kabelková Minika - Todorov Petr
+9;40.28;Smrček Jakub - Wu
+10;38.89;Kovaříková Jarka - Stádníková Monika
+G 2026-06-16
+1;67.86;Růžičková Blanka - Padruňková Daniela
+2;65.48;Markvartová Kateřina - Chlouba Jan
+3;58.33;Bochinská Hana - Nosková Markéta
+4;53.57;Věrtelářová Anna - Fišerová Milada
+5;51.19;Kabelková Iveta - Kabelková Alena
+6;47.62;Malý Radek - Čabrielová Danuše
+7;42.86;Čermáková Gabriela - Stará Blanka
+8;33.33;Wu Jun - Smrček Jakub
+9;28.57;Todorov Petr - Stádníková Monika
+G 2026-06-23
+1;64.58;Kabelková Alena - Kabelková Iveta
+2;62.50;Frabša Zdeněk - Kabelková Monika
+3;58.33;Bochinská Hana - Nosková Markéta
+4;53.13;Padruňková Daniela - Růžičková Blanka
+5;51.04;Matoušek Martin - Laňková Zdeňka
+6;46.88;Kolářová Dana - Luňáčková Jana
+7;41.67;Čabrilová Danuše - Malý
+8;38.54;Kovaříková Jarka - Stádníková Monika
+9;33.33;Diklić Nikola - Smrček Jakub
+G 2026-09-22
+1;69.05;Lálová Stanislava - Chlouba Jan
+2;56.55;Gregor Štěpán - Vašíčková Barbora
+3;52.98;Kabelková Monika - Olmer Adam
+4;52.38;Kabelková Alena - Kabelková Iveta
+5;48.81;Táborský Michal - Russell Duncan
+6;47.02;Bubník Gerhardt - Malý Radek
+7-8;45.83;Matoušek Martin - Markvartová Kateřina
+7-8;45.83;Kovaříková Jarka - Růžičková Blanka
+9;45.24;Todorov Petr - Mowll Ken
+10;36.31;Čabrilová Danuše - Bláha

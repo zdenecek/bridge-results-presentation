@@ -8,6 +8,7 @@
                 <router-link :to="{ name: 'home' }">Domů</router-link>
               <router-link :to="{ name: 'admin-tournament-create' }">Vytvořit turnaj</router-link>
               <router-link :to="{ name: 'admin-tournament-show' }">Seznam turnajů</router-link>
+              <router-link :to="{ name: 'admin-bavlnka' }">Bavlnka</router-link>
             </nav>
 
             <router-view/>

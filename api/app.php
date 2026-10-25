@@ -9,6 +9,7 @@ use Slim\Exception\HttpNotFoundException;
 
 $pdo = include(__DIR__ . '/db.php');
 require_once __DIR__ . '/gemini.php';
+require_once __DIR__ . '/bavlnka.php';
 $app = AppFactory::create();
 $config = include(__DIR__ . '/config.php');
 
@@ -31,12 +32,16 @@ $loggedInMiddleware = function ($request, $handler) use ($apikey): ResponseInter
 
     $routeName = $route->getName();
     $key = $request->getHeader('Apikey');
+    // A scheduled task on the hosting can only call a plain URL, so the update also takes the key from the query.
+    if ($routeName === 'bavlnka-update' && !array_key_exists(0, $key) && isset($request->getQueryParams()['key'])) {
+        $key = [$request->getQueryParams()['key']];
+    }
 
     $method =  $request->getMethod();
 
     // Define routes that user does not have to be logged in with. All other routes, the user needs to be logged in with.
     // Names for routes must be defined in routes.php with ->setName() for each one.
-    $publicRoutesArray = array('tournament', 'tournaments', 'home');
+    $publicRoutesArray = array('tournament', 'tournaments', 'home', 'bavlnka-ranking', 'bavlnka-ranking-csv');
 
     if ((!array_key_exists(0, $key) || $key[0] !== $apikey) && (!in_array($routeName, $publicRoutesArray)) && $method !== 'OPTIONS') {
         $response = new \Slim\Psr7\Response();
@@ -233,6 +238,62 @@ $app->options("$prefix/transcribe-slip", function (Request $request, Response $r
 });
 
 
+$app->get("$prefix/bavlnka/ranking", function (Request $request, Response $response) use ($pdo, $config) {
+    $response->getBody()->write(json_encode(bavlnkaRanking($pdo, $config), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
+    return $response;
+})->setName('bavlnka-ranking');
+
+$app->get("$prefix/bavlnka/ranking.csv", function (Request $request, Response $response) use ($pdo, $config) {
+    $response->getBody()->write(bavlnkaRankingCsv(bavlnkaRanking($pdo, $config)));
+    return $response->withHeader('Content-Type', 'text/csv; charset=utf-8');
+})->setName('bavlnka-ranking-csv');
+
+$bavlnkaUpdate = function (Request $request, Response $response) use ($pdo, $config) {
+    @set_time_limit(90);
+    $response->getBody()->write(json_encode(bavlnkaUpdate($pdo, $config), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
+    return $response;
+};
+$app->get("$prefix/bavlnka/update", $bavlnkaUpdate)->setName('bavlnka-update');
+$app->post("$prefix/bavlnka/update", $bavlnkaUpdate)->setName('bavlnka-update');
+
+$app->get("$prefix/bavlnka/admin", function (Request $request, Response $response) use ($pdo, $config) {
+    $response->getBody()->write(json_encode(bavlnkaAdminData($pdo, $config), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
+    return $response;
+});
+
+$app->post("$prefix/bavlnka/tournaments", function (Request $request, Response $response) use ($pdo) {
+    $data = $request->getParsedBody();
+    try {
+        bavlnkaAddTournament($pdo, (string) ($data['url'] ?? ''), $data['date'] ?? null);
+    } catch (InvalidArgumentException $e) {
+        $response->getBody()->write(json_encode(['message' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
+        return $response->withStatus(400);
+    }
+    return $response->withStatus(201);
+});
+
+$app->put("$prefix/bavlnka/tournaments/{id}", function (Request $request, Response $response, array $args) use ($pdo) {
+    $data = $request->getParsedBody();
+    try {
+        bavlnkaSetTournamentStatus($pdo, (int) $args['id'], (string) ($data['status'] ?? ''));
+    } catch (InvalidArgumentException $e) {
+        $response->getBody()->write(json_encode(['message' => $e->getMessage()], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
+        return $response->withStatus(400);
+    }
+    return $response->withStatus(204);
+});
+
+$app->put("$prefix/bavlnka/aliases", function (Request $request, Response $response) use ($pdo) {
+    $data = $request->getParsedBody();
+    bavlnkaSetAliases($pdo, (array) ($data['aliases'] ?? []));
+    return $response->withStatus(204);
+});
+
+$app->options("$prefix/bavlnka/{path:.*}", function (Request $request, Response $response): Response {
+    return $response;
+});
+
+
 $app->get("$prefix/migrate", function (Request $request, Response $response, $args) use ($pdo) {
 
     try {
@@ -271,7 +332,7 @@ $app->add(function ($request, $handler) {
     $response = $response->withHeader('Access-Control-Allow-Headers', $requestHeaders);
 
 
-    return $response->withHeader('Content-Type', 'application/json');
+    return $response->hasHeader('Content-Type') ? $response : $response->withHeader('Content-Type', 'application/json');
 });
 
 $app->add(
