@@ -65,6 +65,7 @@ export interface BavlnkaAdminData {
     tournaments: BavlnkaStoredTournament[];
     aliases: Record<string, string>;
     players: BavlnkaAdminPlayer[];
+    cronKey: string;
 }
 
 export interface BavlnkaUpdateReport {
@@ -84,6 +85,10 @@ export default class BavlnkaApi {
 
     public static getAdminData(key: string): Promise<BavlnkaAdminData> {
         return axios.get(this.url + "admin", { headers: { "Apikey": key } }).then((response) => response.data);
+    }
+
+    public static cronUrl(cronKey: string): string {
+        return new URL(this.url + "update?key=" + encodeURIComponent(cronKey), window.location.href).href;
     }
 
     public static update(key: string): Promise<BavlnkaUpdateReport> {

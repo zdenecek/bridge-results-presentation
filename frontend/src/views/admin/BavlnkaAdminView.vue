@@ -16,7 +16,8 @@
         <p class="note">
           Načte nové turnaje ze stránek bkpraha.cz a stáhne jejich výsledky. Jeden běh zpracuje, co stihne
           za minutu; když zbývají další, spusť ho znovu. Na hostingu ho volá plánovaná úloha
-          na adrese <code>/api/bavlnka/update?key=…</code>.
+          na adrese <code class="cron-url">{{ BavlnkaApi.cronUrl(data.cronKey) }}</code>
+          (klíč v ní platí jen pro aktualizaci a změní se se změnou hesla).
         </p>
         <button class="button" :disabled="busy" @click="update">Aktualizovat</button>
         <div v-if="report" class="update-report">
@@ -207,6 +208,10 @@ function saveAliases() {
 
 .error {
   color: rgb(197, 25, 25);
+}
+
+.cron-url {
+  word-break: break-all;
 }
 
 .update-report {

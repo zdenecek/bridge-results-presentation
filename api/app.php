@@ -32,9 +32,9 @@ $loggedInMiddleware = function ($request, $handler) use ($apikey): ResponseInter
 
     $routeName = $route->getName();
     $key = $request->getHeader('Apikey');
-    // A scheduled task on the hosting can only call a plain URL, so the update also takes the key from the query.
-    if ($routeName === 'bavlnka-update' && !array_key_exists(0, $key) && isset($request->getQueryParams()['key'])) {
-        $key = [$request->getQueryParams()['key']];
+    // A scheduled task on the hosting can only call a plain URL, so the update takes its own key in the query.
+    if ($routeName === 'bavlnka-update' && hash_equals(bavlnkaCronKey($apikey), (string) ($request->getQueryParams()['key'] ?? ''))) {
+        return $handler->handle($request);
     }
 
     $method =  $request->getMethod();
@@ -257,7 +257,8 @@ $app->get("$prefix/bavlnka/update", $bavlnkaUpdate)->setName('bavlnka-update');
 $app->post("$prefix/bavlnka/update", $bavlnkaUpdate)->setName('bavlnka-update');
 
 $app->get("$prefix/bavlnka/admin", function (Request $request, Response $response) use ($pdo, $config) {
-    $response->getBody()->write(json_encode(bavlnkaAdminData($pdo, $config), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
+    $data = bavlnkaAdminData($pdo, $config) + ['cronKey' => bavlnkaCronKey($config['key'])];
+    $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
     return $response;
 });
 

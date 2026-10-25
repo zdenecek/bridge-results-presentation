@@ -34,6 +34,12 @@ function bavlnkaConfig(array $config): array
     return array_merge(BAVLNKA_DEFAULTS, $config['bavlnka'] ?? []);
 }
 
+/** Key for the scheduled update URL, so the admin password never appears in URLs or logs. */
+function bavlnkaCronKey(string $apikey): string
+{
+    return substr(hash_hmac('sha256', 'bavlnka-update', $apikey), 0, 24);
+}
+
 function bavlnkaEnsureSchema(PDO $pdo): void
 {
     if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite') {

@@ -159,7 +159,9 @@ odstavec s datem a odkaz „Výsledky“), odkazy přes 1url.cz rozbalí a stáh
 Data jsou v tabulkách `bavlnka_tournaments`, `bavlnka_results` a `bavlnka_aliases`,
 založí se samy. Jeden běh `update` zpracuje, co stihne za minutu (hosting má limit 90 s),
 nejnovější turnaje první; na WEDOSu ho volá plánovaná úloha na
-`https://vysledky.bkpraha.cz/api/bavlnka/update?key=…`. Admin je na `/admin/bavlnka`.
+`https://vysledky.bkpraha.cz/api/bavlnka/update?key=…` (každý den v 6:00). Klíč v adrese není
+heslo, ale `bavlnkaCronKey()` odvozený z hesla; platí jen pro `update` a celou adresu ukazuje
+admin na `/admin/bavlnka`. WEDOS na POST bez těla vrací 411, cron proto volá GET.
 
 Body: 10 za účast + 20 za každou dvojici za sebou, při shodě průměr sdílených míst;
 posledních 5 turnajů plně, každých dalších 5 o 10 % méně, celkem posledních 50.
