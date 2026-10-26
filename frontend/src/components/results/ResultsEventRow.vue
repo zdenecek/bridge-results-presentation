@@ -1,9 +1,8 @@
 <template>
-  <component :is="event.url ? 'a' : 'div'" class="event" :class="{ linked: event.url }"
+  <component :is="event.url ? 'a' : 'div'" class="event" :class="{ linked: event.url, undated: !event.date }"
              :href="event.url ?? undefined" :target="event.url ? '_blank' : undefined"
              :title="event.url ? 'Zobrazit výsledky' : undefined">
     <time v-if="event.date" :datetime="event.date" class="date">{{ formatDate(event.date) }}</time>
-    <span v-else class="date"></span>
     <span class="event-body">
       <span v-if="event.title" class="title">{{ event.title }}</span>
       <span v-if="event.winner" class="names">
@@ -52,6 +51,11 @@ function formatDate(date: string): string {
   border-bottom: 1px solid var(--rule);
   break-inside: avoid;
   color: var(--ink);
+}
+
+/* No date (a league, the cycles of a skupinovka): the names start where the dates would. */
+.event.undated {
+  grid-template-columns: 1fr 16px;
 }
 
 .event:last-child {
