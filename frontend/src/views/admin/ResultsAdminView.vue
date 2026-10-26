@@ -16,7 +16,7 @@
     <template v-if="page">
       <section v-if="!page.sections.length" class="admin-card">
         <h3>Sezóna {{ seasonLabel(season) }} je prázdná</h3>
-        <form class="admin-form import" @submit.prevent="importPage">
+        <form class="admin-form import" @submit.prevent="importPage(false)">
           <label class="grow">Načíst ze stránky výsledků na bkpraha.cz
             <input v-model="importUrl" type="url" required>
           </label>
@@ -46,6 +46,18 @@
       <details class="admin-card" :open="!page.sections.length">
         <summary>Přidat hlavní sekci</summary>
         <results-section-form :parent-id="null" />
+      </details>
+
+      <details v-if="page.sections.length" class="admin-card">
+        <summary>Načíst sezónu znovu z bkpraha.cz</summary>
+        <p class="muted">
+          Smaže všechny sekce a turnaje této sezóny, i to, co bylo přidáno nebo upraveno tady v adminu,
+          a načte je znovu ze stránky.
+        </p>
+        <form class="admin-form" @submit.prevent="importPage(true)">
+          <label class="grow">Stránka výsledků <input v-model="importUrl" type="url" required></label>
+          <button class="button" type="submit" :disabled="busy">{{ busy ? 'Načítám…' : 'Smazat a načíst znovu' }}</button>
+        </form>
       </details>
     </template>
   </div>
@@ -122,8 +134,9 @@ watch(season, async (s) => {
   }
 }, { immediate: true });
 
-function importPage() {
-  run(() => ResultsApi.importPage(season.value, importUrl.value, adminKey.value), (r) =>
+function importPage(replace: boolean) {
+  if (replace && !confirm(`Smazat sezónu ${seasonLabel(season.value)} a načíst ji znovu?`)) return;
+  run(() => ResultsApi.importPage(season.value, importUrl.value, adminKey.value, replace), (r) =>
     `Načteno ${r.sections} sekcí a ${r.events} turnajů. ` + (r.notFetched
       ? `U ${r.notFetched} turnajů se vítěz nestihl dočíst, dá se stáhnout přes „stáhnout znovu“.`
       : 'Hotovo.'));

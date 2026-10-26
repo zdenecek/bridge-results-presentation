@@ -181,7 +181,7 @@ function resultsParseListing(string $html, string $pageUrl, ?string $season = nu
             }
             $inBavlnka = (bool) preg_match('/BAVLN/u', $text);
             $sections[] = ['title' => resultsImportHeading($text, $known), 'kind' => $inBavlnka ? 'bavlnka' : 'events',
-                'events' => [], 'children' => [], 'note' => null];
+                'events' => [], 'children' => [], 'note' => null, 'source' => $text];
             $block = array_key_last($sections);
             continue;
         }
@@ -292,6 +292,27 @@ function resultsImportPlan(array $parsed, string $season, array $tournamentSlugs
 {
     $plan = [];
     foreach ($parsed['sections'] as $block) {
+        // "Vícekolové soutěže" only groups the club's own competitions, which read better each on its own.
+        if (preg_match('/^VÍCEKOLOV/u', $block['source'] ?? '')) {
+            foreach ($block['children'] as $child) {
+                $parts = resultsImportCompetition($child, $season, $tournamentSlugs, $preborSlugs);
+                if (count($parts) === 1) {
+                    $plan[] = $parts[0] + ['children' => []];
+                    continue;
+                }
+                $prefix = "{$child['title']} – ";
+                $plan[] = ['title' => $child['title'], 'kind' => 'group', 'ref' => null, 'note' => null, 'events' => [],
+                    'children' => array_map(function ($part) use ($prefix) {
+                        if (str_starts_with($part['title'], $prefix)) {
+                            $rest = mb_substr($part['title'], mb_strlen($prefix));
+                            $part['title'] = mb_strtoupper(mb_substr($rest, 0, 1)) . mb_substr($rest, 1);
+                        }
+                        return $part;
+                    }, $parts)];
+            }
+            continue;
+        }
+
         $top = ['title' => $block['title'], 'kind' => $block['kind'], 'ref' => null, 'note' => null, 'events' => [], 'children' => []];
         // Bavlnka comes from its own tables only where they hold the season; older seasons keep the page's list.
         if ($block['kind'] === 'bavlnka' && $bavlnkaStored < count($block['events']) - 1) $top['kind'] = 'events';
@@ -299,42 +320,7 @@ function resultsImportPlan(array $parsed, string $season, array $tournamentSlugs
         $top['note'] = isset($block['notes']) ? $block['notes'][0]['text'] : null;
 
         foreach ($block['children'] as $child) {
-            $source = $child['source'];
-            $prebor = null;
-            if (preg_match('/^(TOPOV|IMPOV)/u', $source, $m)) {
-                $prefix = str_starts_with($m[1], 'TOP') ? 'top' : 'imp';
-                $prebor = $preborSlugs["$prefix-" . substr($season, 0, 4)] ?? null;
-            }
-            if ($prebor) {
-                $top['children'][] = ['title' => $child['title'], 'kind' => 'prebor', 'ref' => $prebor, 'note' => null, 'events' => []];
-                continue;
-            }
-
-            // Parts that are our own skupinovky, or only say when they start, get a section of their own.
-            $rest = [];
-            $splitParts = [];
-            foreach ($child['events'] as $event) {
-                $slug = resultsImportTournamentSlug($event['url']);
-                if ($slug && in_array($slug, $tournamentSlugs, true) && $event['part']) {
-                    $splitParts[$event['part']] = ['title' => "{$child['title']} – " . mb_strtolower($event['part']), 'kind' => 'tournament',
-                        'ref' => $slug, 'note' => null, 'events' => []];
-                } else {
-                    $rest[] = $event;
-                }
-            }
-            foreach ($child['notes'] ?? [] as $note) {
-                if ($note['part'] && $splitParts) {
-                    $splitParts[$note['part']] = ['title' => "{$child['title']} – " . mb_strtolower($note['part']), 'kind' => 'tournament',
-                        'ref' => null, 'note' => $note['text'], 'events' => []];
-                } elseif ($note['part']) {
-                    $rest[] = ['date' => null, 'title' => $note['part'], 'url' => null, 'winner' => ['kind' => 'text', 'text' => $note['text']], 'part' => $note['part']];
-                }
-            }
-            $plainNote = array_values(array_filter($child['notes'] ?? [], fn($n) => !$n['part']))[0]['text'] ?? null;
-            if ($rest || !$splitParts || $plainNote) {
-                $top['children'][] = ['title' => $child['title'], 'kind' => 'events', 'ref' => null, 'note' => $plainNote, 'events' => $rest];
-            }
-            array_push($top['children'], ...array_values($splitParts));
+            array_push($top['children'], ...resultsImportCompetition($child, $season, $tournamentSlugs, $preborSlugs));
         }
         if ($top['children'] && $top['kind'] === 'events' && !$top['events']) $top['kind'] = 'group';
         // A block with both its own tournaments and competitions under it keeps its tournaments in a first section.
@@ -349,14 +335,55 @@ function resultsImportPlan(array $parsed, string $season, array $tournamentSlugs
 }
 
 /**
- * Imports one bkpraha.cz results page into an empty season, then reads winners for the tournaments
- * the page names without one, as long as the time budget lasts.
+ * The sections one competition (an h2) becomes: a přebor of this app, or its tournaments, where parts that
+ * are our own skupinovky, or only say when they start, get a section of their own.
+ *
+ * @return list<array>
  */
-function resultsImport(PDO $pdo, string $season, string $url, ?callable $http = null, int $budget = 45): array
+function resultsImportCompetition(array $child, string $season, array $tournamentSlugs, array $preborSlugs): array
+{
+    if (preg_match('/^(TOPOV|IMPOV)/u', $child['source'], $m)) {
+        $prefix = str_starts_with($m[1], 'TOP') ? 'top' : 'imp';
+        $prebor = $preborSlugs["$prefix-" . substr($season, 0, 4)] ?? null;
+        if ($prebor) return [['title' => $child['title'], 'kind' => 'prebor', 'ref' => $prebor, 'note' => null, 'events' => []]];
+    }
+
+    $rest = [];
+    $splitParts = [];
+    foreach ($child['events'] as $event) {
+        $slug = resultsImportTournamentSlug($event['url']);
+        if ($slug && in_array($slug, $tournamentSlugs, true) && $event['part']) {
+            $splitParts[$event['part']] = ['title' => "{$child['title']} – " . mb_strtolower($event['part']), 'kind' => 'tournament',
+                'ref' => $slug, 'note' => null, 'events' => []];
+        } else {
+            $rest[] = $event;
+        }
+    }
+    foreach ($child['notes'] ?? [] as $note) {
+        if ($note['part'] && $splitParts) {
+            $splitParts[$note['part']] = ['title' => "{$child['title']} – " . mb_strtolower($note['part']), 'kind' => 'tournament',
+                'ref' => null, 'note' => $note['text'], 'events' => []];
+        } elseif ($note['part']) {
+            $rest[] = ['date' => null, 'title' => $note['part'], 'url' => null, 'winner' => ['kind' => 'text', 'text' => $note['text']], 'part' => $note['part']];
+        }
+    }
+    $plainNote = array_values(array_filter($child['notes'] ?? [], fn($n) => !$n['part']))[0]['text'] ?? null;
+    $sections = [];
+    if ($rest || !$splitParts || $plainNote) {
+        $sections[] = ['title' => $child['title'], 'kind' => 'events', 'ref' => null, 'note' => $plainNote, 'events' => $rest];
+    }
+    return [...$sections, ...array_values($splitParts)];
+}
+
+/**
+ * Imports one bkpraha.cz results page into an empty season, or in place of it with $replace, then reads
+ * winners for the tournaments the page names without one, as long as the time budget lasts.
+ */
+function resultsImport(PDO $pdo, string $season, string $url, ?callable $http = null, int $budget = 45, bool $replace = false): array
 {
     $http ??= 'bavlnkaHttpGet';
     resultsSeasonRange($season);
-    if (in_array($season, resultsSeasons($pdo), true)) {
+    if (!$replace && in_array($season, resultsSeasons($pdo), true)) {
         throw new InvalidArgumentException("Sezóna $season už má sekce, import jde jen do prázdné");
     }
     [$html, $finalUrl, $status] = $http($url);
@@ -382,6 +409,11 @@ function resultsImport(PDO $pdo, string $season, string $url, ?callable $http = 
     $toFetch = [];
     $pdo->beginTransaction();
     try {
+        if ($replace) {
+            // Loading a season again replaces it whole, including anything added in the admin since.
+            $pdo->prepare("DELETE FROM results_events WHERE section_id IN (SELECT id FROM results_sections WHERE season = ?)")->execute([$season]);
+            $pdo->prepare("DELETE FROM results_sections WHERE season = ?")->execute([$season]);
+        }
         $addEvents = function (int $sectionId, array $events) use ($insertEvent, &$counts, &$toFetch, $pdo, $running) {
             foreach ($events as $event) {
                 $insertEvent->execute([$sectionId, $event['date'], $event['title'], $event['url'], $event['winner'] ? 'listing' : null,

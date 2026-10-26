@@ -101,8 +101,8 @@ export default class ResultsApi {
         return this.write("delete", "events/" + id, {}, key);
     }
 
-    public static importPage(season: string, url: string, key: string) {
-        return this.write("post", season + "/import", { url }, key);
+    public static importPage(season: string, url: string, key: string, replace = false) {
+        return this.write("post", season + "/import", { url, replace }, key);
     }
 
     public static copySeason(from: string, to: string, key: string) {

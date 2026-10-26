@@ -441,8 +441,9 @@ $app->post("$prefix/results/$season/copy", function (Request $request, Response 
 
 $app->post("$prefix/results/$season/import", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite) {
     @set_time_limit(90);
-    $url = (string) (((array) $request->getParsedBody())['url'] ?? '');
-    return $resultsWrite($response, fn() => resultsImport($pdo, $args['season'], $url), $args['season']);
+    $data = (array) $request->getParsedBody();
+    $url = (string) ($data['url'] ?? '');
+    return $resultsWrite($response, fn() => resultsImport($pdo, $args['season'], $url, null, 45, !empty($data['replace'])), $args['season']);
 });
 
 $app->post("$prefix/results/sections", function (Request $request, Response $response) use ($pdo, $resultsWrite) {

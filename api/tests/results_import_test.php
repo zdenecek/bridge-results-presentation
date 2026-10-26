@@ -45,16 +45,19 @@ check('written year outside the season is a typo', resultsImportDate(14, 4, 2025
 $slugs = ['skupinova-a-podzim-2026', 'skupinova-b-podzim-2026'];
 $current = resultsParseListing(fixture('results/bkpraha-vysledky.html'), 'https://www.bkpraha.cz/vysledky/', '2026-27');
 $plan = resultsImportPlan($current, '2026-27', $slugs, ['top-2026' => 'top-2026', 'imp-2026' => 'imp-2026'], 6);
-check('blocks', array_column($plan, 'title'), ['Vícekolové soutěže', 'Malé švýcaráky', 'Párové turnaje Bavlnka', 'Bridžový týden Panonia', 'Velké ceny']);
-$multi = array_map(fn($c) => [$c['title'], $c['kind'], $c['ref'], $c['note']], $plan[0]['children']);
-check('skupinovky become their own sections', array_slice($multi, 1, 3), [
-    ['Skupinovka A – podzim', 'tournament', 'skupinova-a-podzim-2026', null],
-    ['Skupinovka A – zima', 'tournament', null, 'Soutěž začíná 30. 11. 2026.'],
-    ['Skupinovka A – jaro', 'tournament', null, 'Soutěž začíná 8. 2. 2027.'],
+check('vícekolové soutěže split into competitions', array_column($plan, 'title'), ['Pražská bridžová liga', 'Skupinovka A', 'Skupinovka B',
+    'Topový přebor BKP', 'Impový přebor BKP', 'Malé švýcaráky', 'Párové turnaje Bavlnka', 'Bridžový týden Panonia', 'Velké ceny']);
+$ska = find($plan, 'Skupinovka A');
+check('skupinovka cycles inside it', array_map(fn($c) => [$c['title'], $c['kind'], $c['ref'], $c['note']], array_slice($ska['children'], 0, 3)), [
+    ['Podzim', 'tournament', 'skupinova-a-podzim-2026', null],
+    ['Zima', 'tournament', null, 'Soutěž začíná 30. 11. 2026.'],
+    ['Jaro', 'tournament', null, 'Soutěž začíná 8. 2. 2027.'],
 ]);
-check('přebory', array_slice($multi, -2), [['Topový přebor BKP', 'prebor', 'top-2026', null], ['Impový přebor BKP', 'prebor', 'imp-2026', null]]);
-check('bavlnka comes from its tables', [$plan[2]['kind'], $plan[2]['events']], ['bavlnka', []]);
-$panonia = $plan[3]['events'];
+check('přebory', array_map(fn($t) => [$t['kind'], $t['ref']], [find($plan, 'Topový přebor BKP'), find($plan, 'Impový přebor BKP')]),
+    [['prebor', 'top-2026'], ['prebor', 'imp-2026']]);
+$bav = find($plan, 'Párové turnaje Bavlnka');
+check('bavlnka comes from its tables', [$bav['kind'], $bav['events']], ['bavlnka', []]);
+$panonia = find($plan, 'Bridžový týden Panonia')['events'];
 check('panonia parts', array_map(fn($e) => [$e['date'], $e['title']], array_slice($panonia, 2, 4)), [
     ['2026-09-09', 'Hlavní párový turnaj – 1. část'],
     ['2026-09-10', 'Hlavní párový turnaj – 2. část'],
@@ -71,14 +74,18 @@ check('league without a winner on the page', find($plan, 'Pražská bridžová l
 $archive = resultsParseListing(fixture('results/bkpraha-archiv-2025-26.html'), 'https://www.bkpraha.cz/archiv-vysledku-2025-26/');
 check('season from the page', $archive['season'], '2025-26');
 $plan = resultsImportPlan($archive, '2025-26', ['skupinova-a-podzim-2025'], [], 0);
-check('blocks of the archive', array_column($plan, 'title'), ['Vícekolové soutěže', 'Malé švýcaráky', 'Velké ceny', 'Bridžový týden Panonia',
-    'Česko-německý turnaj', 'Narozeninový turnaj Blanky Medlínové', 'Letní párové turnaje', 'Párové turnaje Bavlnka']);
+check('blocks of the archive', array_column($plan, 'title'), ['Pražská bridžová liga', 'Skupinovka A', 'Skupinovka B', 'Švýcarská skupinovka',
+    'Malé švýcaráky', 'Velké ceny', 'Bridžový týden Panonia', 'Česko-německý turnaj', 'Narozeninový turnaj Blanky Medlínové',
+    'Letní párové turnaje', 'Párové turnaje Bavlnka']);
 $summer = find($plan, 'Pondělní cyklus')['events'];
 check('summer dates without a year', array_column(array_slice($summer, 3, 2), 'date'), ['2026-07-27', '2026-08-03']);
 check('tie at the top', count(end($summer)['winner']['entries']), 2);
-check('bavlnka kept as a list when not stored', [$plan[7]['kind'], count($plan[7]['events'])], ['events', 34]);
-check('year typo corrected', in_array('2026-04-14', array_column($plan[7]['events'], 'date'), true), true);
-check('a skupinovka not in this app stays a listed winner', find($plan, 'Skupinovka A')['events'][0]['title'], 'Zima');
+$bav = find($plan, 'Párové turnaje Bavlnka');
+check('bavlnka kept as a list when not stored', [$bav['kind'], count($bav['events'])], ['events', 34]);
+check('year typo corrected', in_array('2026-04-14', array_column($bav['events'], 'date'), true), true);
+// Only the autumn cycle is in this app here: it gets its own section, the other cycles stay listed winners.
+$ska = array_values(array_filter($plan, fn($t) => $t['title'] === 'Skupinovka A'))[0];
+check('mixed skupinovka', [array_column($ska['children'], 'title'), $ska['children'][0]['events'][0]['title']], [['Skupinovka A', 'Podzim'], 'Zima']);
 
 // 2022/23: old Webnode pages
 $old = resultsImportPlan(resultsParseListing(fixture('results/bkpraha-archiv-2022-23.html'), 'https://www.bkpraha.cz/archiv-vysledku-2022-23/'), '2022-23', [], [], 0);
@@ -99,10 +106,12 @@ $http = fn(string $url) => isset($web[$url]) ? [$web[$url], $url, 200] : ['', $u
 $report = resultsImport($pdo, '2026-27', 'https://www.bkpraha.cz/vysledky/', $http);
 // The league and Skupinovka B, which is not in this test database, are named without a winner.
 check('import counts', [$report['sections'], $report['fetched'], $report['notFetched']], [17, 2, 0]);
+$again = resultsImport($pdo, '2026-27', 'https://www.bkpraha.cz/vysledky/', $http, 45, true);
+check('loading again replaces the season', [$again['sections'], count(resultsPage($pdo, '2026-27')['sections'])], [17, 9]);
 $page = resultsPage($pdo, '2026-27', true);
-$pbl = $page['sections'][0]['children'][0]['events'][0];
+$pbl = $page['sections'][0]['events'][0];
 check('league read from its results', [$pbl['winner']['entries'][0]['name'], $pbl['status']], ['Pondělní Beerek', 'ok']);
-check('skupinovka not in this app keeps its note', $page['sections'][0]['children'][5]['title'], 'Skupinovka B');
+check('skupinovka not in this app is a list', [$page['sections'][2]['title'], $page['sections'][2]['kind']], ['Skupinovka B', 'events']);
 $rejected = false;
 try {
     resultsImport($pdo, '2026-27', 'https://www.bkpraha.cz/vysledky/', $http);

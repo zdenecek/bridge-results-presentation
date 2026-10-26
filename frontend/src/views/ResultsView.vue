@@ -7,7 +7,7 @@
           <span>Bridžový klub Praha</span>
         </a>
         <h1>Výsledky <span class="season">{{ seasonLabel(season) }}</span></h1>
-        <div v-if="page && page.seasons.length > 1" class="seasons" role="navigation" aria-label="Sezóny">
+        <div v-if="page && season !== current" class="seasons" role="navigation" aria-label="Sezóny">
           <router-link v-for="s in page.seasons" :key="s" :to="s === current ? { name: 'home' } : { name: 'results', params: { season: s } }"
                        :class="{ active: s === season }" :aria-current="s === season ? 'page' : undefined">{{ seasonLabel(s) }}</router-link>
         </div>
@@ -19,11 +19,17 @@
         <p v-else-if="state === 'error'" class="status">Výsledky se nepodařilo načíst. Zkuste stránku obnovit.</p>
         <p v-else-if="page && !page.sections.length" class="status">Pro sezónu {{ seasonLabel(season) }} zatím nejsou žádné výsledky.</p>
 
-        <results-section-block v-for="section in page?.sections ?? []" :key="section.id" :section="section" />
+        <results-section-block v-for="section in sections" :key="section.id" :section="section" />
 
-        <p v-if="page" class="archive">
-          Prezentace všech skupinovek od roku 2023 najdete v <router-link :to="{ name: 'tournaments' }">přehledu skupinovek</router-link>.
-        </p>
+        <section v-if="page" class="archive" aria-labelledby="archive-title">
+          <h2 id="archive-title">Archiv</h2>
+          <div v-if="pastSeasons.length" class="archive-seasons">
+            <router-link v-for="s in pastSeasons" :key="s" :to="{ name: 'results', params: { season: s } }">Sezóna {{ seasonLabel(s) }}</router-link>
+          </div>
+          <p>
+            Prezentace všech skupinovek od roku 2023 najdete v <router-link :to="{ name: 'tournaments' }">přehledu skupinovek</router-link>.
+          </p>
+        </section>
       </div>
     </template>
   </main-layout>
@@ -31,7 +37,7 @@
 
 <script setup lang="ts">
 import MainLayout from '@/layouts/MainLayout.vue';
-import ResultsApi, { ResultsPage, currentSeason, seasonLabel } from '@/api/ResultsApi';
+import ResultsApi, { ResultsPage, ResultsSection, currentSeason, seasonLabel } from '@/api/ResultsApi';
 import ResultsSectionBlock from '@/components/results/ResultsSectionBlock.vue';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
@@ -41,6 +47,19 @@ const current = currentSeason();
 const season = computed(() => String(route.params.season || current));
 const page = ref<ResultsPage>();
 const state = ref<'loading' | 'loaded' | 'error'>('loading');
+const pastSeasons = computed(() => (page.value?.seasons ?? []).filter((s) => s !== season.value && s < current));
+
+/** In the season being played the latest tournament comes first; a closed season reads in date order. */
+const sections = computed(() => {
+  const list = page.value?.sections ?? [];
+  if (season.value !== current) return list;
+  const newestFirst = (section: ResultsSection): ResultsSection => ({
+    ...section,
+    events: section.events ? [...section.events].reverse() : section.events,
+    children: section.children.map(newestFirst),
+  });
+  return list.map(newestFirst);
+});
 
 watch(season, (s) => {
   state.value = 'loading';
@@ -56,15 +75,11 @@ watch(season, (s) => {
 </script>
 
 <style>
-/*
- * Shared by the results components. The club's emblem is a playing card framed half black,
- * half red; the competition cards borrow that frame, everything else stays quiet.
- */
+/* Shared by the results components. */
 .results-page,
 .results-hero {
   --felt: #1a881a;
   --felt-deep: #0e5a1b;
-  --suit-red: #e1232f;
   --suit-black: #000;
   --ink: #222;
   --ink-muted: #5f6661;
@@ -112,18 +127,11 @@ watch(season, (s) => {
   position: relative;
   background: white;
   border-radius: 12px;
-  padding: 16px 18px 14px 22px;
+  padding: 16px 18px 14px;
+  border: 1px solid #e1e5e1;
   overflow: hidden;
 }
 
-/* The emblem's frame: black above, red below. */
-.results-page .card::before {
-  content: '';
-  position: absolute;
-  inset: 0 auto 0 0;
-  width: 5px;
-  background: linear-gradient(var(--suit-black) 50%, var(--suit-red) 50%);
-}
 
 .results-page .card h3 {
   font-size: 1.0625rem;
@@ -223,10 +231,31 @@ h1 {
 
 .archive {
   margin: 8px 0 0;
-  padding-top: 20px;
+  padding-top: 24px;
   border-top: 1px solid #d5dad5;
   color: var(--ink-muted);
   font-size: 0.9375rem;
+}
+
+.archive h2 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 12px;
+}
+
+.archive-seasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  margin-bottom: 14px;
+}
+
+.archive-seasons a {
+  padding: 6px 14px;
+  background: white;
+  border: 1px solid #e1e5e1;
+  border-radius: 999px;
 }
 
 @media (max-width: 640px) {
