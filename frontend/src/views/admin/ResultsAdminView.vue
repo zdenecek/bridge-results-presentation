@@ -72,11 +72,13 @@ const importUrl = ref('');
 const tournaments = ref<{ slug: string; name: string }[]>([]);
 const competitions = ref<{ slug: string; title: string }[]>([]);
 
-/** Stored seasons plus the current and the next one, so a new season can be started. */
+/** Every season since the archive on bkpraha.cz starts (2022/23), up to the next one, so any can be filled. */
 const seasons = computed(() => {
-  const year = Number(current.slice(0, 4)) + 1;
-  const next = `${year}-${String((year + 1) % 100).padStart(2, '0')}`;
-  return [...new Set([next, current, ...(page.value?.seasons ?? [])])].sort().reverse();
+  const list: string[] = [];
+  for (let year = Number(current.slice(0, 4)) + 1; year >= 2022; year--) {
+    list.push(`${year}-${String((year + 1) % 100).padStart(2, '0')}`);
+  }
+  return [...new Set([...list, ...(page.value?.seasons ?? [])])].sort().reverse();
 });
 const otherSeasons = computed(() => (page.value?.seasons ?? []).filter((s) => s !== season.value));
 

@@ -12,6 +12,11 @@ const RESULTS_SECTION_KINDS = ['group', 'events', 'tournament', 'prebor', 'bavln
 
 function resultsEnsureSchema(PDO $pdo): void
 {
+    // Once per connection: on MariaDB a CREATE TABLE commits a running transaction, such as an import's.
+    static $ready = [];
+    if (isset($ready[spl_object_id($pdo)])) return;
+    $ready[spl_object_id($pdo)] = true;
+
     if ($pdo->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite') {
         $id = 'INTEGER PRIMARY KEY AUTOINCREMENT';
         $suffix = '';
