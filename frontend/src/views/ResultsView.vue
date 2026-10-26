@@ -8,7 +8,7 @@
         </a>
         <h1>Výsledky <span class="season">{{ seasonLabel(season) }}</span></h1>
         <div v-if="page && page.seasons.length > 1" class="seasons" role="navigation" aria-label="Sezóny">
-          <router-link v-for="s in page.seasons" :key="s" :to="{ name: 'results', params: { season: s === current ? '' : s } }"
+          <router-link v-for="s in page.seasons" :key="s" :to="s === current ? { name: 'home' } : { name: 'results', params: { season: s } }"
                        :class="{ active: s === season }" :aria-current="s === season ? 'page' : undefined">{{ seasonLabel(s) }}</router-link>
         </div>
       </div>
@@ -20,6 +20,10 @@
         <p v-else-if="page && !page.sections.length" class="status">Pro sezónu {{ seasonLabel(season) }} zatím nejsou žádné výsledky.</p>
 
         <results-section-block v-for="section in page?.sections ?? []" :key="section.id" :section="section" />
+
+        <p v-if="page" class="archive">
+          Prezentace všech skupinovek od roku 2023 najdete v <router-link :to="{ name: 'tournaments' }">přehledu skupinovek</router-link>.
+        </p>
       </div>
     </template>
   </main-layout>
@@ -215,6 +219,14 @@ h1 {
 
 .status {
   color: var(--ink-muted);
+}
+
+.archive {
+  margin: 8px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid #d5dad5;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
 }
 
 @media (max-width: 640px) {

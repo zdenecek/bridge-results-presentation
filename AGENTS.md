@@ -218,8 +218,9 @@ Náhrada ručně psané <https://www.bkpraha.cz/vysledky/> (bkpraha.cz na ni bud
 U turnaje se po zadání adresy hned stáhnou výsledky přes `bavlnkaFetchResults` (TC i Giborg,
 1url.cz se rozbalí) a uloží se vítěz: dvojice jako jméno a příjmení, družstvo jménem z TC.
 Stránku, kterou neumíme přečíst, jde jen odkázat a vítěze napsat (`winner_override`).
-Novou sezónu jde založit zkopírováním sekcí té předchozí. Plán dalších kroků (import
-současné stránky a archivů, veřejná stránka, admin) je ve `VYSLEDKY_PLAN.md`.
+Novou sezónu jde založit zkopírováním sekcí té předchozí. Stránka je domovská (`/`, starší
+sezóny `/vysledky/2025-26`), spravuje se v adminu na záložce Výsledky. Dřívější seznam všech
+skupinovek je na `/skupinovky`. Zbývá import současné stránky a archivů (`VYSLEDKY_PLAN.md`).
 
 ## CSS
 

@@ -46,6 +46,7 @@ const tabs = [
   { name: 'admin-tournament-show', label: 'Skupinovky', matches: ['admin-tournament'] },
   { name: 'admin-bavlnka', label: 'Bavlnka', matches: ['admin-bavlnka'] },
   { name: 'admin-prebor', label: 'Přebory', matches: ['admin-prebor'] },
+  { name: 'admin-results', label: 'Výsledky', matches: ['admin-results'] },
 ];
 
 const password = ref('');

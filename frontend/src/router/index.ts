@@ -31,12 +31,19 @@ import PreborRankingView from "@/views/PreborRankingView.vue";
 import PreborIndexView from "@/views/PreborIndexView.vue";
 import ResultsView from "@/views/ResultsView.vue";
 import PreborAdminView from "@/views/admin/PreborAdminView.vue";
+import ResultsAdminView from "@/views/admin/ResultsAdminView.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
         path: "/",
         name: "home",
+        component: ResultsView,
+    },
+    {
+        path: "/skupinovky",
+        name: "tournaments",
         component: TournamentsIndexView,
+        meta: { title: () => "Skupinovky – BK Praha" },
     },
     {
         path: "/admin",
@@ -67,6 +74,11 @@ const routes: Array<RouteRecordRaw> = [
                 path: "prebor",
                 name: "admin-prebor",
                 component: PreborAdminView,
+            },
+            {
+                path: "vysledky",
+                name: "admin-results",
+                component: ResultsAdminView,
             },
         ]
     },

@@ -27,7 +27,9 @@ Two findings matter for the plan:
 
 - **Decided:** no iframe; bkpraha.cz/vysledky will only link to vysledky.bkpraha.cz/vysledky.
   The `/embed/*` parts below are dropped.
-- **Done:** step 1 (Bavlnka discovery) and step 2 (backend, `api/results.php`).
+- **Done:** step 1 (Bavlnka discovery), step 2 (backend, `api/results.php`), step 4 (public page,
+  now the home page `/`) and step 6 (admin tab Výsledky, without the inbox of new TC folders).
+- **Left:** step 3 (import of the current page and archives), the inbox, the switch on bkpraha.cz.
 
 ## Target
 
