@@ -39,7 +39,7 @@
     </template>
 
     <p v-else-if="section.kind === 'tournament'" class="muted">
-      <template v-if="section.tournament">Ukazuje, kdo ve skupinovce {{ section.tournament.name }} vede a kdy je další kolo.</template>
+      <template v-if="section.tournament">Ukazuje, kdo ve skupinovce {{ tournamentName }} vede a kdy je další kolo.</template>
       <template v-else-if="section.ref">Skupinovka „{{ section.ref }}“ neexistuje.</template>
       <template v-else>Skupinovka zatím není vybraná. {{ section.note ? `Stránka ukazuje: ${section.note}` : '' }}</template>
     </p>
@@ -77,6 +77,8 @@ const newEvent = reactive({ url: '', date: '', title: '', ongoing: false });
 
 const isEmpty = computed(() => !props.section.children.length && (props.section.kind !== 'events' || !props.section.events?.length));
 const summary = computed(() => KIND_LABELS[props.section.kind]);
+// The tournament list reads names the way the rest of the app does; the section's own copy can arrive mis-encoded.
+const tournamentName = computed(() => admin.tournaments.value.find((t) => t.slug === props.section.ref)?.name ?? props.section.ref);
 
 function move(direction: -1 | 1) {
   admin.run(() => ResultsApi.moveSection(props.section.id, direction, adminKey.value));
