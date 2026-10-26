@@ -312,6 +312,7 @@ function bavlnkaParseTournamentCalculator(array $data): array
         $score = $result['Result']['_pointsDecimal'] ?? null;
         $pairs[] = [
             'pair' => isset($participant['Number']) ? (int) $participant['Number'] : null,
+            'title' => isset($participant['_name']) ? bavlnkaCleanText((string) $participant['_name']) : null,
             'rankFrom' => $place,
             'rankTo' => $place + $tied[$place] - 1,
             'score' => is_numeric($score) ? round((float) $score, 2) : null,

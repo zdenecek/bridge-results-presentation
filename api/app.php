@@ -10,6 +10,7 @@ use Slim\Exception\HttpNotFoundException;
 $pdo = include(__DIR__ . '/db.php');
 require_once __DIR__ . '/gemini.php';
 require_once __DIR__ . '/bavlnka.php';
+require_once __DIR__ . '/prebor.php';
 $app = AppFactory::create();
 $config = include(__DIR__ . '/config.php');
 
@@ -33,7 +34,7 @@ $loggedInMiddleware = function ($request, $handler) use ($apikey): ResponseInter
     $routeName = $route->getName();
     $key = $request->getHeader('Apikey');
     // A scheduled task on the hosting can only call a plain URL, so the update takes its own key in the query.
-    if ($routeName === 'bavlnka-update' && hash_equals(bavlnkaCronKey($apikey), (string) ($request->getQueryParams()['key'] ?? ''))) {
+    if (in_array($routeName, ['bavlnka-update', 'prebor-update'], true) && hash_equals(bavlnkaCronKey($apikey), (string) ($request->getQueryParams()['key'] ?? ''))) {
         return $handler->handle($request);
     }
 
@@ -41,7 +42,7 @@ $loggedInMiddleware = function ($request, $handler) use ($apikey): ResponseInter
 
     // Define routes that user does not have to be logged in with. All other routes, the user needs to be logged in with.
     // Names for routes must be defined in routes.php with ->setName() for each one.
-    $publicRoutesArray = array('tournament', 'tournaments', 'home', 'bavlnka-ranking', 'bavlnka-ranking-csv');
+    $publicRoutesArray = array('tournament', 'tournaments', 'home', 'bavlnka-ranking', 'bavlnka-ranking-csv', 'prebor-competitions', 'prebor-ranking', 'prebor-ranking-csv');
 
     if ((!array_key_exists(0, $key) || $key[0] !== $apikey) && (!in_array($routeName, $publicRoutesArray)) && $method !== 'OPTIONS') {
         $response = new \Slim\Psr7\Response();
@@ -291,6 +292,100 @@ $app->put("$prefix/bavlnka/aliases", function (Request $request, Response $respo
 });
 
 $app->options("$prefix/bavlnka/{path:.*}", function (Request $request, Response $response): Response {
+    return $response;
+});
+
+
+$preborJson = function (Response $response, $data, int $status = 200): Response {
+    $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
+    return $response->withStatus($status);
+};
+$preborError = fn(Response $response, Throwable $e, int $status = 400) => $preborJson($response, ['message' => $e->getMessage()], $status);
+$slug = '{slug:[a-z0-9-]+}';
+
+$app->get("$prefix/prebor", function (Request $request, Response $response) use ($pdo, $preborJson) {
+    $fields = ['slug', 'season', 'title', 'unit', 'best', 'rounds', 'played'];
+    return $preborJson($response, array_map(fn($c) => array_intersect_key($c, array_flip($fields)), preborCompetitions($pdo)));
+})->setName('prebor-competitions');
+
+$app->get("$prefix/prebor/$slug/ranking", function (Request $request, Response $response, array $args) use ($pdo, $preborJson, $preborError) {
+    try {
+        return $preborJson($response, preborRanking($pdo, $args['slug']));
+    } catch (InvalidArgumentException $e) {
+        return $preborError($response, $e, 404);
+    }
+})->setName('prebor-ranking');
+
+$app->get("$prefix/prebor/$slug/ranking.csv", function (Request $request, Response $response, array $args) use ($pdo, $preborError) {
+    try {
+        $response->getBody()->write(preborRankingCsv(preborRanking($pdo, $args['slug'])));
+    } catch (InvalidArgumentException $e) {
+        return $preborError($response, $e, 404);
+    }
+    return $response->withHeader('Content-Type', 'text/csv; charset=utf-8');
+})->setName('prebor-ranking-csv');
+
+$preborUpdate = function (Request $request, Response $response) use ($pdo, $preborJson) {
+    @set_time_limit(90);
+    return $preborJson($response, preborUpdate($pdo));
+};
+$app->get("$prefix/prebor/update", $preborUpdate)->setName('prebor-update');
+$app->post("$prefix/prebor/update", $preborUpdate)->setName('prebor-update');
+
+$app->get("$prefix/prebor/admin", function (Request $request, Response $response) use ($pdo, $config, $preborJson) {
+    return $preborJson($response, ['competitions' => preborAdminData($pdo), 'cronKey' => bavlnkaCronKey($config['key'])]);
+});
+
+$app->post("$prefix/prebor/competitions", function (Request $request, Response $response) use ($pdo, $preborJson, $preborError) {
+    try {
+        return $preborJson($response, preborSaveCompetition($pdo, (array) $request->getParsedBody()), 201);
+    } catch (InvalidArgumentException $e) {
+        return $preborError($response, $e);
+    }
+});
+
+$app->put("$prefix/prebor/competitions/{id:[0-9]+}", function (Request $request, Response $response, array $args) use ($pdo, $preborJson, $preborError) {
+    try {
+        return $preborJson($response, preborSaveCompetition($pdo, (array) $request->getParsedBody(), (int) $args['id']));
+    } catch (InvalidArgumentException $e) {
+        return $preborError($response, $e);
+    }
+});
+
+$app->post("$prefix/prebor/$slug/rounds", function (Request $request, Response $response, array $args) use ($pdo, $preborJson, $preborError) {
+    try {
+        return $preborJson($response, preborAddRound($pdo, $args['slug'], (array) $request->getParsedBody()), 201);
+    } catch (InvalidArgumentException $e) {
+        return $preborError($response, $e);
+    }
+});
+
+$app->put("$prefix/prebor/rounds/{id:[0-9]+}", function (Request $request, Response $response, array $args) use ($pdo, $preborError) {
+    $data = (array) $request->getParsedBody();
+    try {
+        preborRoundAction($pdo, (int) $args['id'], (string) ($data['action'] ?? ''));
+    } catch (InvalidArgumentException $e) {
+        return $preborError($response, $e);
+    }
+    return $response->withStatus(204);
+});
+
+$app->post("$prefix/prebor/$slug/entries/import", function (Request $request, Response $response, array $args) use ($pdo, $preborJson, $preborError) {
+    try {
+        return $preborJson($response, ['entries' => preborImportRoster($pdo, $args['slug'])]);
+    } catch (InvalidArgumentException | RuntimeException $e) {
+        return $preborError($response, $e);
+    }
+});
+
+$app->put("$prefix/prebor/rounds/{id:[0-9]+}/assignments", function (Request $request, Response $response, array $args) use ($pdo) {
+    $data = (array) $request->getParsedBody();
+    $entry = $data['entry'] ?? null;
+    preborSetAssignment($pdo, (int) $args['id'], (string) ($data['playersKey'] ?? ''), $entry === null || $entry === '' ? null : (int) $entry);
+    return $response->withStatus(204);
+});
+
+$app->options("$prefix/prebor/{path:.*}", function (Request $request, Response $response): Response {
     return $response;
 });
 

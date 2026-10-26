@@ -27,6 +27,9 @@ import RoundsSeatingsViewVue from "@/views/RoundsSeatingsView.vue";
 import FinalResultsViewVue from "@/views/prints/FinalResultsPrint.vue";
 import BavlnkaRankingView from "@/views/BavlnkaRankingView.vue";
 import BavlnkaAdminView from "@/views/admin/BavlnkaAdminView.vue";
+import PreborRankingView from "@/views/PreborRankingView.vue";
+import PreborIndexView from "@/views/PreborIndexView.vue";
+import PreborAdminView from "@/views/admin/PreborAdminView.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -59,6 +62,11 @@ const routes: Array<RouteRecordRaw> = [
                 name: "admin-bavlnka",
                 component: BavlnkaAdminView,
             },
+            {
+                path: "prebor",
+                name: "admin-prebor",
+                component: PreborAdminView,
+            },
         ]
     },
     {
@@ -66,6 +74,18 @@ const routes: Array<RouteRecordRaw> = [
         name: "bavlnka-ranking",
         component: BavlnkaRankingView,
         meta: { title: () => "Bavlnka – žebříček" },
+    },
+    {
+        path: "/prebor",
+        name: "prebor-index",
+        component: PreborIndexView,
+        meta: { title: () => "Přebory BKP" },
+    },
+    {
+        path: "/prebor/:slug",
+        name: "prebor-ranking",
+        component: PreborRankingView,
+        meta: { title: () => "Přebor – celkové pořadí" },
     },
     {
         path: "/tournament/:tournament",

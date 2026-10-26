@@ -37,6 +37,11 @@ vyvíjet. Heslo k zápisovým endpointům je `key` v `api/config.php` (necommitn
 | GET | `/api/bavlnka/ranking.csv` | totéž ve tvaru Google Sheetu, který čte widget na bkpraha.cz |
 | GET/POST | `/api/bavlnka/update` | hlavička `Apikey` nebo `?key=` |
 | GET | `/api/bavlnka/admin` | hlavička `Apikey` |
+| GET | `/api/prebor` | seznam přeborů (`slug, season, title, …`) |
+| GET | `/api/prebor/{slug}/ranking` | celkové pořadí přeboru (JSON) |
+| GET | `/api/prebor/{slug}/ranking.csv` | totéž ve tvaru Google Sheetu pro widget na bkpraha.cz |
+| GET/POST | `/api/prebor/update` | hlavička `Apikey` nebo `?key=` (stejný klíč jako Bavlnka) |
+| GET | `/api/prebor/admin` | hlavička `Apikey`, zápisy přes `/admin/prebor` |
 
 `POST /api/transcribe-slip` (hlavička `Apikey`, tělo `{image, mimeType}` s fotkou
 v base64) pošle fotku lístečku do Gemini a vrátí `{text}` s řádky pro zápis
@@ -172,6 +177,29 @@ Jména se slučují přes aliasy (výchozí jsou ruční opravy z původního se
 ohledu na diakritiku a samotné příjmení k jedinému hráči s tím příjmením. Matriční
 čísla z TC se ukládají, ale ke slučování se nepoužívají – u neregistrovaných hráčů
 se mezi turnaji mění.
+
+## Přebory (Topový a Impový)
+
+Celosezónní cykly 10 kol, do celkového pořadí se sčítá 8 nejlepších výsledků (propozice §9,
+odkazy na stránkách `bkpraha.cz/prihlasky-top` a `/prihlasky-imp`). TOP je párový turnaj v %,
+IMP švýcar 6 × 4 rozdání ve VP. Každá sezóna každého přeboru je vlastní záznam v
+`prebor_competitions` (adresa `slug` jako `top-2026`, sezóna, název, jednotka, počet kol, kolik
+se jich započítává a CSV export tabulky přihlášek); nový se zakládá v `/admin/prebor`.
+Ročník 2026/27 se založí sám. Veřejně `/prebor` (seznam) a `/prebor/{slug}`.
+
+Kola se přidávají ručně v adminu: adresa prezentace z Tournament Calculatoru (složky si pojmenovává
+vedoucí, datum se proto zadává) se hned stáhne přes parser Bavlnky, nebo se vloží výsledky
+řádek po řádku (hráči oddělení „ - “, skóre jako poslední číslo). Ručně šlo 1. kolo IMP 2026,
+které se omylem hrálo jako páry a Ondra ho přepočítal na VP. `update` stáhne znovu všechna kola
+z TC, aby se projevily pozdější opravy; plánovaná úloha na něj zatím není.
+
+Pořadí je po **přihlášených dvojicích** (2–4 hráči z tabulky přihlášek, načte se tlačítkem). Výsledek
+se připíše dvojici, ve které hrají oba hráči, jinak jediné, ve které hraje aspoň jeden (náhradník),
+jinak vznikne samostatná dvojice, která se mezi koly slučuje podle hráčů. Jména se porovnávají bez
+ohledu na pořadí, diakritiku a „ml.“. Hráči ze dvou různých přihlášených dvojic se v adminu ukážou
+ke kontrole a výsledek se dá přiřadit ručně (`prebor_assignments`). Sčítá se zaokrouhlené skóre
+kol, při shodě součtu se místo dělí. `php api/tests/prebor_test.php` to ověřuje proti widgetům
+po 1. kole TOP i IMP 2026.
 
 ## CSS
 
