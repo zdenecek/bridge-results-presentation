@@ -49,7 +49,10 @@ const page = ref<ResultsPage>();
 const state = ref<'loading' | 'loaded' | 'error'>('loading');
 const pastSeasons = computed(() => (page.value?.seasons ?? []).filter((s) => s !== season.value && s < current));
 
-/** In the season being played the latest tournament comes first; a closed season reads in date order. */
+/**
+ * A closed season reads in date order. In the season being played what is running now comes first,
+ * gathered under one heading, then the rest, each with its latest tournament first.
+ */
 const sections = computed(() => {
   const list = page.value?.sections ?? [];
   if (season.value !== current) return list;
@@ -58,7 +61,31 @@ const sections = computed(() => {
     events: section.events ? [...section.events].reverse() : section.events,
     children: section.children.map(newestFirst),
   });
-  return list.map(newestFirst);
+
+  const running: ResultsSection[] = [];
+  const series: ResultsSection[] = [];
+  const rest: ResultsSection[] = [];
+  for (const section of list.map(newestFirst)) {
+    if (section.kind === 'bavlnka' && section.state === 'running') {
+      series.push(section);
+    } else if (section.kind === 'group') {
+      // A cycle of a skupinovka is named with it: "Skupinovka A – podzim".
+      running.push(...section.children.filter((c) => c.state === 'running').map((c) => ({
+        ...c,
+        title: `${section.title} – ${c.title.includes(' ') ? c.title : c.title.toLocaleLowerCase('cs-CZ')}`,
+      })));
+      const others = section.children.filter((c) => c.state !== 'running');
+      if (others.length) rest.push({ ...section, children: others });
+    } else if (section.state === 'running') {
+      running.push(section);
+    } else {
+      rest.push(section);
+    }
+  }
+  const now: ResultsSection[] = running.length
+    ? [{ id: -1, parent: null, title: 'Hraje se', kind: 'group', ref: null, note: null, state: 'running', children: running }]
+    : [];
+  return [...now, ...series, ...rest];
 });
 
 watch(season, (s) => {

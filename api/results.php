@@ -369,6 +369,7 @@ function resultsPage(PDO $pdo, string $season, bool $admin = false, ?string $tod
             'bavlnka' => ['events' => resultsBavlnkaEvents($pdo, $from, $to), 'leaders' => resultsBavlnkaLeaders($pdo, $season, $today)],
             default => [],
         };
+        $node['state'] = resultsSectionState($node, resultsSeasonOf($today) === $season);
         $nodes[$node['id']] = $node;
     }
 
@@ -379,18 +380,60 @@ function resultsPage(PDO $pdo, string $season, bool $admin = false, ?string $tod
     foreach ($nodes as $node) {
         if ($node['parent'] !== null && isset($tree[$node['parent']])) $tree[$node['parent']]['children'][] = $node;
     }
+    foreach ($tree as &$node) {
+        if ($node['kind'] === 'group') {
+            $states = array_column($node['children'], 'state');
+            $node['state'] = in_array('running', $states, true) ? 'running'
+                : ($states && !array_diff($states, ['upcoming']) ? 'upcoming' : 'done');
+        }
+    }
+    unset($node);
 
     return ['season' => $season, 'seasons' => resultsSeasons($pdo), 'sections' => array_values($tree)];
 }
 
-/** Our own tournament: the page shows the standings computed in the browser, here only what to load. */
+/**
+ * Whether a section is being played now, is over, or has not started, so the page of the season being
+ * played can show what is running first. Bavlnka runs all season; a group follows its sections.
+ */
+function resultsSectionState(array $node, bool $currentSeason): string
+{
+    switch ($node['kind']) {
+        case 'tournament':
+            $t = $node['tournament'];
+            return !$t || !$t['played'] ? 'upcoming' : ($t['played'] >= $t['rounds'] ? 'done' : 'running');
+        case 'prebor':
+            $p = $node['prebor'];
+            return !$p || !$p['played'] ? 'upcoming' : ($p['played'] >= $p['rounds'] ? 'done' : 'running');
+        case 'bavlnka':
+            return $currentSeason ? 'running' : 'done';
+        case 'events':
+            if (!$node['events']) return 'upcoming';
+            return $currentSeason && array_filter($node['events'], fn($e) => $e['ongoing']) ? 'running' : 'done';
+        default:
+            return 'done';
+    }
+}
+
+/**
+ * Our own tournament: the page shows the standings computed in the browser, here only what to load and
+ * how far it is, counted like the presentation does: the last round with results is the standing.
+ */
 function resultsTournamentSummary(PDO $pdo, ?string $slug): ?array
 {
     if ($slug === null) return null;
-    $select = $pdo->prepare("SELECT id, name, slug FROM tournaments WHERE slug = ?");
+    $select = $pdo->prepare("SELECT id, name, slug, data FROM tournaments WHERE slug = ?");
     $select->execute([$slug]);
     $row = $select->fetch(PDO::FETCH_ASSOC);
-    return $row ? ['id' => (int) $row['id'], 'name' => $row['name'], 'slug' => $row['slug']] : null;
+    if (!$row) return null;
+    $data = json_decode((string) $row['data'], true);
+    if (is_string($data)) $data = json_decode($data, true);
+    $played = 0;
+    foreach ($data['rounds'] ?? [] as $number => $round) {
+        if (!empty($round['boardResults'])) $played = max($played, (int) $number);
+    }
+    return ['id' => (int) $row['id'], 'name' => $row['name'], 'slug' => $row['slug'],
+        'played' => $played, 'rounds' => (int) ($data['totalRounds'] ?? 0)];
 }
 
 function resultsPreborSummary(PDO $pdo, ?string $slug): ?array

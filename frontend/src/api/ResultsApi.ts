@@ -39,8 +39,10 @@ export interface ResultsSection {
     ref: string | null;
     note: string | null;
     children: ResultsSection[];
+    /** Being played now, over, or not started yet. */
+    state: "running" | "done" | "upcoming";
     events?: ResultsEvent[];
-    tournament?: { id: number; name: string; slug: string } | null;
+    tournament?: { id: number; name: string; slug: string; played: number; rounds: number } | null;
     prebor?: ResultsPreborSummary | null;
     leaders?: { updated: string | null; players: (ResultsPlayer & { rank: number; points: number })[] } | null;
 }

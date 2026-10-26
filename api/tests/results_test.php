@@ -50,7 +50,8 @@ $http = function (string $url) use ($web): array {
 $pdo = new PDO('sqlite::memory:');
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $pdo->exec("CREATE TABLE tournaments (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, slug TEXT, data TEXT)");
-$pdo->exec("INSERT INTO tournaments (name, slug, data) VALUES ('Skupinová A Podzim 2026', 'skupinova-a-podzim-2026', '{}')");
+$pdo->exec("INSERT INTO tournaments (name, slug, data) VALUES ('Skupinová A Podzim 2026', 'skupinova-a-podzim-2026',
+    '{\"totalRounds\": 5, \"rounds\": {\"1\": {\"boardResults\": [1]}, \"2\": {\"boardResults\": [1]}, \"3\": {\"boardResults\": []}}}')");
 resultsEnsureSchema($pdo);
 
 // Structure
@@ -96,6 +97,10 @@ check('league still running', [$children[0]['events'][0]['ongoing'], $page['sect
 check('tournament section', [$children[1]['tournament']['slug'], $children[2]['tournament'], $children[2]['note']],
     ['skupinova-a-podzim-2026', null, 'Soutěž začíná 30. 11. 2026.']);
 check('přebor without rounds', $children[3]['prebor']['lastRound'], null);
+check('what is being played', [$page['sections'][0]['state'], array_column($children, 'state'), $page['sections'][2]['state']],
+    ['running', ['running', 'running', 'upcoming', 'upcoming'], 'running']);
+check('skupinovka standing', [$children[1]['tournament']['played'], $children[1]['tournament']['rounds']], [2, 5]);
+check('a past season is over', resultsPage($pdo, $season, false, '2028-01-01')['sections'][2]['state'], 'done');
 
 $small = $page['sections'][1]['events'];
 check('events by date, from the folder when not given', array_column($small, 'date'), ['2026-09-14', '2026-09-19', '2026-09-22']);
