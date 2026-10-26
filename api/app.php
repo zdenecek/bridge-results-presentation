@@ -11,6 +11,7 @@ $pdo = include(__DIR__ . '/db.php');
 require_once __DIR__ . '/gemini.php';
 require_once __DIR__ . '/bavlnka.php';
 require_once __DIR__ . '/prebor.php';
+require_once __DIR__ . '/results.php';
 $app = AppFactory::create();
 $config = include(__DIR__ . '/config.php');
 
@@ -42,7 +43,7 @@ $loggedInMiddleware = function ($request, $handler) use ($apikey): ResponseInter
 
     // Define routes that user does not have to be logged in with. All other routes, the user needs to be logged in with.
     // Names for routes must be defined in routes.php with ->setName() for each one.
-    $publicRoutesArray = array('tournament', 'tournaments', 'home', 'bavlnka-ranking', 'bavlnka-ranking-csv', 'prebor-competitions', 'prebor-ranking', 'prebor-ranking-csv');
+    $publicRoutesArray = array('tournament', 'tournaments', 'home', 'bavlnka-ranking', 'bavlnka-ranking-csv', 'prebor-competitions', 'prebor-ranking', 'prebor-ranking-csv', 'results-seasons', 'results-season');
 
     if ((!array_key_exists(0, $key) || $key[0] !== $apikey) && (!in_array($routeName, $publicRoutesArray)) && $method !== 'OPTIONS') {
         $response = new \Slim\Psr7\Response();
@@ -395,6 +396,94 @@ $app->put("$prefix/prebor/rounds/{id:[0-9]+}/assignments", function (Request $re
 });
 
 $app->options("$prefix/prebor/{path:.*}", function (Request $request, Response $response): Response {
+    return $response;
+});
+
+
+$resultsJson = function (Response $response, $data, int $status = 200): Response {
+    $response->getBody()->write(json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
+    return $response->withStatus($status);
+};
+// Every write answers with the season's page as the admin sees it, so the admin never reloads separately.
+$resultsWrite = function (Response $response, callable $action, ?string $season) use ($pdo, $resultsJson): Response {
+    try {
+        $result = $action();
+        return $resultsJson($response, ['result' => $result] + ($season ? ['page' => resultsPage($pdo, $season, true)] : []));
+    } catch (InvalidArgumentException $e) {
+        return $resultsJson($response, ['message' => $e->getMessage()], 400);
+    }
+};
+$season = '{season:[0-9]{4}-[0-9]{2}}';
+$sectionSeason = fn(int $id) => resultsSection($pdo, $id)['season'];
+$eventSeason = function (int $id) use ($pdo): string {
+    $select = $pdo->prepare("SELECT s.season FROM results_events e JOIN results_sections s ON s.id = e.section_id WHERE e.id = ?");
+    $select->execute([$id]);
+    return (string) $select->fetchColumn();
+};
+
+$app->get("$prefix/results/seasons", function (Request $request, Response $response) use ($pdo, $resultsJson) {
+    return $resultsJson($response, resultsSeasons($pdo));
+})->setName('results-seasons');
+
+$app->get("$prefix/results/$season", function (Request $request, Response $response, array $args) use ($pdo, $resultsJson) {
+    return $resultsJson($response, resultsPage($pdo, $args['season']));
+})->setName('results-season');
+
+$app->get("$prefix/results/$season/admin", function (Request $request, Response $response, array $args) use ($pdo, $resultsJson) {
+    return $resultsJson($response, resultsPage($pdo, $args['season'], true));
+});
+
+$app->post("$prefix/results/$season/copy", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite) {
+    $from = (string) (((array) $request->getParsedBody())['from'] ?? '');
+    return $resultsWrite($response, fn() => resultsCopySeason($pdo, $from, $args['season']), $args['season']);
+});
+
+$app->post("$prefix/results/sections", function (Request $request, Response $response) use ($pdo, $resultsWrite) {
+    $data = (array) $request->getParsedBody();
+    return $resultsWrite($response, fn() => resultsSaveSection($pdo, $data), (string) ($data['season'] ?? '') ?: null);
+});
+
+$app->put("$prefix/results/sections/{id:[0-9]+}", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite) {
+    $data = (array) $request->getParsedBody();
+    return $resultsWrite($response, fn() => resultsSaveSection($pdo, $data, (int) $args['id']), (string) ($data['season'] ?? '') ?: null);
+});
+
+$app->delete("$prefix/results/sections/{id:[0-9]+}", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite, $sectionSeason) {
+    try {
+        $season = $sectionSeason((int) $args['id']);
+    } catch (InvalidArgumentException $e) {
+        $season = null;
+    }
+    return $resultsWrite($response, fn() => resultsDeleteSection($pdo, (int) $args['id']), $season);
+});
+
+$app->post("$prefix/results/sections/{id:[0-9]+}/move", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite, $sectionSeason) {
+    $direction = (int) (((array) $request->getParsedBody())['direction'] ?? 0);
+    return $resultsWrite($response, function () use ($pdo, $args, $direction) {
+        resultsMoveSection($pdo, (int) $args['id'], $direction);
+    }, $sectionSeason((int) $args['id']));
+});
+
+$app->post("$prefix/results/sections/{id:[0-9]+}/events", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite, $sectionSeason) {
+    $data = (array) $request->getParsedBody();
+    return $resultsWrite($response, fn() => resultsAddEvent($pdo, (int) $args['id'], $data), $sectionSeason((int) $args['id']));
+});
+
+$app->put("$prefix/results/events/{id:[0-9]+}", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite, $eventSeason) {
+    $data = (array) $request->getParsedBody();
+    return $resultsWrite($response, fn() => resultsUpdateEvent($pdo, (int) $args['id'], $data), $eventSeason((int) $args['id']) ?: null);
+});
+
+$app->post("$prefix/results/events/{id:[0-9]+}/refetch", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite, $eventSeason) {
+    return $resultsWrite($response, fn() => resultsRefetchEvent($pdo, (int) $args['id']), $eventSeason((int) $args['id']) ?: null);
+});
+
+$app->delete("$prefix/results/events/{id:[0-9]+}", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite, $eventSeason) {
+    $season = $eventSeason((int) $args['id']) ?: null;
+    return $resultsWrite($response, fn() => resultsDeleteEvent($pdo, (int) $args['id']), $season);
+});
+
+$app->options("$prefix/results/{path:.*}", function (Request $request, Response $response): Response {
     return $response;
 });
 

@@ -50,10 +50,12 @@ check('giborg pair number and score', [$giborg['pairs'][0]['pair'], $giborg['pai
 // Tournament Calculator
 $tc = bavlnkaParseTournamentCalculator(json_decode(fixture('tc-results.json'), true));
 check('tc tie', array_map(fn($p) => [$p['rankFrom'], $p['rankTo']], $tc), [[1, 1], [2, 2], [3, 4], [3, 4], [5, 5]]);
-check('tc players', $tc[0]['players'], [['name' => 'Olmer Adam', 'cbsId' => 3102], ['name' => 'Lemmon Bela', 'cbsId' => null]]);
+check('tc players', $tc[0]['players'], [['name' => 'Olmer Adam', 'cbsId' => 3102, 'first' => 'Adam', 'last' => 'Olmer'], ['name' => 'Lemmon Bela', 'cbsId' => null, 'first' => 'Bela', 'last' => 'Lemmon']]);
 check('tc score', $tc[0]['score'], 67.59);
 
 check('placeholder first name is dropped', bavlnkaPlayerName('Hawley .'), 'Hawley');
+check('giborg name split', [bavlnkaSplitName('Al Achkar Rabie'), bavlnkaSplitName('Čabrilová')],
+    [['first' => 'Rabie', 'last' => 'Al Achkar'], ['first' => '', 'last' => 'Čabrilová']]);
 
 // Real pages
 $live = bavlnkaParseListing(fixture('live-listing.html'), 'https://www.bkpraha.cz/vysledky/');
@@ -71,32 +73,45 @@ check('live giborg guest without first name', array_column($liveGiborg['pairs'][
 
 $liveTc = bavlnkaParseTournamentCalculator(json_decode(gzdecode(fixture('live-tc-1013.json.gz')), true));
 check('live tc pairs', count($liveTc), 9);
-check('live tc winner', [$liveTc[0]['rankFrom'], $liveTc[0]['score'], $liveTc[0]['players']], [1, 67.59, [['name' => 'Olmer Adam', 'cbsId' => 3102], ['name' => 'Lemmon Bela', 'cbsId' => null]]]);
+check('live tc winner', [$liveTc[0]['rankFrom'], $liveTc[0]['score'], $liveTc[0]['players']], [1, 67.59, [['name' => 'Olmer Adam', 'cbsId' => 3102, 'first' => 'Adam', 'last' => 'Olmer'], ['name' => 'Lemmon Bela', 'cbsId' => null, 'first' => 'Bela', 'last' => 'Lemmon']]]);
 
-// Whole update with a fake web
+check('tc index', bavlnkaParseTcIndex(fixture('tc-index-2026.html'), 'https://bridge.zdenektomis.eu/vysledky/2026/bkp-bavlnka/', 2026), [
+    ['date' => '2026-10-13', 'url' => 'https://bridge.zdenektomis.eu/vysledky/2026/bkp-bavlnka/1013bavlnka/'],
+    ['date' => '2026-09-29', 'url' => 'https://bridge.zdenektomis.eu/vysledky/2026/bkp-bavlnka/0929bavlnka/'],
+    ['date' => '2026-05-19', 'url' => 'https://bridge.zdenektomis.eu/vysledky/2026/bkp-bavlnka/0519bavlnka/'],
+]);
+
+// Whole update with a fake web: one TC tournament from the index, one Giborg one found by its address
 $web = [
-    'https://www.bkpraha.cz/vysledky/' => fixture('listing.html'),
+    'https://bridge.zdenektomis.eu/vysledky/2026/bkp-bavlnka/' => fixture('tc-index-2026.html'),
     'https://bridge.zdenektomis.eu/vysledky/2026/bkp-bavlnka/1013bavlnka/' => fixture('tc-page.html'),
     'https://bridge.zdenektomis.eu/vysledky/2026/bkp-bavlnka/1013bavlnka/results.json.gz' => gzencode(fixture('tc-results.json')),
-    'https://1url.cz/teX4p' => ['http://www.bridgebase.6f.sk/results/ZF/2026/260922/result.php?round_number=1', fixture('giborg.html')],
+    'https://www.bridgebase.6f.sk/results/ZF/2026/260922/result.php?round_number=1' => fixture('giborg.html'),
+    // A Wednesday přebor in the same Giborg folder must not be taken for Bavlnka.
+    'https://www.bridgebase.6f.sk/results/ZF/2026/261006/result.php?round_number=1' => 'Topový přebor BKP',
 ];
 $requested = [];
 $http = function (string $url) use ($web, &$requested): array {
     $requested[] = $url;
     $page = $web[$url] ?? null;
     if ($page === null) return ['Not found', $url, 404];
-    return is_array($page) ? [$page[1], $page[0], 200] : [$page, $url, 200];
+    return [$page, $url, 200];
 };
 $pdo = memoryDb();
-$report = bavlnkaUpdate($pdo, ['bavlnka' => ['sources' => ['https://www.bkpraha.cz/vysledky/']]], $http);
-check('update discovers three tournaments', count($report['discovered']), 3);
-check('update processes newest first', array_column($report['processed'], 'date'), ['2026-10-13', '2026-09-22']);
-check('update reports the missing one', count($report['errors']), 1);
-check('fragment is not requested', in_array('https://bridge.zdenektomis.eu/vysledky/2026/bkp-bavlnka/1013bavlnka/#000000RR0000', $requested, true), false);
+// Stored earlier under its bkpraha.cz link, so it must not come back under the TC address.
+bavlnkaInsertTournament($pdo, 'https://1url.cz/old', '2026-09-29');
+$pdo->exec("UPDATE bavlnka_tournaments SET status = 'ignored'");
 
-$again = bavlnkaUpdate($pdo, ['bavlnka' => ['sources' => ['https://www.bkpraha.cz/vysledky/']]], $http);
+$report = bavlnkaUpdate($pdo, [], $http, '2026-10-21');
+check('update discovers recent tournaments only', array_column($report['discovered'], 'date'), ['2026-10-13', '2026-09-22']);
+check('update processes newest first', array_column($report['processed'], 'date'), ['2026-10-13', '2026-09-22']);
+check('update has no errors', $report['errors'], []);
+check('giborg probed only on unknown Tuesdays', count(array_unique(array_filter($requested, fn($u) => str_contains($u, '6f.sk')))), 4);
+check('old index entry is not requested', in_array('https://bridge.zdenektomis.eu/vysledky/2026/bkp-bavlnka/0519bavlnka/', $requested, true), false);
+
+$again = bavlnkaUpdate($pdo, [], $http, '2026-10-21');
 check('second run discovers nothing new', count($again['discovered']), 0);
-check('second run retries only the failed one', $again['processed'], []);
+check('second run processes nothing', $again['processed'], []);
 
 $ranking = bavlnkaRanking($pdo, []);
 check('ranking updated', $ranking['updated'], '2026-10-13');

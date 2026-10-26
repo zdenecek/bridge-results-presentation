@@ -1,11 +1,12 @@
 <?php
 
 const BAVLNKA_DEFAULTS = [
-    'sources' => [
-        'https://www.bkpraha.cz/vysledky/',
-        'https://www.bkpraha.cz/archiv-vysledku-2025-26/',
-        'https://www.bkpraha.cz/archiv-vysledku-2024-25/',
-    ],
+    // Tournament Calculator exports are listed on an index page per year; Giborg results have
+    // no listing, so the update tries the address each recent Tuesday's results would have.
+    'tcIndex' => 'https://bridge.zdenektomis.eu/vysledky/{year}/bkp-bavlnka/',
+    'giborgUrl' => 'https://www.bridgebase.6f.sk/results/ZF/{year}/{yymmdd}/result.php?round_number=1',
+    'weekday' => 2,
+    'discoverWeeks' => 6,
     'window' => 50,
     'blockSize' => 5,
     'blockDecay' => 0.1,
@@ -145,6 +146,19 @@ function bavlnkaPlayerName(string $name): string
     return implode(' ', $parts);
 }
 
+/**
+ * Splits "Příjmení Jméno" as Giborg writes it: the last word is the first name, a single word is a
+ * surname (guests often have only that). Multi-word first names come out wrong, which is rare.
+ *
+ * @return array{first: string, last: string}
+ */
+function bavlnkaSplitName(string $name): array
+{
+    $parts = explode(' ', bavlnkaCleanText($name));
+    $first = count($parts) > 1 ? array_pop($parts) : '';
+    return ['first' => $first, 'last' => implode(' ', $parts)];
+}
+
 function bavlnkaDate(string $day, string $month, string $year): ?string
 {
     return checkdate((int) $month, (int) $day, (int) $year)
@@ -174,7 +188,8 @@ function bavlnkaAbsoluteUrl(string $href, string $base): string
 }
 
 /**
- * Reads the "Párové turnaje Bavlnka" section of a bkpraha.cz results page.
+ * Reads the "Párové turnaje Bavlnka" section of a bkpraha.cz results page, which is how the
+ * tournaments were found before that page moved here.
  * Each tournament there is a paragraph with the date it was played followed by a "Výsledky" link.
  *
  * @return list<array{date: ?string, url: string}>
@@ -210,6 +225,71 @@ function bavlnkaParseListing(string $html, string $pageUrl): array
     }
 
     return $entries;
+}
+
+/**
+ * Reads the index of one year's Tournament Calculator exports (links like ./1013bavlnka/).
+ *
+ * @return list<array{date: ?string, url: string}>
+ */
+function bavlnkaParseTcIndex(string $html, string $indexUrl, int $year): array
+{
+    preg_match_all('#href="\.?/?(\d{2})(\d{2})bavlnka/?"#i', $html, $matches, PREG_SET_ORDER);
+    $entries = [];
+    foreach ($matches as [, $month, $day]) {
+        $date = bavlnkaDate($day, $month, (string) $year);
+        if ($date) $entries[] = ['date' => $date, 'url' => rtrim($indexUrl, '/') . "/$month{$day}bavlnka/"];
+    }
+    return $entries;
+}
+
+/**
+ * Finds tournaments played in the last discoverWeeks weeks that are not stored yet. Older ones are
+ * left alone on purpose: adding a forgotten tournament would change a ranking people already know,
+ * so that is done by hand in the admin.
+ *
+ * @return array{0: list<array{date: string, url: string}>, 1: list<array>} entries, errors
+ */
+function bavlnkaDiscover(PDO $pdo, array $cfg, callable $http, string $today): array
+{
+    $since = date('Y-m-d', strtotime("$today -{$cfg['discoverWeeks']} weeks"));
+    $known = array_flip($pdo->query("SELECT COALESCE(date, listed_date) FROM bavlnka_tournaments
+        WHERE COALESCE(date, listed_date) IS NOT NULL")->fetchAll(PDO::FETCH_COLUMN));
+    $found = [];
+    $errors = [];
+
+    foreach (array_unique([(int) substr($since, 0, 4), (int) substr($today, 0, 4)]) as $year) {
+        $indexUrl = str_replace('{year}', (string) $year, $cfg['tcIndex']);
+        try {
+            [$body, , $status] = $http($indexUrl);
+            if ($status === 404) continue;
+            if ($status >= 400) throw new RuntimeException("HTTP $status");
+            foreach (bavlnkaParseTcIndex($body, $indexUrl, $year) as $entry) {
+                if ($entry['date'] >= $since && $entry['date'] <= $today && !isset($known[$entry['date']])) {
+                    $found[$entry['date']] = $entry;
+                }
+            }
+        } catch (Throwable $e) {
+            $errors[] = ['source' => $indexUrl, 'error' => $e->getMessage()];
+        }
+    }
+
+    for ($day = strtotime($since); $day <= strtotime($today); $day = strtotime('+1 day', $day)) {
+        $date = date('Y-m-d', $day);
+        if ((int) date('N', $day) !== $cfg['weekday'] || isset($known[$date]) || isset($found[$date])) continue;
+        $url = str_replace(['{year}', '{yymmdd}'], [date('Y', $day), date('ymd', $day)], $cfg['giborgUrl']);
+        try {
+            [$body, , $status] = $http($url);
+            if ($status === 200 && stripos($body, 'Bavln') !== false) {
+                $found[$date] = ['date' => $date, 'url' => $url];
+            }
+        } catch (Throwable $e) {
+            $errors[] = ['source' => $url, 'error' => $e->getMessage()];
+        }
+    }
+
+    krsort($found);
+    return [array_values($found), $errors];
 }
 
 function bavlnkaStripUrl(string $url): string
@@ -305,7 +385,12 @@ function bavlnkaParseTournamentCalculator(array $data): array
             if ($name === '') continue;
             $pid = $person['_pid'] ?? null;
             $isRegistered = is_array($pid) && str_starts_with((string) ($pid['__type'] ?? ''), 'RealPid:');
-            $players[] = ['name' => $name, 'cbsId' => $isRegistered ? (int) $pid['Number'] : null];
+            $players[] = [
+                'name' => $name,
+                'cbsId' => $isRegistered ? (int) $pid['Number'] : null,
+                'first' => bavlnkaPlayerName((string) ($person['_firstName'] ?? '')),
+                'last' => bavlnkaPlayerName((string) ($person['_lastName'] ?? '')),
+            ];
         }
 
         $place = (int) $result['Place'];
@@ -356,7 +441,7 @@ function bavlnkaParseGiborg(string $html): array
         $players = [];
         foreach (preg_split('/\s+-\s+/u', $names) as $name) {
             $name = bavlnkaPlayerName($name);
-            if ($name !== '') $players[] = ['name' => $name, 'cbsId' => null];
+            if ($name !== '') $players[] = ['name' => $name, 'cbsId' => null] + bavlnkaSplitName($name);
         }
 
         $score = isset($columns['score']) ? str_replace(',', '.', $cells[$columns['score']] ?? '') : '';
@@ -435,10 +520,10 @@ function bavlnkaProcessTournament(PDO $pdo, array $tournament, callable $http): 
 }
 
 /**
- * Finds new tournaments on bkpraha.cz and downloads results of those not stored yet,
+ * Finds tournaments played recently and downloads results of those not stored yet,
  * newest first, until the time budget runs out. Run it repeatedly to catch up.
  */
-function bavlnkaUpdate(PDO $pdo, array $config, ?callable $http = null): array
+function bavlnkaUpdate(PDO $pdo, array $config, ?callable $http = null, ?string $today = null): array
 {
     $http ??= 'bavlnkaHttpGet';
     $cfg = bavlnkaConfig($config);
@@ -446,17 +531,10 @@ function bavlnkaUpdate(PDO $pdo, array $config, ?callable $http = null): array
     $start = microtime(true);
     $report = ['discovered' => [], 'processed' => [], 'errors' => []];
 
-    foreach ($cfg['sources'] as $source) {
-        try {
-            [$body, $finalUrl, $status] = $http($source);
-            if ($status >= 400) throw new RuntimeException("HTTP $status");
-            foreach (bavlnkaParseListing($body, $finalUrl) as $entry) {
-                if (bavlnkaInsertTournament($pdo, $entry['url'], $entry['date'])) {
-                    $report['discovered'][] = $entry;
-                }
-            }
-        } catch (Throwable $e) {
-            $report['errors'][] = ['source' => $source, 'error' => $e->getMessage()];
+    [$entries, $report['errors']] = bavlnkaDiscover($pdo, $cfg, $http, $today ?? date('Y-m-d'));
+    foreach ($entries as $entry) {
+        if (bavlnkaInsertTournament($pdo, $entry['url'], $entry['date'])) {
+            $report['discovered'][] = $entry;
         }
     }
 

@@ -43,7 +43,7 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const tabs = [
-  { name: 'admin-tournament-show', label: 'Turnaje', matches: ['admin-tournament'] },
+  { name: 'admin-tournament-show', label: 'Skupinovky', matches: ['admin-tournament'] },
   { name: 'admin-bavlnka', label: 'Bavlnka', matches: ['admin-bavlnka'] },
   { name: 'admin-prebor', label: 'Přebory', matches: ['admin-prebor'] },
 ];

@@ -4,7 +4,7 @@
       <div>
         <h2>{{ title || 'Upravit turnaj' }}</h2>
         <div class="row-actions">
-          <router-link :to="{ name: 'admin-tournament-show' }">zpět na turnaje</router-link>
+          <router-link :to="{ name: 'admin-tournament-show' }">zpět na skupinovky</router-link>
           <router-link v-if="slug" :to="{ name: 'tournament-results', params: { tournament: slug } }">zobrazit turnaj</router-link>
           <button type="button" class="link-button" @click="copyMatrikaToClipboard">kopírovat výsledky pro matriku</button>
         </div>

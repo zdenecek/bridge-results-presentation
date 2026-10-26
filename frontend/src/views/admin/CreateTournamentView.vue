@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-column gap-4">
     <div class="admin-head">
-      <h2>Nový turnaj</h2>
-      <router-link :to="{ name: 'admin-tournament-show' }">zpět na turnaje</router-link>
+      <h2>Nová skupinovka</h2>
+      <router-link :to="{ name: 'admin-tournament-show' }">zpět na skupinovky</router-link>
     </div>
     <div class="fields">
       <label for="tournamentTitle">Název turnaje</label>

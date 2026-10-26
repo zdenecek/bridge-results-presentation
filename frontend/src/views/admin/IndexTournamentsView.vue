@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="admin-head">
-      <h2>Turnaje</h2>
-      <router-link class="button primary" :to="{ name: 'admin-tournament-create' }">Nový turnaj</router-link>
+      <h2>Skupinovky</h2>
+      <router-link class="button primary" :to="{ name: 'admin-tournament-create' }">Nová skupinovka</router-link>
     </div>
 
     <p v-if="error" class="error">{{ error }}</p>
@@ -12,7 +12,7 @@
       <table class="table">
         <thead>
           <tr>
-            <th>Turnaj</th>
+            <th>Skupinovka</th>
             <th>Zobrazit</th>
             <th></th>
           </tr>
@@ -53,7 +53,7 @@ TournamentApi.getTournaments().then((data) => {
   tournaments.value = [...data].sort((a, b) => b.id - a.id);
 }).catch((e) => {
   console.error(e);
-  error.value = 'Turnaje se nepodařilo načíst';
+  error.value = 'Skupinovky se nepodařilo načíst';
 });
 
 function deleteTournament(tournament: TournamentEntry) {

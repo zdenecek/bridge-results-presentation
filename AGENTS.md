@@ -38,6 +38,8 @@ vyvíjet. Heslo k zápisovým endpointům je `key` v `api/config.php` (necommitn
 | GET | `/api/bavlnka/ranking.csv` | totéž ve tvaru Google Sheetu, který čte widget na bkpraha.cz |
 | GET/POST | `/api/bavlnka/update` | hlavička `Apikey` nebo `?key=` |
 | GET | `/api/bavlnka/admin` | hlavička `Apikey` |
+| GET | `/api/results/seasons` | sezóny výsledkové stránky (`2026-27`, …) |
+| GET | `/api/results/{sezóna}` | celá výsledková stránka sezóny; zápisy pod `/api/results/…` s hlavičkou `Apikey` |
 | GET | `/api/prebor` | seznam přeborů (`slug, season, title, …`) |
 | GET | `/api/prebor/{slug}/ranking` | celkové pořadí přeboru (JSON) |
 | GET | `/api/prebor/{slug}/ranking.csv` | totéž ve tvaru Google Sheetu pro widget na bkpraha.cz |
@@ -152,9 +154,13 @@ dodělávají v editoru turnaje.
 
 ## Žebříček Bavlnky
 
-Úterní párové turnaje Bavlnka. `api/bavlnka.php` čte sekci „Párové turnaje Bavlnka"
-na <https://www.bkpraha.cz/vysledky/> a archivních stránkách (u každého turnaje
-odstavec s datem a odkaz „Výsledky“), odkazy přes 1url.cz rozbalí a stáhne výsledky:
+Úterní párové turnaje Bavlnka. Nové turnaje `api/bavlnka.php` hledá za posledních 6 týdnů:
+v rejstříku exportů z Tournament Calculatoru (`bridge.zdenektomis.eu/vysledky/<rok>/bkp-bavlnka/`)
+a na adrese, kde by byly výsledky z Giborgu pro každé úterý, které ještě nemá turnaj
+(`…/ZF/<rok>/RRMMDD/result.php`, bere se jen stránka s „Bavlnka“). Starší chybějící turnaje
+se nepřidávají samy, změnily by známé pořadí – na to je ruční přidání v adminu. Dřív se
+turnaje četly ze sekce „Párové turnaje Bavlnka“ na bkpraha.cz/vysledky (`bavlnkaParseListing`
+zůstal pro import). Výsledky:
 
 - **Tournament Calculator** (`bridge.zdenektomis.eu/vysledky/<rok>/bkp-bavlnka/MMDDbavlnka/`):
   `results.json.gz`, u starších exportů `results.json`. Datum se bere ze složky, titulek
@@ -201,6 +207,19 @@ ohledu na pořadí, diakritiku a „ml.“. Hráči ze dvou různých přihláš
 ke kontrole a výsledek se dá přiřadit ručně (`prebor_assignments`). Sčítá se zaokrouhlené skóre
 kol, při shodě součtu se místo dělí. `php api/tests/prebor_test.php` to ověřuje proti widgetům
 po 1. kole TOP i IMP 2026.
+
+## Výsledková stránka
+
+Náhrada ručně psané <https://www.bkpraha.cz/vysledky/> (bkpraha.cz na ni bude jen odkazovat).
+`api/results.php`: každá sezóna (září–srpen, klíč `2026-27`) je strom sekcí ve dvou úrovních
+(`results_sections`). Sekce je buď nadpis (`group`), seznam turnajů přidaných adresou výsledků
+(`events`, tabulka `results_events`), nebo ukazuje, co aplikace už má: náš turnaj (`tournament`,
+`ref` = slug), přebor (`prebor`, `ref` = slug přeboru) nebo Bavlnky sezóny (`bavlnka`).
+U turnaje se po zadání adresy hned stáhnou výsledky přes `bavlnkaFetchResults` (TC i Giborg,
+1url.cz se rozbalí) a uloží se vítěz: dvojice jako jméno a příjmení, družstvo jménem z TC.
+Stránku, kterou neumíme přečíst, jde jen odkázat a vítěze napsat (`winner_override`).
+Novou sezónu jde založit zkopírováním sekcí té předchozí. Plán dalších kroků (import
+současné stránky a archivů, veřejná stránka, admin) je ve `VYSLEDKY_PLAN.md`.
 
 ## CSS
 

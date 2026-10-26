@@ -2,9 +2,11 @@
   <div class="layout-wrapper">
     <div class="layout-header">
       <div class="image">
-        <h1>
-          <slot name="header"></slot>
-        </h1>
+        <slot name="hero">
+          <h1>
+            <slot name="header"></slot>
+          </h1>
+        </slot>
       </div>
     </div>
     <div class="content">
@@ -34,8 +36,13 @@
 
 .layout-header .image {
   padding: 15px;
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('@/assets/suits.webp');
+  /* Dark enough that the title reads over the red suits. */
+  background: linear-gradient(rgba(0, 0, 0, 0.66), rgba(0, 0, 0, 0.66)), url('@/assets/suits.webp');
   background-size: cover;
+}
+
+.layout-header h1 {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8), 0 0 18px rgba(0, 0, 0, 0.6);
 }
 
 .content {
@@ -114,6 +121,10 @@ footer {
   .layout-header .image {
     padding: 0;
     background: unset;
+  }
+
+  .layout-header h1 {
+    text-shadow: none;
   }
 
   .footer-wrapper {
