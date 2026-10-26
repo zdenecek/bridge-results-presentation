@@ -1,40 +1,30 @@
 <template>
-  <div class="flex flex-column gap-small admin">
-    <h2>Bavlnka – žebříček</h2>
+  <div>
+    <div class="admin-head">
+      <h2>Bavlnka – žebříček</h2>
+      <div class="row-actions">
+        <router-link :to="{ name: 'bavlnka-ranking' }">veřejný žebříček</router-link>
+        <button class="button primary" :disabled="busy" @click="update">{{ busy ? 'Pracuji…' : 'Aktualizovat' }}</button>
+      </div>
+    </div>
 
-    <form class="flex justify-center gap-small" @submit.prevent="load">
-      <label for="bavlnka-key">Heslo</label>
-      <input id="bavlnka-key" type="password" v-model="password" required>
-      <button class="button" type="submit">Načíst</button>
-    </form>
-
-    <p v-if="message" :class="{ error: isError }">{{ message }}</p>
+    <p v-if="message" :class="isError ? 'error' : 'muted'">{{ message }}</p>
+    <p v-if="!data && !isError" class="muted">Načítám…</p>
 
     <template v-if="data">
-      <section>
-        <h3>Aktualizace</h3>
-        <p class="note">
-          Načte nové turnaje ze stránek bkpraha.cz a stáhne jejich výsledky. Jeden běh zpracuje, co stihne
-          za minutu; když zbývají další, spusť ho znovu. Na hostingu ho volá plánovaná úloha
-          na adrese <code class="cron-url">{{ BavlnkaApi.cronUrl(data.cronKey) }}</code>
-          (klíč v ní platí jen pro aktualizaci a změní se se změnou hesla).
-        </p>
-        <button class="button" :disabled="busy" @click="update">Aktualizovat</button>
-        <div v-if="report" class="update-report">
-          <div>Nově nalezené turnaje: {{ report.discovered.length }}</div>
-          <div>Zpracované: {{ report.processed.map((p) => `${p.date} (${p.status})`).join(', ') || 'žádné' }}</div>
-          <div>Zbývá zpracovat: {{ report.remaining }}</div>
-          <div v-for="(e, i) in report.errors" :key="i" class="error">{{ e.source ?? e.url }}: {{ e.error }}</div>
-        </div>
-      </section>
+      <div v-if="report" class="admin-card">
+        <h3>Výsledek aktualizace</h3>
+        <div>Nově nalezené turnaje: {{ report.discovered.length }}</div>
+        <div>Zpracované: {{ report.processed.map((p) => `${p.date} (${p.status})`).join(', ') || 'žádné' }}</div>
+        <div>Zbývá zpracovat: {{ report.remaining }}<template v-if="report.remaining"> – spusť aktualizaci znovu</template></div>
+        <div v-for="(e, i) in report.errors" :key="i" class="error">{{ e.source ?? e.url }}: {{ e.error }}</div>
+      </div>
 
-      <section>
-        <h3>Turnaje</h3>
-        <form class="flex justify-center gap-small" @submit.prevent="addTournament">
-          <input v-model="newUrl" type="url" placeholder="Adresa výsledků" required size="50">
-          <input v-model="newDate" type="date" title="Datum, pokud ho nejde zjistit z výsledků">
-          <button class="button" type="submit" :disabled="busy">Přidat</button>
-        </form>
+      <section class="admin-card">
+        <div class="admin-head">
+          <h3>Turnaje</h3>
+          <span class="muted">{{ countOk }} započítaných z {{ data.tournaments.length }}</span>
+        </div>
         <div class="table-scroll">
           <table class="table">
             <thead>
@@ -55,34 +45,47 @@
                 <td>{{ t.pairs ?? '' }}</td>
                 <td class="status">
                   {{ statusLabels[t.status] }}
-                  <div v-if="t.error" class="error">{{ t.error }}</div>
+                  <div v-if="t.error" class="error small">{{ t.error }}</div>
                 </td>
-                <td class="actions">
-                  <button class="button" :disabled="busy" @click="setStatus(t.id, 'pending')">Stáhnout znovu</button>
-                  <button v-if="t.status !== 'ignored'" class="button" :disabled="busy" @click="setStatus(t.id, 'ignored')">Nepočítat</button>
+                <td>
+                  <div class="row-actions">
+                    <button v-if="t.status !== 'ok'" class="link-button" :disabled="busy" @click="setStatus(t.id, 'pending')">stáhnout znovu</button>
+                    <button v-if="t.status === 'ok'" class="link-button" :disabled="busy" @click="setStatus(t.id, 'ignored')">nepočítat</button>
+                  </div>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        <details>
+          <summary>Přidat turnaj, který na bkpraha.cz chybí</summary>
+          <form class="admin-form" @submit.prevent="addTournament">
+            <label class="grow">Adresa výsledků <input v-model="newUrl" type="url" required size="50"></label>
+            <label>Datum <input v-model="newDate" type="date" title="Pokud ho nejde zjistit z výsledků"></label>
+            <button class="button" type="submit" :disabled="busy">Přidat</button>
+          </form>
+        </details>
       </section>
 
-      <section>
+      <section class="admin-card">
         <h3>Sloučená jména</h3>
-        <p class="note">
+        <p class="muted">
           Jeden řádek na jméno: <code>jak je ve výsledcích =&gt; jak má být v žebříčku</code>.
           Jména lišící se jen diakritikou a samotné příjmení, které v žebříčku patří jedinému hráči,
           se slučují samy.
         </p>
-        <textarea v-model="aliasText" rows="12" cols="70"></textarea>
-        <div>
-          <button class="button" :disabled="busy" @click="saveAliases">Uložit</button>
-        </div>
+        <textarea v-model="aliasText" rows="10"></textarea>
+        <button class="button" :disabled="busy" @click="saveAliases">Uložit jména</button>
       </section>
 
-      <section>
-        <h3>Hráči</h3>
-        <p class="note">Hráči se samotným příjmením nebo s více zápisy jména jsou zvýrazněni.</p>
+      <section class="admin-card">
+        <div class="admin-head">
+          <h3>Hráči</h3>
+          <span class="muted">{{ suspicious.length }} ke kontrole z {{ data.players.length }}</span>
+        </div>
+        <p class="muted">Ke kontrole jsou hráči se samotným příjmením nebo s více zápisy jména.</p>
+        <label class="filter"><input v-model="onlySuspicious" type="checkbox"> jen ke kontrole</label>
         <div class="table-scroll">
           <table class="table">
             <thead>
@@ -95,7 +98,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="p in data.players" :key="p.name" :class="{ suspicious: !p.name.includes(' ') || p.spellings.length > 1 }">
+              <tr v-for="p in shownPlayers" :key="p.name" :class="{ suspicious: isSuspicious(p) }">
                 <td class="col-name">{{ p.name }}</td>
                 <td>{{ p.spellings.join(', ') }}</td>
                 <td>{{ p.cbsIds.join(', ') }}</td>
@@ -106,15 +109,24 @@
           </table>
         </div>
       </section>
+
+      <details class="muted">
+        <summary>Plánovaná úloha na hostingu</summary>
+        <p>
+          Každý den volá <code class="url">{{ BavlnkaApi.cronUrl(data.cronKey) }}</code>.
+          Klíč v adrese platí jen pro aktualizaci a změní se se změnou hesla. Jeden běh zpracuje,
+          co stihne za minutu.
+        </p>
+      </details>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import BavlnkaApi, { BavlnkaAdminData, BavlnkaUpdateReport } from '@/api/BavlnkaApi';
-import { ref } from 'vue';
+import BavlnkaApi, { BavlnkaAdminData, BavlnkaAdminPlayer, BavlnkaUpdateReport } from '@/api/BavlnkaApi';
+import { adminKey } from '@/utils/adminKey';
+import { computed, ref } from 'vue';
 
-const password = ref('');
 const data = ref<BavlnkaAdminData>();
 const report = ref<BavlnkaUpdateReport>();
 const aliasText = ref('');
@@ -123,6 +135,7 @@ const newDate = ref('');
 const busy = ref(false);
 const message = ref('');
 const isError = ref(false);
+const onlySuspicious = ref(true);
 
 const statusLabels: Record<string, string> = {
   pending: 'čeká',
@@ -132,8 +145,12 @@ const statusLabels: Record<string, string> = {
   ignored: 'nepočítá se',
 };
 
+const isSuspicious = (p: BavlnkaAdminPlayer) => !p.name.includes(' ') || p.spellings.length > 1;
+const countOk = computed(() => data.value?.tournaments.filter((t) => t.status === 'ok').length ?? 0);
+const suspicious = computed(() => data.value?.players.filter(isSuspicious) ?? []);
+const shownPlayers = computed(() => onlySuspicious.value ? suspicious.value : data.value?.players ?? []);
+
 function errorText(e: any): string {
-  if (e?.response?.status === 401) return 'Špatné heslo';
   return e?.response?.data?.message ?? e?.message ?? String(e);
 }
 
@@ -153,34 +170,32 @@ async function run(action: () => Promise<void>, success = '') {
   }
 }
 
-function load() {
-  return run(async () => {
-    data.value = await BavlnkaApi.getAdminData(password.value);
-    aliasText.value = Object.entries(data.value.aliases).map(([alias, name]) => `${alias} => ${name}`).join('\n');
-  });
+async function reload() {
+  data.value = await BavlnkaApi.getAdminData(adminKey.value);
+  aliasText.value = Object.entries(data.value.aliases).map(([alias, name]) => `${alias} => ${name}`).join('\n');
 }
 
 function update() {
   return run(async () => {
-    report.value = await BavlnkaApi.update(password.value);
-    data.value = await BavlnkaApi.getAdminData(password.value);
+    report.value = await BavlnkaApi.update(adminKey.value);
+    await reload();
   });
 }
 
 function addTournament() {
   return run(async () => {
-    await BavlnkaApi.addTournament(newUrl.value, newDate.value, password.value);
+    await BavlnkaApi.addTournament(newUrl.value, newDate.value, adminKey.value);
     newUrl.value = '';
     newDate.value = '';
-    data.value = await BavlnkaApi.getAdminData(password.value);
+    await reload();
   }, 'Turnaj přidán, stáhne se při příští aktualizaci.');
 }
 
 function setStatus(id: number, status: 'pending' | 'ignored') {
   return run(async () => {
-    await BavlnkaApi.setTournamentStatus(id, status, password.value);
-    data.value = await BavlnkaApi.getAdminData(password.value);
-  });
+    await BavlnkaApi.setTournamentStatus(id, status, adminKey.value);
+    await reload();
+  }, status === 'pending' ? 'Turnaj se stáhne při příští aktualizaci.' : '');
 }
 
 function saveAliases() {
@@ -190,37 +205,37 @@ function saveAliases() {
     if (alias && name) aliases[alias] = name;
   }
   return run(async () => {
-    await BavlnkaApi.setAliases(aliases, password.value);
-    await load();
-  }, 'Uloženo');
+    await BavlnkaApi.setAliases(aliases, adminKey.value);
+    await reload();
+  }, 'Jména uložena');
 }
+
+run(reload);
 </script>
 
 <style scoped>
-.admin section {
-  margin-top: 20px;
-}
-
-.note {
-  color: #666;
-  max-width: 700px;
-}
-
-.error {
-  color: rgb(197, 25, 25);
-}
-
-.cron-url {
+.url {
   word-break: break-all;
 }
 
-.update-report {
-  margin-top: 10px;
-  text-align: left;
+.small {
+  font-size: 0.8rem;
+  max-width: 300px;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.filter {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
 }
 
 tr.error td,
-tr.pending td {
+tr.pending td,
+tr.suspicious td {
   background-color: #fff6e5;
 }
 
@@ -229,21 +244,7 @@ tr.duplicate td {
   color: #999;
 }
 
-tr.suspicious td {
-  background-color: #fff6e5;
-}
-
-td.status .error {
-  font-size: 0.8rem;
-  max-width: 300px;
-}
-
-td.actions {
-  white-space: nowrap;
-}
-
-textarea {
-  max-width: 100%;
-  font-family: monospace;
+.admin-card > .button {
+  margin-top: 8px;
 }
 </style>

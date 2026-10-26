@@ -32,6 +32,7 @@ vyvíjet. Heslo k zápisovým endpointům je `key` v `api/config.php` (necommitn
 | POST | `/api/tournament` | hlavička `Apikey` |
 | PUT | `/api/tournament/{id}` | hlavička `Apikey` |
 | DELETE | `/api/tournament/{id}` | hlavička `Apikey` |
+| GET | `/api/auth` | hlavička `Apikey`, 204 když heslo platí – admin ho chce jednou a drží v `sessionStorage` |
 
 | GET | `/api/bavlnka/ranking` | žebříček Bavlnky (JSON) |
 | GET | `/api/bavlnka/ranking.csv` | totéž ve tvaru Google Sheetu, který čte widget na bkpraha.cz |

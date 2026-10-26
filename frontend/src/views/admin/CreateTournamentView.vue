@@ -1,6 +1,9 @@
 <template>
   <div class="flex flex-column gap-4">
-    <h2>Vytvořit turnaj</h2>
+    <div class="admin-head">
+      <h2>Nový turnaj</h2>
+      <router-link :to="{ name: 'admin-tournament-show' }">zpět na turnaje</router-link>
+    </div>
     <div class="fields">
       <label for="tournamentTitle">Název turnaje</label>
       <input id="tournamentTitle" v-model="tournamentTitle" type="text" />
@@ -57,13 +60,14 @@ B3, pauza"></textarea>
       <textarea id="rotations" v-model="rotationsText" rows="5" cols="40" placeholder="kolo,stul,ns,ew (na řádku)"></textarea>
 
     </div>
-    <button @click="generateTournament">Vygenerovat turnaj</button>
+    <button class="button primary" @click="generateTournament">Vygenerovat turnaj</button>
 
     <div v-if="tournamentJson" class="flex flex-column gap-4">
       <h4>Vygenerovaný JSON (pro kontrolu)</h4>
       <textarea v-model="tournamentJson" rows="20" cols="80"></textarea>
 
-      <button @click="createTournament">Vytvořit turnaj</button>
+      <button class="button primary" @click="createTournament">Vytvořit turnaj</button>
+      <p v-if="createError" class="error">{{ createError }}</p>
     </div>
 
   </div>
@@ -75,11 +79,13 @@ B3, pauza"></textarea>
 import TournamentApi from '@/api/TournamentApi';
 import { computed, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { adminKey } from '@/utils/adminKey';
 import slug from 'slug'
 import { generateRotations } from '@/model/createTournament';
 import { Pair, Player, RoundNumberKey, RoundRotation } from '@/model/modelTypes';
 
 const router = useRouter();
+const createError = ref('');
 
 const seedingText = ref("");
 const rotationsText = ref("");
@@ -253,12 +259,13 @@ function generateTournament() {
 function createTournament() {
   if (!tournamentJson.value) return;
   const data = JSON.parse(tournamentJson.value);
-  TournamentApi.createTournament(data.title, data.slug, data, prompt("zadejte heslo")!).then((id) => {
+  createError.value = '';
+  TournamentApi.createTournament(data.title, data.slug, data, adminKey.value).then((id) => {
     console.debug('Tournament created');
     router.push({ name: 'admin-tournament-edit', params: { tournament: id } });
   }).catch((e) => {
-    console.debug('Error creating tournament');
     console.error(e);
+    createError.value = 'Turnaj se nepodařilo vytvořit: ' + (e?.response?.data?.message ?? e?.message ?? e);
   });
 }
 

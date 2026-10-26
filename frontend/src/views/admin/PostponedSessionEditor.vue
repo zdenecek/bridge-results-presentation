@@ -89,7 +89,8 @@ import { parseJackPbn } from '@/parse/JackPbnParser';
 import { parseSlip } from '@/parse/SlipParser';
 import TournamentApi from '@/api/TournamentApi';
 import { photoToJpegBase64 } from '@/utils/image';
-import { Ref, computed, inject, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
+import { adminKey } from '@/utils/adminKey';
 
 const props = defineProps({
     tournamentData: {
@@ -105,7 +106,6 @@ const emit = defineEmits(['remove']);
 
 const placeholder = "Jeden řádek na rozdání, barvy C D H S (S = piky), skóre se dopočítá:\n1 4SW -1\n2 6DW+1\n3 3NTS =\n144SxW-2  (rozdání 14)\n5 pass\n\nU přepisu z fotky (AI) přidejte skóre z lístečku pro kontrolu:\n2 6♦W +1 940";
 const pbnSkipped = ref(0);
-const password = inject<Ref<string>>('adminPassword', ref(''));
 const reading = reactive<Record<number, boolean>>({});
 const photoErrors = reactive<Record<number, string>>({});
 const photoModels = reactive<Record<number, string>>({});
@@ -142,14 +142,12 @@ async function readPhoto(match: PostponedMatchData, index: number, event: Event)
     input.value = '';
     if (!file) return;
     if (match.slip.trim() && !window.confirm('Přepsat zapsaný lísteček textem z fotky?')) return;
-    if (!password.value) password.value = window.prompt('Heslo k úpravám turnaje') ?? '';
-    if (!password.value) return;
 
     reading[index] = true;
     photoErrors[index] = '';
     photoModels[index] = '';
     try {
-        const { text, model } = await TournamentApi.transcribeSlip(await photoToJpegBase64(file), 'image/jpeg', password.value);
+        const { text, model } = await TournamentApi.transcribeSlip(await photoToJpegBase64(file), 'image/jpeg', adminKey.value);
         match.slip = text;
         photoModels[index] = model;
     } catch (e: any) {

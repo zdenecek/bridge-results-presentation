@@ -1,44 +1,67 @@
 <template>
-  <div class="flex flex-column gap-small admin">
-    <h2>Přebory – celkové pořadí</h2>
-
-    <form class="flex justify-center gap-small" @submit.prevent="load">
-      <label for="prebor-key">Heslo</label>
-      <input id="prebor-key" type="password" v-model="password" required>
-      <button class="button" type="submit">Načíst</button>
-    </form>
-
-    <p v-if="message" :class="{ error: isError }">{{ message }}</p>
-
-    <template v-if="data">
-      <div class="flex justify-center gap-small">
-        <button v-for="c in data.competitions" :key="c.id" class="button" :class="{ active: c.id === selectedId }"
-                @click="select(c.id)">{{ c.title }}</button>
-        <button class="button" :class="{ active: selectedId === null }" @click="select(null)">Nový přebor</button>
+  <div>
+    <div class="admin-head">
+      <h2>Přebory</h2>
+      <div class="row-actions" v-if="data">
+        <select v-model="selectedId" aria-label="Přebor" @change="select(selectedId)">
+          <option v-for="c in data.competitions" :key="c.id" :value="c.id">{{ c.title }}</option>
+          <option :value="null">+ Nový přebor…</option>
+        </select>
       </div>
+    </div>
 
-      <section>
-        <h3>{{ selectedId === null ? 'Nový přebor' : 'Nastavení přeboru' }}</h3>
-        <form class="competition-form" @submit.prevent="saveCompetition">
-          <label>Název <input v-model="form.title" required size="40"></label>
-          <label>Sezóna <input v-model="form.season" required placeholder="2027/28" size="8"></label>
-          <label>Adresa <input v-model="form.slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="top-2027" size="12"></label>
-          <label>Jednotka <input v-model="form.unit" required placeholder="% nebo VP" size="4"></label>
-          <label>Kol <input v-model.number="form.rounds" type="number" min="1" required></label>
-          <label>Započítat nejlepších <input v-model.number="form.best" type="number" min="1" :max="form.rounds" required></label>
-          <label class="wide">Tabulka přihlášek (CSV export)
-            <input v-model="form.registration_csv" type="url" size="60" placeholder="https://docs.google.com/spreadsheets/d/…/export?format=csv">
-          </label>
-          <div><button class="button" type="submit" :disabled="busy">{{ selectedId === null ? 'Založit' : 'Uložit' }}</button></div>
-        </form>
-      </section>
-    </template>
+    <p v-if="message" :class="isError ? 'error' : 'muted'">{{ message }}</p>
+    <p v-if="!data && !isError" class="muted">Načítám…</p>
 
     <template v-if="data && current">
+      <div class="row-actions summary">
+        <span class="muted">Sezóna {{ current.season }} · odehráno {{ current.played }} z {{ current.rounds }} kol · počítá se {{ current.best }} nejlepších ({{ current.unit }})</span>
+        <router-link :to="{ name: 'prebor-ranking', params: { slug: current.slug } }">veřejné pořadí</router-link>
+      </div>
 
-      <section>
-        <h3>Kola</h3>
+      <section v-if="review.length" class="admin-card" :class="{ attention: conflicts }">
+        <div class="admin-head">
+          <h3>Mimo přihlášené sestavy ({{ review.length }})</h3>
+          <span v-if="conflicts" class="error">{{ conflicts }} ke rozhodnutí</span>
+        </div>
+        <p class="muted">
+          Výsledky dvojic, které nehrály v přihlášené sestavě. Výběrem jde výsledek připsat jiné přihlášené dvojici
+          nebo ho nechat jako samostatnou dvojici. Hráči ze dvou různých přihlášených dvojic zůstávají samostatnou
+          dvojicí, dokud se nerozhodne jinak.
+        </p>
         <div class="table-scroll">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Datum</th>
+                <th>Sestava</th>
+                <th>Proč</th>
+                <th>Počítá se pro</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in review" :key="row.round + row.playersKey" :class="row.kind">
+                <td class="nowrap">{{ formatDate(row.date) }}</td>
+                <td class="col-name">{{ row.lineup }}</td>
+                <td>{{ kindLabels[row.kind] }}</td>
+                <td>
+                  <select :value="row.entry" :disabled="busy" @change="assign(row.round, row.playersKey, ($event.target as HTMLSelectElement).value)">
+                    <option :value="0">samostatná dvojice</option>
+                    <option v-for="e in current.entries" :key="e.number" :value="e.number">{{ e.number }}. {{ e.title }}</option>
+                  </select>
+                  <button v-if="row.kind === 'assigned' || row.kind === 'own'" class="link-button" :disabled="busy"
+                          @click="assign(row.round, row.playersKey, '')">vrátit automatiku</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="admin-card">
+        <h3>Kola</h3>
+        <p v-if="!current.roundList.length" class="muted">Zatím žádné kolo.</p>
+        <div v-else class="table-scroll">
           <table class="table">
             <thead>
               <tr>
@@ -54,132 +77,115 @@
               <tr v-for="(r, i) in current.roundList" :key="r.id" :class="r.status">
                 <td>{{ i + 1 }}.</td>
                 <td>
-                  <a v-if="r.url" :href="r.url" target="_blank">{{ r.date ?? '?' }}</a>
-                  <template v-else>{{ r.date ?? '?' }}</template>
+                  <a v-if="r.url" :href="r.url" target="_blank" class="nowrap">{{ formatDate(r.date) }}</a>
+                  <span v-else class="nowrap">{{ formatDate(r.date) }}</span>
                 </td>
-                <td>{{ r.source === 'manual' ? 'ručně' : 'TC' }}</td>
+                <td>{{ r.source === 'manual' ? 'vloženo ručně' : 'Tournament Calculator' }}</td>
                 <td>{{ r.pairs ?? '' }}</td>
-                <td class="status">
+                <td>
                   {{ statusLabels[r.status] }}
-                  <div v-if="r.error" class="error">{{ r.error }}</div>
+                  <div v-if="r.error" class="error small">{{ r.error }}</div>
                 </td>
-                <td class="actions">
-                  <button v-if="r.source === 'tc'" class="button" :disabled="busy" @click="roundAction(r.id, 'refetch')">Stáhnout znovu</button>
-                  <button v-if="r.status !== 'ignored'" class="button" :disabled="busy" @click="roundAction(r.id, 'ignore')">Nepočítat</button>
-                  <button v-else class="button" :disabled="busy" @click="roundAction(r.id, 'restore')">Počítat</button>
-                  <button class="button" :disabled="busy" @click="removeRound(r.id)">Smazat</button>
+                <td>
+                  <div class="row-actions">
+                    <button v-if="r.source === 'tc'" class="link-button" :disabled="busy" @click="roundAction(r.id, 'refetch')">stáhnout znovu</button>
+                    <button v-if="r.status !== 'ignored'" class="link-button" :disabled="busy" @click="roundAction(r.id, 'ignore')">nepočítat</button>
+                    <button v-else class="link-button" :disabled="busy" @click="roundAction(r.id, 'restore')">počítat</button>
+                    <button class="link-button danger" :disabled="busy" @click="removeRound(r.id)">smazat</button>
+                  </div>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <h4>Přidat kolo z Tournament Calculatoru</h4>
-        <form class="flex justify-center gap-small" @submit.prevent="addRound({ url: newUrl, date: newDate })">
-          <input v-model="newUrl" type="url" placeholder="Adresa prezentace kola" required size="50">
-          <input v-model="newDate" type="date" required title="Datum kola">
-          <button class="button" type="submit" :disabled="busy">Přidat a stáhnout</button>
-        </form>
-
-        <h4>Přidat kolo s ručně zadanými výsledky</h4>
-        <p class="note">
-          Jeden řádek na dvojici, třeba zkopírovaný z tabulky: hráči oddělení pomlčkou
-          (<code>Pavla Svobodová - Otakar Svoboda</code>) a skóre jako poslední číslo na řádku.
-          Pořadí se dopočítá ze skóre.
-        </p>
-        <form class="flex flex-column gap-small" @submit.prevent="addRound({ url: manualUrl, date: manualDate, results: manualText })">
-          <textarea v-model="manualText" rows="8" cols="70" required></textarea>
-          <div class="flex justify-center gap-small">
-            <input v-model="manualDate" type="date" required title="Datum kola">
-            <input v-model="manualUrl" type="url" placeholder="Odkaz na výsledky (nepovinný)" size="40">
-            <button class="button" type="submit" :disabled="busy">Přidat</button>
+        <details :open="!current.roundList.length">
+          <summary>Přidat kolo</summary>
+          <div class="mode">
+            <label><input v-model="mode" type="radio" value="tc"> z Tournament Calculatoru</label>
+            <label><input v-model="mode" type="radio" value="manual"> vložit výsledky ručně</label>
           </div>
-        </form>
+          <form class="admin-form" @submit.prevent="addRound">
+            <label>Datum kola <input v-model="newDate" type="date" required></label>
+            <label class="grow">{{ mode === 'tc' ? 'Adresa prezentace kola' : 'Odkaz na výsledky (nepovinný)' }}
+              <input v-model="newUrl" type="url" :required="mode === 'tc'" size="50">
+            </label>
+            <label v-if="mode === 'manual'" class="wide">
+              Výsledky – jeden řádek na dvojici, třeba zkopírovaný z tabulky: hráči oddělení pomlčkou
+              (<code>Pavla Svobodová - Otakar Svoboda</code>) a skóre jako poslední číslo na řádku
+              <textarea v-model="manualText" rows="8" required></textarea>
+            </label>
+            <button class="button primary" type="submit" :disabled="busy">{{ mode === 'tc' ? 'Přidat a stáhnout' : 'Přidat' }}</button>
+          </form>
+        </details>
       </section>
 
-      <section>
-        <h3>Přihlášené dvojice</h3>
-        <p class="note">
-          Načtou se z <a v-if="current.registration_csv" :href="current.registration_csv" target="_blank">tabulky přihlášek</a><template v-else>tabulky přihlášek, kterou je potřeba zadat v nastavení</template>.
-          Výsledek dvojice se připíše přihlášené dvojici, ve které hrají oba hráči, nebo té jediné,
-          ve které hraje aspoň jeden z nich (náhradník).
+      <section class="admin-card">
+        <div class="admin-head">
+          <h3>Přihlášené dvojice ({{ current.entries.length }})</h3>
+          <button class="link-button" :disabled="busy || !current.registration_csv" @click="importEntries">načíst znovu z tabulky přihlášek</button>
+        </div>
+        <p class="muted">
+          Výsledek se připíše přihlášené dvojici, ve které hrají oba hráči, nebo té jediné, ve které hraje
+          aspoň jeden z nich (náhradník).
+          <template v-if="!current.registration_csv">Tabulka přihlášek se zadává v nastavení.</template>
         </p>
-        <button class="button" :disabled="busy" @click="importEntries">Načíst z tabulky ({{ current.entries.length }})</button>
         <details v-if="current.entries.length">
-          <summary>Seznam</summary>
+          <summary>Seznam dvojic</summary>
           <ol class="entries">
             <li v-for="e in current.entries" :key="e.number" :value="e.number">{{ e.title }}</li>
           </ol>
         </details>
       </section>
 
-      <section>
-        <h3>Ke kontrole</h3>
-        <p class="note">
-          Výsledky dvojic, které nehrály v přihlášené sestavě. Výběrem se dá výsledek přiřadit jiné přihlášené
-          dvojici nebo nechat jako samostatnou dvojici.
-        </p>
-        <p v-if="!current.review.length" class="note">Nic ke kontrole.</p>
-        <div v-else class="table-scroll">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Datum</th>
-                <th>Sestava</th>
-                <th>Stav</th>
-                <th>Počítá se pro</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="row in current.review" :key="row.round + row.playersKey" :class="row.kind">
-                <td>{{ row.date }}</td>
-                <td class="col-name">{{ row.lineup }}</td>
-                <td>{{ kindLabels[row.kind] }}</td>
-                <td>
-                  <select :value="row.entry" :disabled="busy" @change="assign(row.round, row.playersKey, ($event.target as HTMLSelectElement).value)">
-                    <option :value="0">samostatná dvojice</option>
-                    <option v-for="e in current.entries" :key="e.number" :value="e.number">{{ e.number }}. {{ e.title }}</option>
-                  </select>
-                  <button v-if="row.kind === 'assigned' || row.kind === 'own'" class="button" :disabled="busy"
-                          @click="assign(row.round, row.playersKey, '')">Zrušit</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+    </template>
 
-      <section>
-        <h3>Výstupy</h3>
-        <p class="note">
-          Pořadí: <router-link :to="{ name: 'prebor-ranking', params: { slug: current.slug } }">/prebor/{{ current.slug }}</router-link>,
+    <details v-if="data" :key="selectedId ?? 'new'" class="admin-card" :open="selectedId === null">
+      <summary>{{ selectedId === null ? 'Nový přebor' : 'Nastavení přeboru, CSV pro web a plánovaná úloha' }}</summary>
+      <p v-if="selectedId === null" class="muted">Každá sezóna každého přeboru je samostatná soutěž s vlastními koly a přihláškami.</p>
+      <form class="admin-form" @submit.prevent="saveCompetition">
+        <label>Název <input v-model="form.title" required size="34"></label>
+        <label>Sezóna <input v-model="form.season" required placeholder="2027/28" size="8"></label>
+        <label>Adresa <input v-model="form.slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="top-2027" size="12"></label>
+        <label>Jednotka <input v-model="form.unit" required placeholder="% nebo VP" size="5"></label>
+        <label>Kol <input v-model.number="form.rounds" type="number" min="1" required class="number"></label>
+        <label>Počítá se nejlepších <input v-model.number="form.best" type="number" min="1" :max="form.rounds" required class="number"></label>
+        <label class="wide">Tabulka přihlášek (CSV export z Google Sheets)
+          <input v-model="form.registration_csv" type="url" placeholder="https://docs.google.com/spreadsheets/d/…/export?format=csv">
+        </label>
+        <button class="button primary" type="submit" :disabled="busy">{{ selectedId === null ? 'Založit přebor' : 'Uložit nastavení' }}</button>
+      </form>
+      <template v-if="current">
+        <p class="muted">
           CSV pro widget na bkpraha.cz: <code class="url">{{ PreborApi.csvUrl(current.slug) }}</code>
         </p>
-        <p class="note">
-          Aktualizace stáhne znovu všechna kola všech přeborů z Tournament Calculatoru, aby se projevily pozdější opravy.
-          Plánovaná úloha ji může volat na <code class="url">{{ PreborApi.cronUrl(data.cronKey) }}</code>.
+        <p class="muted">
+          Stažení všech kol všech přeborů znovu, aby se projevily pozdější opravy v Tournament Calculatoru.
+          Plánovaná úloha ho může volat na <code class="url">{{ PreborApi.cronUrl(data.cronKey) }}</code>.
         </p>
         <button class="button" :disabled="busy" @click="update">Stáhnout všechna kola znovu</button>
-      </section>
-    </template>
+      </template>
+    </details>
   </div>
 </template>
 
 <script setup lang="ts">
-import PreborApi, { PreborAdminData, PreborCompetition, PreborNewRound, PreborResultKind } from '@/api/PreborApi';
+import PreborApi, { PreborAdminData, PreborCompetition, PreborResultKind } from '@/api/PreborApi';
+import { adminKey } from '@/utils/adminKey';
 import { computed, reactive, ref } from 'vue';
 
-const password = ref('');
 const data = ref<PreborAdminData>();
 const selectedId = ref<number | null>(null);
 const current = computed(() => data.value?.competitions.find((c) => c.id === selectedId.value));
+const review = computed(() => [...current.value?.review ?? []].sort((a, b) =>
+  Number(b.kind === 'conflict') - Number(a.kind === 'conflict') || String(a.date).localeCompare(String(b.date))));
+const conflicts = computed(() => review.value.filter((r) => r.kind === 'conflict').length);
 const emptyForm: PreborCompetition = { slug: '', season: '', title: '', unit: '', best: 8, rounds: 10, registration_csv: '' };
 const form = reactive<PreborCompetition>({ ...emptyForm });
+const mode = ref<'tc' | 'manual'>('tc');
 const newUrl = ref('');
 const newDate = ref('');
 const manualText = ref('');
-const manualDate = ref('');
-const manualUrl = ref('');
 const busy = ref(false);
 const message = ref('');
 const isError = ref(false);
@@ -193,15 +199,20 @@ const statusLabels: Record<string, string> = {
 
 const kindLabels: Record<PreborResultKind, string> = {
   registered: 'přihlášená sestava',
-  substitute: 's náhradníkem',
+  substitute: 'hrál náhradník',
   assigned: 'přiřazeno ručně',
   own: 'samostatná (ručně)',
   conflict: 'hráči ze dvou dvojic',
-  unregistered: 'nepřihlášená',
+  unregistered: 'nepřihlášená dvojice',
 };
 
+function formatDate(date: string | null): string {
+  if (!date) return '?';
+  const [year, month, day] = date.split('-').map(Number);
+  return `${day}. ${month}. ${year}`;
+}
+
 function errorText(e: any): string {
-  if (e?.response?.status === 401) return 'Špatné heslo';
   return e?.response?.data?.message ?? e?.message ?? String(e);
 }
 
@@ -222,7 +233,7 @@ async function run(action: () => Promise<void>, success = '') {
 }
 
 async function reload() {
-  const loaded = await PreborApi.getAdminData(password.value);
+  const loaded = await PreborApi.getAdminData(adminKey.value);
   data.value = loaded;
   if (!current.value) selectedId.value = loaded.competitions[0]?.id ?? null;
   select(selectedId.value);
@@ -239,33 +250,32 @@ function select(id: number | null) {
 
 function saveCompetition() {
   return run(async () => {
-    await PreborApi.saveCompetition({ ...form }, selectedId.value, password.value);
+    await PreborApi.saveCompetition({ ...form }, selectedId.value, adminKey.value);
     const slug = form.slug;
     await reload();
     select(data.value?.competitions.find((c) => c.slug === slug)?.id ?? null);
   }, 'Uloženo');
 }
 
-function load() {
-  return run(reload);
-}
-
-function addRound(round: PreborNewRound) {
+function addRound() {
+  const round = mode.value === 'tc'
+    ? { url: newUrl.value, date: newDate.value }
+    : { url: newUrl.value, date: newDate.value, results: manualText.value };
   return run(async () => {
     try {
-      await PreborApi.addRound(current.value!.slug, round, password.value);
+      await PreborApi.addRound(current.value!.slug, round, adminKey.value);
     } finally {
       await reload();
     }
-    newUrl.value = newDate.value = manualText.value = manualDate.value = manualUrl.value = '';
+    newUrl.value = newDate.value = manualText.value = '';
   }, 'Kolo přidáno');
 }
 
 function roundAction(id: number, action: 'refetch' | 'ignore' | 'restore' | 'delete') {
   return run(async () => {
-    await PreborApi.roundAction(id, action, password.value);
+    await PreborApi.roundAction(id, action, adminKey.value);
     await reload();
-  });
+  }, action === 'refetch' ? 'Staženo znovu' : '');
 }
 
 function removeRound(id: number) {
@@ -275,7 +285,7 @@ function removeRound(id: number) {
 
 function importEntries() {
   return run(async () => {
-    const count = await PreborApi.importEntries(current.value!.slug, password.value);
+    const count = await PreborApi.importEntries(current.value!.slug, adminKey.value);
     await reload();
     message.value = `Načteno ${count} dvojic`;
   });
@@ -283,54 +293,58 @@ function importEntries() {
 
 function assign(round: number, playersKey: string, value: string) {
   return run(async () => {
-    await PreborApi.setAssignment(round, playersKey, value === '' ? null : Number(value), password.value);
+    await PreborApi.setAssignment(round, playersKey, value === '' ? null : Number(value), adminKey.value);
     await reload();
   });
 }
 
 function update() {
   return run(async () => {
-    const report = await PreborApi.update(password.value);
+    const report = await PreborApi.update(adminKey.value);
     await reload();
     if (report.errors.length) throw new Error(report.errors.map((e) => `${e.url}: ${e.error}`).join('; '));
   }, 'Hotovo');
 }
+
+run(reload);
 </script>
 
 <style scoped>
-.admin section {
-  margin-top: 20px;
+.summary {
+  margin-bottom: 16px;
 }
 
-.admin .justify-center {
-  flex-wrap: wrap;
-}
-
-.admin input {
-  max-width: 100%;
-}
-
-.note {
-  color: #666;
-  max-width: 700px;
-}
-
-.error {
-  color: rgb(197, 25, 25);
+.attention {
+  border-color: #f0b849;
+  background: #fffaf0;
 }
 
 .url {
   word-break: break-all;
 }
 
-.button.active {
-  font-weight: bold;
-  text-decoration: underline;
+.small {
+  font-size: 0.8rem;
+  max-width: 300px;
 }
 
+.grow {
+  flex-grow: 1;
+}
+
+.mode {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+tr.conflict td,
 tr.error td,
-tr.pending td,
-tr.conflict td {
+tr.pending td {
   background-color: #fff6e5;
 }
 
@@ -338,42 +352,23 @@ tr.ignored td {
   color: #999;
 }
 
-td.status .error {
-  font-size: 0.8rem;
-  max-width: 300px;
-}
-
-td.actions {
-  white-space: nowrap;
-}
-
-textarea {
-  max-width: 100%;
-  font-family: monospace;
-}
-
 select {
-  max-width: 260px;
+  max-width: 280px;
 }
 
 .entries {
-  text-align: left;
+  columns: 2 280px;
 }
 
-.competition-form {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px 16px;
-  max-width: 700px;
-  margin: 0 auto;
+.number {
+  width: 5em;
 }
 
-.competition-form input[type=number] {
-  width: 4em;
+details.admin-card > summary {
+  margin: 0;
 }
 
-.competition-form .wide {
-  flex-basis: 100%;
+details.admin-card[open] > summary {
+  margin-bottom: 12px;
 }
 </style>

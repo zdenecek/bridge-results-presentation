@@ -1,43 +1,47 @@
 <template>
-       <div>
-        <h2>Upravit turnaj</h2>
-         <nav>
-           <router-link v-if="slug" :to="{ name: 'tournament-results', params: { tournament: slug } }">Zobrazit turnaj</router-link>
-           <button class="nav-button button" @click="copyMatrikaToClipboard">Kopírovat výsledky pro matriku</button>
-          </nav>
-        <form @submit.prevent="submit">
-        <div class="fields">
-        <label for="title">Název turnaje</label>
-        <input id="title" type="text" v-model="title" required>
-        <label for="title">slug (název v url adrese)</label>
-        <input id="title" type="text" v-model="slug" required>
+  <form @submit.prevent="submit">
+    <div class="admin-head edit-head">
+      <div>
+        <h2>{{ title || 'Upravit turnaj' }}</h2>
+        <div class="row-actions">
+          <router-link :to="{ name: 'admin-tournament-show' }">zpět na turnaje</router-link>
+          <router-link v-if="slug" :to="{ name: 'tournament-results', params: { tournament: slug } }">zobrazit turnaj</router-link>
+          <button type="button" class="link-button" @click="copyMatrikaToClipboard">kopírovat výsledky pro matriku</button>
         </div>
-        <tournament-data-editor :tournamentData="(initialData as TournamentData)" @change="updateData">
-        </tournament-data-editor>
-        
-        <div class="fields">
-          <label for="key">Heslo</label>
-          <input id="key" type="password" v-model="password" required>
-        </div>
-        <input type="submit">
-      </form>
+      </div>
     </div>
+
+    <div class="admin-form edit-fields">
+      <label>Název turnaje <input v-model="title" type="text" required size="40"></label>
+      <label>Adresa (slug) <input v-model="slug" type="text" required size="30"></label>
+    </div>
+
+    <tournament-data-editor :tournamentData="(initialData as TournamentData)" @change="updateData">
+    </tournament-data-editor>
+
+    <div class="save-bar">
+      <span v-if="message" :class="isError ? 'error' : 'muted'">{{ message }}</span>
+      <button class="button primary" type="submit" :disabled="saving">{{ saving ? 'Ukládám…' : 'Uložit změny' }}</button>
+    </div>
+  </form>
 </template>
 
 <script setup lang="ts">
 import TournamentApi from '@/api/TournamentApi';
-import { onMounted, provide, ref  } from 'vue';
-import {  useRoute } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 import TournamentDataEditor from '@/views/admin/TournamentDataEditor.vue';
 import { Tournament, TournamentData } from '@/model/Tournament';
+import { adminKey } from '@/utils/adminKey';
 
 const title = ref("");
 const slug = ref("");
-const password = ref("");
-provide('adminPassword', password);
 const initialData = ref({});
 const dataToSend = ref({});
+const saving = ref(false);
+const message = ref('');
+const isError = ref(false);
 
 const route = useRoute();
 
@@ -54,20 +58,23 @@ onMounted(() => {
     dataToSend.value = tournament.data;
   }).catch((e) => {
     console.error(e);
-    console.debug('Error loading tournament');
+    message.value = 'Turnaj se nepodařilo načíst';
+    isError.value = true;
   });
 });
 
 function submit() {
-    const id = Number.parseInt(route.params['tournament'] as string);
-  TournamentApi.updateTournament( id, title.value, slug.value, dataToSend.value, password.value).then(() => {
-      console.debug('Tournament edited');
-      window.alert('Turnaj upraven');
-
+  const id = Number.parseInt(route.params['tournament'] as string);
+  saving.value = true;
+  TournamentApi.updateTournament(id, title.value, slug.value, dataToSend.value, adminKey.value).then(() => {
+    message.value = 'Uloženo v ' + new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
+    isError.value = false;
   }).catch((e) => {
-    console.debug('Error creating tournament');
     console.error(e);
-    window.alert('Chyba při ukládání turnaje')
+    message.value = 'Chyba při ukládání turnaje';
+    isError.value = true;
+  }).finally(() => {
+    saving.value = false;
   });
 }
 
@@ -75,14 +82,34 @@ function copyMatrikaToClipboard() {
   const tournament = new Tournament(dataToSend.value as TournamentData);
   const text = tournament.toMatrikaString();
   navigator.clipboard.writeText(text).then(() => {
-    console.debug('Matrika copied');
-    if(!tournament.isFinished) window.alert('(POZOR!: turnaj není dohrán) Matrika zkopírována, vložte jako csv do matriky ctrl+v'); 
-   
-    window.alert('Matrika zkopírována, vložte jako csv do matriky ctrl+v');
+    window.alert((tournament.isFinished ? '' : 'POZOR: turnaj není dohrán. ')
+      + 'Výsledky jsou zkopírované, vložte je do matriky jako CSV (Ctrl+V).');
   }).catch((e) => {
-    console.debug('Error copying matrika');
     console.error(e);
     window.alert('Chyba při kopírování matriky');
   });
 }
 </script>
+
+<style scoped>
+form {
+  display: block;
+}
+
+.edit-fields {
+  margin-bottom: 16px;
+}
+
+.save-bar {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  margin-top: 20px;
+  background: white;
+  border-top: 1px solid #d8dee4;
+}
+</style>

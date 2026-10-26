@@ -63,6 +63,15 @@ $app->get("$prefix/", function (Request $request, Response $response, $args) use
 
 })->setName('home');
 
+// Lets the admin check the password once instead of on the first save.
+$app->get("$prefix/auth", function (Request $request, Response $response) {
+    return $response->withStatus(204);
+})->setName('auth');
+
+$app->options("$prefix/auth", function (Request $request, Response $response): Response {
+    return $response;
+});
+
 $app->get("$prefix/tournaments", function (Request $request, Response $response, $args) use ($pdo) {
 
     try {
