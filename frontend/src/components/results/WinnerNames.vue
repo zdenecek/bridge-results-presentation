@@ -1,7 +1,6 @@
 <template>
-  <span v-if="!winner" class="unknown">vítěz není zadán</span>
-  <span v-else-if="winner.kind === 'text'" class="winner">{{ winner.text }}</span>
-  <span v-else class="winner">
+  <span v-if="winner?.kind === 'text'" class="winner">{{ winner.text }}</span>
+  <span v-else-if="winner" class="winner">
     <template v-for="(entry, i) in winner.entries" :key="i">
       <template v-if="i > 0"> a </template>
       <template v-if="'name' in entry">
@@ -41,7 +40,4 @@ defineProps<{ winner: ResultsWinner | null | undefined }>();
   color: var(--ink-muted);
 }
 
-.unknown {
-  color: var(--ink-muted);
-}
 </style>

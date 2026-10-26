@@ -6,11 +6,12 @@
     <span v-else class="date"></span>
     <span class="event-body">
       <span v-if="event.title" class="title">{{ event.title }}</span>
-      <span class="names">
-        <span v-if="event.ongoing && event.winner" class="leads">{{ leadsLabel }}</span>
-        <span v-else-if="event.winner" class="trophy" role="img" aria-label="Vítěz">🏆</span>
+      <span v-if="event.winner" class="names">
+        <span v-if="event.ongoing" class="leads">{{ leadsLabel }}</span>
+        <span v-else class="trophy" role="img" aria-label="Vítěz">🏆</span>
         <winner-names :winner="event.winner" />
       </span>
+      <span v-else-if="event.url" class="presentation">Prezentace</span>
     </span>
     <svg v-if="event.url" class="open" viewBox="0 0 16 16" aria-hidden="true">
       <path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
@@ -99,6 +100,11 @@ function formatDate(date: string): string {
 
 .leads {
   color: var(--ink-muted);
+}
+
+.presentation {
+  color: var(--felt);
+  font-weight: 600;
 }
 
 .open {
