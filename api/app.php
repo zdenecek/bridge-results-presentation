@@ -260,9 +260,12 @@ $app->get("$prefix/bavlnka/ranking.csv", function (Request $request, Response $r
     return $response->withHeader('Content-Type', 'text/csv; charset=utf-8');
 })->setName('bavlnka-ranking-csv');
 
+// The daily scheduled task: it also refreshes running competitions on the results page, which have
+// nothing else to update them and only one free task slot left on the hosting.
 $bavlnkaUpdate = function (Request $request, Response $response) use ($pdo, $config) {
     @set_time_limit(90);
-    $response->getBody()->write(json_encode(bavlnkaUpdate($pdo, $config), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
+    $results = resultsRefreshRunning($pdo);
+    $response->getBody()->write(json_encode(bavlnkaUpdate($pdo, $config) + ['results' => $results], JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE));
     return $response;
 };
 $app->get("$prefix/bavlnka/update", $bavlnkaUpdate)->setName('bavlnka-update');

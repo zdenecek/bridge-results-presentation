@@ -122,6 +122,18 @@ $pdo->exec("INSERT INTO prebor_results (round_id, pair_number, rank_from, rank_t
 $round = resultsPage($pdo, $season)['sections'][0]['children'][3]['prebor']['lastRound'];
 check('přebor last round winner', [$round['number'], $round['winner']['entries'][0]['players'][1]], [1, ['first' => 'Vojtěch', 'last' => 'Franz']]);
 
+// The daily refresh: running competitions and never-read results of the current season only
+$refreshed = [];
+$counting = function (string $url) use ($http, &$refreshed) {
+    $refreshed[] = $url;
+    return $http($url);
+};
+$pdo->exec("INSERT INTO results_events (section_id, date, url, status)
+    SELECT id, '2026-10-20', 'https://example.com/404', 'pending' FROM results_sections WHERE title = 'Malé švýcaráky' AND season = '2026-27'");
+$report = resultsRefreshRunning($pdo, $counting, '2026-10-27');
+check('refresh reads the league and the pending one', [array_column($report, 'status'), count(array_unique($refreshed))], [['ok', 'error'], 3]);
+check('refresh only in the current season', resultsRefreshRunning($pdo, $counting, '2027-10-27'), []);
+
 // Ordering and the next season
 resultsMoveSection($pdo, $bavlnka, -1);
 resultsMoveSection($pdo, $multi, -1);

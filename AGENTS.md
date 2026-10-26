@@ -218,6 +218,9 @@ Náhrada ručně psané <https://www.bkpraha.cz/vysledky/> (bkpraha.cz na ni bud
 U turnaje se po zadání adresy hned stáhnou výsledky přes `bavlnkaFetchResults` (TC i Giborg,
 1url.cz se rozbalí) a uloží se vítěz: dvojice jako jméno a příjmení, družstvo jménem z TC.
 Stránku, kterou neumíme přečíst, jde jen odkázat a vítěze napsat (`winner_override`).
+Soutěž, která ještě běží (liga), má `ongoing` a ukazuje, kdo vede. Denní úloha na `bavlnka/update`
+nejdřív stáhne znovu běžící soutěže a nikdy nenačtené turnaje aktuální sezóny
+(`resultsRefreshRunning`, nejvýš 15 s), pak teprve hledá Bavlnky.
 Novou sezónu jde založit zkopírováním sekcí té předchozí. Stránka je domovská (`/`, starší
 sezóny `/vysledky/2025-26`), spravuje se v adminu na záložce Výsledky. Dřívější seznam všech
 skupinovek je na `/skupinovky`. Původní stránky z bkpraha.cz (`/vysledky/`, `/archiv-vysledku-RRRR-RR/`) načítá do prázdné sezóny

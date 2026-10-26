@@ -264,6 +264,28 @@ function resultsRefetchEvent(PDO $pdo, int $id, ?callable $http = null): array
     return resultsFetchEvent($pdo, $event, $http ?? 'bavlnkaHttpGet');
 }
 
+/**
+ * Downloads again the current season's competitions still being played (a league updates its one
+ * presentation after every round) and tournaments whose results were never read. Run by the daily update.
+ *
+ * @return list<array{id: int, status: string}>
+ */
+function resultsRefreshRunning(PDO $pdo, ?callable $http = null, ?string $today = null, int $budget = 15): array
+{
+    resultsEnsureSchema($pdo);
+    $select = $pdo->prepare("SELECT e.* FROM results_events e JOIN results_sections s ON s.id = e.section_id
+        WHERE s.season = ? AND e.url IS NOT NULL AND e.winner_override IS NULL AND (e.ongoing = 1 OR e.status = 'pending')
+        ORDER BY e.id");
+    $select->execute([resultsSeasonOf($today ?? date('Y-m-d'))]);
+    $start = microtime(true);
+    $report = [];
+    foreach ($select->fetchAll(PDO::FETCH_ASSOC) as $event) {
+        if (microtime(true) - $start > $budget) break;
+        $report[] = resultsFetchEvent($pdo, $event, $http ?? 'bavlnkaHttpGet');
+    }
+    return $report;
+}
+
 function resultsDeleteEvent(PDO $pdo, int $id): void
 {
     resultsEnsureSchema($pdo);
