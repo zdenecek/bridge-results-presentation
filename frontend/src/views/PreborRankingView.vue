@@ -1,12 +1,13 @@
 <template>
   <main-layout>
     <template #header>
-      {{ ranking?.title ?? 'Přebor' }} – celkové pořadí
+      {{ ranking?.title ?? 'Přebor' }}
     </template>
     <template #default>
       <p v-if="state === 'loading'" class="note">Načítám pořadí ...</p>
       <p v-else-if="state === 'error'">Pořadí se nepodařilo načíst.</p>
       <div v-else-if="ranking" class="flex flex-column gap-small">
+        <h2>{{ ranking.title }} – celkové pořadí</h2>
         <p class="note"><router-link :to="{ name: 'prebor-index' }">Všechny přebory</router-link></p>
         <p v-if="ranking.updated" class="note">
           Po {{ ranking.rounds.length }}. kole hraném {{ formatDate(ranking.updated) }}
