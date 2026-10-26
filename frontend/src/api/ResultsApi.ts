@@ -7,7 +7,7 @@ export interface ResultsPlayer {
 
 export type ResultsWinner =
     | { kind: "pair"; entries: { players: ResultsPlayer[] }[] }
-    | { kind: "team"; entries: { name: string }[] }
+    | { kind: "team"; entries: { name: string; members?: string }[] }
     | { kind: "text"; text: string };
 
 export interface ResultsEvent {
@@ -101,6 +101,10 @@ export default class ResultsApi {
         return this.write("delete", "events/" + id, {}, key);
     }
 
+    public static importPage(season: string, url: string, key: string) {
+        return this.write("post", season + "/import", { url }, key);
+    }
+
     public static copySeason(from: string, to: string, key: string) {
         return this.write("post", to + "/copy", { from }, key);
     }
@@ -132,7 +136,7 @@ export interface ResultsWriteResult {
 export function winnerText(winner: ResultsWinner | null | undefined): string {
     if (!winner) return "";
     if (winner.kind === "text") return winner.text;
-    if (winner.kind === "team") return winner.entries.map((e) => e.name).join(" a ");
+    if (winner.kind === "team") return winner.entries.map((e) => e.name + (e.members ? ` (${e.members})` : "")).join(" a ");
     return winner.entries.map((e) => e.players.map((p) => `${p.first} ${p.last}`.trim()).join(" - ")).join(" a ");
 }
 

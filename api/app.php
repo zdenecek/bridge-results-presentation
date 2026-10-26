@@ -12,6 +12,7 @@ require_once __DIR__ . '/gemini.php';
 require_once __DIR__ . '/bavlnka.php';
 require_once __DIR__ . '/prebor.php';
 require_once __DIR__ . '/results.php';
+require_once __DIR__ . '/results_import.php';
 $app = AppFactory::create();
 $config = include(__DIR__ . '/config.php');
 
@@ -436,6 +437,12 @@ $app->get("$prefix/results/$season/admin", function (Request $request, Response 
 $app->post("$prefix/results/$season/copy", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite) {
     $from = (string) (((array) $request->getParsedBody())['from'] ?? '');
     return $resultsWrite($response, fn() => resultsCopySeason($pdo, $from, $args['season']), $args['season']);
+});
+
+$app->post("$prefix/results/$season/import", function (Request $request, Response $response, array $args) use ($pdo, $resultsWrite) {
+    @set_time_limit(90);
+    $url = (string) (((array) $request->getParsedBody())['url'] ?? '');
+    return $resultsWrite($response, fn() => resultsImport($pdo, $args['season'], $url), $args['season']);
 });
 
 $app->post("$prefix/results/sections", function (Request $request, Response $response) use ($pdo, $resultsWrite) {

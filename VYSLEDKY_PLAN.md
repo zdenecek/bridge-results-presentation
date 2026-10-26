@@ -29,7 +29,8 @@ Two findings matter for the plan:
   The `/embed/*` parts below are dropped.
 - **Done:** step 1 (Bavlnka discovery), step 2 (backend, `api/results.php`), step 4 (public page,
   now the home page `/`) and step 6 (admin tab Výsledky, without the inbox of new TC folders).
-- **Left:** step 3 (import of the current page and archives), the inbox, the switch on bkpraha.cz.
+- **Done too:** step 3, the import (`api/results_import.php`).
+- **Left:** the inbox of new TC folders, the switch on bkpraha.cz.
 
 ## Target
 

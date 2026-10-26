@@ -16,6 +16,16 @@
     <template v-if="page">
       <section v-if="!page.sections.length" class="admin-card">
         <h3>Sezóna {{ seasonLabel(season) }} je prázdná</h3>
+        <form class="admin-form import" @submit.prevent="importPage">
+          <label class="grow">Načíst ze stránky výsledků na bkpraha.cz
+            <input v-model="importUrl" type="url" required>
+          </label>
+          <button class="button primary" type="submit" :disabled="busy">{{ busy ? 'Načítám…' : 'Načíst' }}</button>
+        </form>
+        <p class="muted">
+          Vezmou se sekce, turnaje i vítězové tak, jak jsou na stránce. Skupinovky a přebory z této aplikace se propojí,
+          Bavlnky se vezmou ze záložky Bavlnka, pokud tam sezóna je. Načítání trvá až minutu.
+        </p>
         <form v-if="otherSeasons.length" class="admin-form" @submit.prevent="copySeason">
           <label>Převzít sekce ze sezóny
             <select v-model="copyFrom">
@@ -58,6 +68,7 @@ const busy = ref(false);
 const message = ref('');
 const isError = ref(false);
 const copyFrom = ref('');
+const importUrl = ref('');
 const tournaments = ref<{ slug: string; name: string }[]>([]);
 const competitions = ref<{ slug: string; title: string }[]>([]);
 
@@ -100,12 +111,21 @@ watch(season, async (s) => {
   try {
     page.value = await ResultsApi.getAdminPage(s, adminKey.value);
     copyFrom.value = otherSeasons.value[0] ?? '';
+    // The current season is on /vysledky/, past ones on the archive pages.
+    importUrl.value = s === current ? 'https://www.bkpraha.cz/vysledky/' : `https://www.bkpraha.cz/archiv-vysledku-${s}/`;
   } catch (e) {
     console.error(e);
     message.value = errorText(e);
     isError.value = true;
   }
 }, { immediate: true });
+
+function importPage() {
+  run(() => ResultsApi.importPage(season.value, importUrl.value, adminKey.value), (r) =>
+    `Načteno ${r.sections} sekcí a ${r.events} turnajů. ` + (r.notFetched
+      ? `U ${r.notFetched} turnajů se vítěz nestihl dočíst, dá se stáhnout přes „stáhnout znovu“.`
+      : 'Hotovo.'));
+}
 
 function copySeason() {
   run(() => ResultsApi.copySeason(copyFrom.value, season.value, adminKey.value),
@@ -121,6 +141,14 @@ PreborApi.getCompetitions().then((list) => {
 </script>
 
 <style scoped>
+.import {
+  margin-bottom: 4px;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
 details.admin-card > summary {
   margin: 0;
 }

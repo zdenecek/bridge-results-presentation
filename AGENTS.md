@@ -220,7 +220,10 @@ U turnaje se po zadání adresy hned stáhnou výsledky přes `bavlnkaFetchResul
 Stránku, kterou neumíme přečíst, jde jen odkázat a vítěze napsat (`winner_override`).
 Novou sezónu jde založit zkopírováním sekcí té předchozí. Stránka je domovská (`/`, starší
 sezóny `/vysledky/2025-26`), spravuje se v adminu na záložce Výsledky. Dřívější seznam všech
-skupinovek je na `/skupinovky`. Zbývá import současné stránky a archivů (`VYSLEDKY_PLAN.md`).
+skupinovek je na `/skupinovky`. Původní stránky z bkpraha.cz (`/vysledky/`, `/archiv-vysledku-RRRR-RR/`) načítá do prázdné sezóny
+`api/results_import.php` (admin, prázdná sezóna → Načíst): vítěze bere z řádků 🏆 (příjmení
+verzálkami), skupinovky z této aplikace a přebory propojí, Bavlnky vezme z jejich tabulek, pokud tam
+sezóna je. Testy `php api/tests/results_import_test.php` na uložených stránkách.
 
 ## CSS
 
