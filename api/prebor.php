@@ -200,7 +200,9 @@ function preborParseRoster(string $csv): array
     $entries = [];
     while (($row = fgetcsv($stream, null, ',', '"', '')) !== false) {
         $number = trim($row[0] ?? '');
-        $players = array_values(array_filter([$player($row, 2), $player($row, 5)], fn($p) => preg_match('/\p{L}/u', $p)));
+        // Empty rows of the sheet hold formula errors like "#VALUE!" instead of names.
+        $players = array_values(array_filter([$player($row, 2), $player($row, 5)],
+            fn($p) => preg_match('/\p{L}/u', $p) && !str_starts_with($p, '#')));
         if (!$players || trim($row[2] ?? '') === '') continue;
         if (ctype_digit($number)) {
             $entries[] = ['number' => (int) $number, 'title' => '', 'players' => $players];

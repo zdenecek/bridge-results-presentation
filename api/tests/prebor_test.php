@@ -76,7 +76,7 @@ $http = fakeHttp([
     'https://vysledky.bkpraha.cz/prezentace/2026/top-prebor/results.json.gz' => 'top-0916-results.json.gz',
 ]);
 $pdo = memoryDb();
-check('roster import', preborImportRoster($pdo, 'top-2026', $http), 40);
+check('roster import skips the sheet\'s empty rows', preborImportRoster($pdo, 'top-2026', $http), 18);
 $added = preborAddRound($pdo, 'top-2026', ['url' => 'https://vysledky.bkpraha.cz/prezentace/2026/top-prebor/', 'date' => '2026-09-16'], $http);
 check('round added and fetched', $added['pairs'], 15);
 
