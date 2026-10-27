@@ -1,8 +1,14 @@
 <template>
   <div class="club-bar" :class="{ hidden }">
-    <a href="https://www.bkpraha.cz/" class="club-home">
+    <a href="https://www.bkpraha.cz/" class="club-home" tabindex="-1" aria-hidden="true">
       <img src="@/assets/logo.png" alt="" class="club-logo">
       <span class="club-name">Bridžový klub Praha</span>
+    </a>
+    <a href="https://www.bkpraha.cz/" class="club-back">
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      Zpět na bkpraha.cz
     </a>
   </div>
 </template>
@@ -39,6 +45,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
   z-index: 100;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   height: 64px;
   padding: 0 24px;
   background: #f9f7fa;
@@ -54,18 +62,9 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
   display: inline-flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
   color: #393939;
   text-decoration: none;
-}
-
-.club-home:hover .club-name {
-  color: #1a881a;
-}
-
-.club-home:focus-visible {
-  outline: 2px solid #1a881a;
-  outline-offset: 4px;
-  border-radius: 4px;
 }
 
 .club-logo {
@@ -79,21 +78,53 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
   font-weight: 400;
   letter-spacing: -0.03em;
   text-transform: uppercase;
-  transition: color 0.15s ease;
+  white-space: nowrap;
 }
 
-@media (max-width: 640px) {
+/* Spelled out for everyone: where the button goes and that it goes back. */
+.club-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  padding: 9px 16px 9px 12px;
+  border-radius: 999px;
+  background: #1a881a;
+  color: white;
+  font-family: 'Lexend', Verdana, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.club-back:hover {
+  background: #0e5a1b;
+  color: white;
+}
+
+.club-back:focus-visible {
+  outline: 3px solid #0e5a1b;
+  outline-offset: 3px;
+}
+
+.club-back svg {
+  width: 18px;
+  height: 18px;
+}
+
+@media (max-width: 720px) {
   .club-bar {
-    height: 56px;
-    padding: 0 14px;
+    height: 58px;
+    padding: 0 12px;
   }
 
   .club-logo {
-    height: 38px;
+    height: 40px;
   }
 
+  /* On a phone the logo names the club and the button gets the room. */
   .club-name {
-    font-size: 1.25rem;
+    display: none;
   }
 }
 
