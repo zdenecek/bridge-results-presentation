@@ -2,10 +2,6 @@
   <main-layout>
     <template #hero>
       <div class="results-hero">
-        <a href="https://www.bkpraha.cz/" class="club">
-          <img src="@/assets/logo.png" alt="" class="club-logo">
-          <span>Bridžový klub Praha</span>
-        </a>
         <h1>Výsledky <span class="season">{{ seasonLabel(season) }}</span></h1>
         <div v-if="page && season !== current" class="seasons" role="navigation" aria-label="Sezóny">
           <router-link v-for="s in page.seasons" :key="s" :to="s === current ? { name: 'home' } : { name: 'results', params: { season: s } }"
@@ -191,30 +187,9 @@ watch(season, (s) => {
   text-align: left;
 }
 
-.club {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: white;
-  text-decoration: none;
-  font-size: 0.9375rem;
-  font-weight: 600;
-  opacity: 0.92;
-}
-
-.club:hover {
-  opacity: 1;
-  color: white;
-}
-
-.club-logo {
-  height: 40px;
-  width: auto;
-  border-radius: 3px;
-}
 
 h1 {
-  margin: 18px 0 14px;
+  margin: 10px 0 14px;
   font-size: clamp(2rem, 6vw, 3.25rem);
   line-height: 1.05;
   font-weight: 700;
@@ -288,10 +263,6 @@ h1 {
 @media (max-width: 640px) {
   .results-page {
     padding: 0 8px;
-  }
-
-  .club-logo {
-    height: 32px;
   }
 }
 </style>

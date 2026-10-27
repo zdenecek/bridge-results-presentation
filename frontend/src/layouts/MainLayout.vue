@@ -1,5 +1,6 @@
 <template>
   <div class="layout-wrapper">
+    <club-bar />
     <div class="layout-header">
       <div class="image">
         <slot name="hero">
@@ -21,6 +22,10 @@
     </footer>
   </div>
 </template>
+
+<script setup lang="ts">
+import ClubBar from '@/components/ClubBar.vue';
+</script>
 
 <style>
 .layout-wrapper {
