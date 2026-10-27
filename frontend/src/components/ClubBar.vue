@@ -87,19 +87,21 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
   align-items: center;
   gap: 6px;
   flex-shrink: 0;
-  padding: 9px 16px 9px 12px;
+  padding: 7px 14px 7px 10px;
+  border: 1px solid #cfd8cf;
   border-radius: 999px;
-  background: #1a881a;
-  color: white;
+  background: white;
+  color: #1a881a;
   font-family: 'Lexend', Verdana, sans-serif;
-  font-size: 1rem;
+  font-size: 0.9375rem;
   font-weight: 600;
   text-decoration: none;
 }
 
 .club-back:hover {
-  background: #0e5a1b;
-  color: white;
+  background: #eef5ee;
+  border-color: #1a881a;
+  color: #0e5a1b;
 }
 
 .club-back:focus-visible {
