@@ -32,6 +32,7 @@ import PreborIndexView from "@/views/PreborIndexView.vue";
 import ResultsView from "@/views/ResultsView.vue";
 import PreborAdminView from "@/views/admin/PreborAdminView.vue";
 import ResultsAdminView from "@/views/admin/ResultsAdminView.vue";
+import BannerAdminView from "@/views/admin/BannerAdminView.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -79,6 +80,11 @@ const routes: Array<RouteRecordRaw> = [
                 path: "vysledky",
                 name: "admin-results",
                 component: ResultsAdminView,
+            },
+            {
+                path: "pozvanka",
+                name: "admin-banner",
+                component: BannerAdminView,
             },
         ]
     },

@@ -47,6 +47,7 @@ const tabs = [
   { name: 'admin-bavlnka', label: 'Bavlnka', matches: ['admin-bavlnka'] },
   { name: 'admin-prebor', label: 'Přebory', matches: ['admin-prebor'] },
   { name: 'admin-results', label: 'Výsledky', matches: ['admin-results'] },
+  { name: 'admin-banner', label: 'Pozvánka', matches: ['admin-banner'] },
 ];
 
 const password = ref('');

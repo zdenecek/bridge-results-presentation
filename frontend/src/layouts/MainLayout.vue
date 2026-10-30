@@ -1,6 +1,7 @@
 <template>
   <div class="layout-wrapper">
     <club-bar />
+    <site-banner />
     <div class="layout-header">
       <div class="image">
         <slot name="hero">
@@ -25,6 +26,7 @@
 
 <script setup lang="ts">
 import ClubBar from '@/components/ClubBar.vue';
+import SiteBanner from '@/components/SiteBanner.vue';
 </script>
 
 <style>

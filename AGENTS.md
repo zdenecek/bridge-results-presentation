@@ -45,6 +45,8 @@ vyvíjet. Heslo k zápisovým endpointům je `key` v `api/config.php` (necommitn
 | GET | `/api/prebor/{slug}/ranking.csv` | totéž ve tvaru Google Sheetu pro widget na bkpraha.cz |
 | GET/POST | `/api/prebor/update` | hlavička `Apikey` nebo `?key=` (stejný klíč jako Bavlnka) |
 | GET | `/api/prebor/admin` | hlavička `Apikey`, zápisy přes `/admin/prebor` |
+| GET | `/api/banner` | pozvánka nahoře na webu (`null`, když je vypnutá nebo prošlá), `max-age=300` |
+| GET/PUT | `/api/banner/admin`, `/api/banner` | hlavička `Apikey`, edituje se na `/admin/pozvanka` |
 
 `POST /api/transcribe-slip` (hlavička `Apikey`, tělo `{image, mimeType}` s fotkou
 v base64) pošle fotku lístečku do Gemini a vrátí `{text}` s řádky pro zápis
