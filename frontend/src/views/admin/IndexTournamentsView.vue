@@ -28,6 +28,7 @@
                 <router-link :to="{ name: 'tournament-results', params: { tournament: tournament.slug } }">výsledky</router-link>
                 <router-link :to="{ name: 'print-results', params: { tournament: tournament.slug } }">tisk výsledků</router-link>
                 <router-link :to="{ name: 'seatings', params: { tournament: tournament.slug } }">tisk nasazení</router-link>
+                <router-link :to="{ name: 'tv-seatings', params: { tournament: tournament.slug } }" target="_blank">nasazení na televizi</router-link>
               </div>
             </td>
             <td class="delete">

@@ -107,6 +107,9 @@ Dvě pasti:
   zaokrouhlení na desítky), IMPy se propíšou do `postponed` overwritu daného
   stolu i s odkazem `session`.
 
+Nasazení na televizi v klubu: `/tv/{slug}` (další kolo) nebo `/tv/{slug}/{kolo}`. Bez menu
+a hesla, odkaz je jen v adminu u skupinovky, samo se každé dvě minuty načte znovu.
+
 ## Rozpisy (movements)
 
 `frontend/src/model/createTournament.ts` má tabulky pro skupinovku A a B.

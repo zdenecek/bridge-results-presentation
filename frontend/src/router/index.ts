@@ -33,6 +33,7 @@ import ResultsView from "@/views/ResultsView.vue";
 import PreborAdminView from "@/views/admin/PreborAdminView.vue";
 import ResultsAdminView from "@/views/admin/ResultsAdminView.vue";
 import BannerAdminView from "@/views/admin/BannerAdminView.vue";
+import TvSeatingsView from "@/views/TvSeatingsView.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -110,6 +111,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "prebor-ranking",
         component: PreborRankingView,
         meta: { title: () => "Přebor – celkové pořadí" },
+    },
+    {
+        path: "/tv/:tournament/:round?",
+        name: "tv-seatings",
+        component: TvSeatingsView,
     },
     {
         path: "/tournament/:tournament",
