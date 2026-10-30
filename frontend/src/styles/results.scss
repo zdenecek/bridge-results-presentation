@@ -314,8 +314,10 @@
 .results-page .pills {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-start;
   gap: 6px;
   margin: 0 0 16px;
+  padding: 0;
 }
 
 .results-page .pills a {

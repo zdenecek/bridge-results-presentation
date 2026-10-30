@@ -18,7 +18,13 @@
     </div>
     <footer>
       <div class="footer-wrapper">
-        <slot name="footer"></slot>
+        <div class="footer-inner">
+          <slot name="footer"></slot>
+          <p class="webmaster">
+            Našli jste chybu? Napište webmasterovi
+            <a href="mailto:zdnek.tomis@gmail.com">zdnek.tomis@gmail.com</a>
+          </p>
+        </div>
       </div>
     </footer>
   </div>
@@ -99,6 +105,36 @@ footer {
   background-size: cover;
   display: flex;
   justify-content: center;
+}
+
+.footer-inner {
+  width: 100%;
+  max-width: 1140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.webmaster {
+  width: 100%;
+  max-width: 1140px;
+  margin: 4px 0 6px;
+  padding: 0 4px;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'Lexend', Verdana, sans-serif;
+  font-size: 0.8125rem;
+  text-align: left;
+}
+
+.webmaster a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.4);
+  text-underline-offset: 3px;
+}
+
+.webmaster a:hover {
+  color: white;
 }
 
 @media print {

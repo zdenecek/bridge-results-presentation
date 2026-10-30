@@ -58,9 +58,7 @@ onMounted(() => nextTick(() => {
 .step {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  max-width: 420px;
+  gap: 14px;
   margin: 0 0 16px;
 }
 
@@ -97,8 +95,10 @@ a.step-btn:hover {
 }
 
 .step-label {
+  min-width: 4.5em;
   color: var(--ink-muted);
   font-variant-numeric: tabular-nums;
+  text-align: center;
 }
 
 .step-select {
@@ -113,6 +113,8 @@ a.step-btn:hover {
   .step,
   .step.all {
     display: flex;
+    justify-content: space-between;
+    gap: 8px;
     position: fixed;
     z-index: 50;
     left: 10px;

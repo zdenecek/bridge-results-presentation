@@ -1,13 +1,11 @@
 <template>
   <div>
-    <h2>Výsledky páru {{ pair?.title }} v {{ roundNum }}. kole</h2>
-
-    <nav>
-      <router-link :to="{ name: 'round-results', params: { round: roundNum } }">Výsledky kola</router-link>
-      <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
-      <router-link :to="{ name: 'pair-results' }">Celkové výsledky páru</router-link>
-      <router-link v-show="roundHasDeals" :to="{ name: 'round-board-results' }">Rozdání</router-link>
-    </nav>
+    <router-link :to="{ name: 'round-results', params: { round: roundNum } }" class="back">‹ Výsledky {{ roundNum }}. kola</router-link>
+    <h2 class="page-title">{{ pair?.title }} v {{ roundNum }}. kole</h2>
+    <p class="page-lead links">
+      <router-link :to="{ name: 'pair-results' }">Všechna kola páru</router-link>
+      <router-link v-show="roundHasDeals" :to="{ name: 'round-board-results' }">Rozdání kola</router-link>
+    </p>
 
     <template v-if="tournament && round && pair">
       <RoundPairResults :pair="pair?.id" :tournament="tournament" :round="round" />
@@ -28,11 +26,14 @@ const tournament = inject('tournament') as Ref<Tournament | undefined>;
 const round = computed( () =>tournament.value?.rounds.get(roundNum.value));
 const pair = computed( () => tournament.value?.getPair(Number.parseInt(route.params['pair'] as string)))
 
-const roundHasDeals = computed( () =>  { 
-  if(!round.value?.boards) return false;
-  return Object.keys(round.value.boards).length > 0;
-} );
+const roundHasDeals = computed(() => (round.value?.boards?.size ?? 0) > 0);
 </script>
 
-<style scoped></style>
+<style scoped>
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+}
+</style>
 
