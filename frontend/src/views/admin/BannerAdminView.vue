@@ -8,6 +8,12 @@
       dokud je zapnutý, nejdéle do zadaného dne. Kdo ho křížkem skryje, uvidí ho znovu až u nové pozvánky.
     </p>
 
+    <p v-if="!form && !message" class="muted">Načítám…</p>
+    <p v-if="!form && message" class="error">
+      Nastavení se nepodařilo načíst: {{ message }}
+      <button type="button" class="link-button" @click="load">Zkusit znovu</button>
+    </p>
+
     <form v-if="form" class="admin-card admin-form" @submit.prevent="save">
       <label class="check"><input v-model="form.enabled" type="checkbox"> Zobrazovat na webu</label>
       <label class="wide">Nadpis <input v-model="form.title" :required="form.enabled" maxlength="255" placeholder="Velká cena Prahy 2026"></label>
@@ -39,7 +45,11 @@ const busy = ref(false);
 const message = ref('');
 const isError = ref(false);
 
-BannerApi.getSettings(adminKey.value).then((data) => form.value = data).catch((e) => fail(e));
+function load() {
+  message.value = '';
+  BannerApi.getSettings(adminKey.value).then((data) => form.value = data).catch((e) => fail(e));
+}
+load();
 
 function fail(e: any) {
   isError.value = true;
