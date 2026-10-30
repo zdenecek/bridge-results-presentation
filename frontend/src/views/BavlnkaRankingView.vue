@@ -1,50 +1,62 @@
 <template>
   <main-layout>
-    <template #header>
-      Bavlnka – žebříček
+    <template #hero>
+      <div class="results-hero">
+        <router-link :to="{ name: 'home' }" class="crumb">‹ Všechny výsledky</router-link>
+        <h1>Bavlnka – žebříček</h1>
+        <p v-if="state === 'loading'" class="status">Načítám žebříček…</p>
+        <p v-else-if="state === 'error'" class="status">Žebříček se nepodařilo načíst. Zkuste stránku obnovit.</p>
+        <p v-else-if="ranking?.updated" class="status">
+          Úterní párové turnaje, po turnaji {{ formatDate(ranking.updated) }}
+        </p>
+      </div>
     </template>
+
     <template #default>
-      <p v-if="state === 'loading'" class="note">Načítám žebříček ...</p>
-      <p v-else-if="state === 'error'">Žebříček se nepodařilo načíst.</p>
-      <div v-else-if="ranking" class="flex flex-column gap-small">
-        <p v-if="ranking.updated" class="note">Po turnaji hraném {{ formatDate(ranking.updated) }}</p>
-
-        <div class="table-scroll">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Pořadí</th>
-                <th>Hráč</th>
-                <th>Body</th>
-                <th>Turnajů</th>
-              </tr>
-            </thead>
-            <tbody>
-              <template v-for="player in ranking.ranking" :key="player.name">
-                <tr class="player" @click="toggle(player.name)">
-                  <td>{{ player.rank }}.</td>
-                  <td class="col-name">{{ player.name }}</td>
-                  <td class="points">{{ formatPoints(player.points) }}</td>
-                  <td>{{ player.tournaments.length }}</td>
+      <div v-if="ranking" class="results-page ranking">
+        <section class="card table-card">
+          <h3>Pořadí hráčů</h3>
+          <div class="table-scroll">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th class="rank">Pořadí</th>
+                  <th>Hráč</th>
+                  <th class="num">Turnajů</th>
+                  <th class="num">Body</th>
                 </tr>
-                <tr v-if="open.has(player.name)" class="detail">
-                  <td colspan="4">
-                    <table class="contributions">
-                      <tr v-for="t in player.tournaments" :key="t.id">
-                        <td><a :href="urlOf(t.id)" target="_blank">{{ formatDate(t.date) }}</a></td>
-                        <td>{{ t.rank }}. z {{ t.pairs }}</td>
-                        <td>{{ Math.round(t.weight * 100) }} %</td>
-                        <td class="points">{{ t.points.toLocaleString('cs-CZ', { maximumFractionDigits: 1 }) }}</td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                <template v-for="player in ranking.ranking" :key="player.name">
+                  <tr class="expandable" :class="{ open: open.has(player.name) }" @click="toggle(player.name)">
+                    <td class="rank">{{ player.rank }}.</td>
+                    <td class="col-name">
+                      <button type="button" class="row-toggle" :aria-expanded="open.has(player.name)">
+                        {{ player.name }}
+                      </button>
+                    </td>
+                    <td class="num muted">{{ player.tournaments.length }}</td>
+                    <td class="num strong">{{ formatPoints(player.points) }}</td>
+                  </tr>
+                  <tr v-if="open.has(player.name)" class="detail">
+                    <td colspan="4">
+                      <ul class="contributions">
+                        <li v-for="t in player.tournaments" :key="t.id">
+                          <a :href="urlOf(t.id)" target="_blank" @click.stop>{{ formatDate(t.date) }}</a>
+                          <span class="muted">{{ t.rank }}. z {{ t.pairs }}</span>
+                          <span class="muted">{{ t.weight < 1 ? Math.round(t.weight * 100) + ' %' : '' }}</span>
+                          <span class="points">{{ t.points.toLocaleString('cs-CZ', { maximumFractionDigits: 1 }) }}</span>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-        <section class="rules">
+        <section class="card quiet rules">
           <h3>Jak se body počítají</h3>
           <p>
             Do žebříčku se počítají výsledky z posledních {{ ranking.rules.window }} turnajů.
@@ -57,7 +69,7 @@
             Za každých dalších {{ ranking.rules.blockSize }} turnajů se bodový zisk snižuje
             o {{ Math.round(ranking.rules.blockDecay * 100) }} %.
           </p>
-          <p>Kliknutím na hráče se zobrazí body z jednotlivých turnajů.</p>
+          <p>Klepnutím na hráče se zobrazí body z jednotlivých turnajů.</p>
         </section>
       </div>
     </template>
@@ -101,36 +113,46 @@ function formatPoints(points: number): string {
 </script>
 
 <style scoped>
-.note {
-  color: #666;
+.ranking {
+  display: grid;
+  gap: 16px;
+  align-items: start;
 }
 
-tr.player {
-  cursor: pointer;
+@media (min-width: 900px) {
+  .ranking {
+    grid-template-columns: minmax(0, 3fr) minmax(280px, 2fr);
+  }
 }
 
-.points {
-  text-align: right;
-}
-
-tr.detail > td {
-  background-color: #f7faf7;
+.muted {
+  color: var(--ink-muted);
 }
 
 .contributions {
-  margin: 0 auto;
-  border-collapse: collapse;
-  font-size: 0.9rem;
+  list-style: none;
+  margin: 0;
+  padding: 2px 0 4px 2.5em;
+  display: grid;
+  gap: 2px;
 }
 
-.contributions td {
-  border: none;
-  padding: 2px 10px;
+.contributions li {
+  display: grid;
+  grid-template-columns: 6.5em 1fr 3em auto;
+  gap: 10px;
+  font-size: 0.875rem;
 }
 
-.rules {
-  max-width: 640px;
-  text-align: left;
-  color: #444;
+.contributions .points {
+  min-width: 3em;
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.rules p {
+  margin: 0 0 8px;
+  color: var(--ink-muted);
 }
 </style>

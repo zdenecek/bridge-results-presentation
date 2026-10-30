@@ -73,8 +73,6 @@ async function submit() {
 /* Shared by all admin pages. */
 .admin-shell {
   text-align: left;
-  /* The last buttons can scroll clear of the Joker chatbot button fixed in the bottom-right corner. */
-  padding-bottom: 140px;
 }
 
 .admin-bar {

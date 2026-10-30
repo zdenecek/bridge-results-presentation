@@ -1,26 +1,18 @@
 <template>
   <div>
-    <h2 class="no-print">Výsledky kol a průběžné celkové výsledky</h2>
-    <nav>
-      <router-link :to="{ name: 'seatings' }" v-if="!tournament?.isFinished">Nasazení</router-link>
-      <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
-      <router-link v-show="played" :to="{ name: 'round-board-results', params: { round: round } }">Rozdání</router-link>
-      <router-link :to="{ name: 'crosstables' }">Křížové tabulky</router-link>
-    </nav>
     <template v-if="tournament">
-
-      <nav>
+      <nav class="pills" aria-label="Kolo">
         <router-link :to="{ params: { round: rnd } }"
-                     :class="{ 'router-link-exact-active': round === rnd, disabled: false }"
-                     v-for="rnd in tournament.totalRounds" :key="rnd">
-          {{ rnd }}</router-link>
-        <router-link v-if="anyPlayed" :to="{ params: { round: standing } }"
-                     :class="{ 'router-link-exact-active': round === standing }">poslední hrané</router-link>
+                     :class="{ 'router-link-exact-active': round === rnd }"
+                     v-for="rnd in tournament.totalRounds" :key="rnd">{{ rnd }}.</router-link>
       </nav>
-      <div class="pad-top">
-        <h3 v-if="tournament.getRound(round)?.date">Výsledky {{ round }}. kola hraného {{ tournament.getRound(round)?.date?.toLocaleDateString() }}</h3>
-        <RoundTotals :round="round" :tournament="tournament" />
+      <div class="round-head">
+        <h2 class="page-title">
+          {{ round }}. kolo<template v-if="tournament.getRound(round)?.date">, {{ tournament.getRound(round)?.date?.toLocaleDateString('cs-CZ') }}</template>
+        </h2>
+        <router-link v-show="played" :to="{ name: 'round-board-results', params: { round: round } }">Rozdání</router-link>
       </div>
+      <RoundTotals :round="round" :tournament="tournament" />
     </template>
   </div>
 </template>
@@ -49,6 +41,19 @@ let round = computed(() => {
 
 
 const played = computed(() => tournament.value?.wasRoundPlayed(round.value) );
-const anyPlayed = computed(() => tournament.value?.wasRoundPlayed(1) );
 
 </script>
+
+<style scoped>
+.round-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+  margin-bottom: 12px;
+}
+
+.round-head .page-title {
+  margin: 0;
+}
+</style>

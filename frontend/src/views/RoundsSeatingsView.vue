@@ -1,23 +1,14 @@
 <template>
   <div>
-    <h2>Nasazení na {{ round }}. kolo <template v-if="date">- {{ date.toLocaleDateString() }}</template></h2>
-    <nav>
-      <router-link :to="{ name: 'tournament-results' }">Výsledky</router-link>
-    </nav>
     <template v-if="tournament">
-      <nav>
+      <nav class="pills" aria-label="Kolo">
         <router-link :to="{ params: { round: rnd } }"
           :class="{ 'router-link-exact-active': round === rnd, disabled: false }" v-for="rnd in tournament.totalRounds"
           :key="rnd">
-          {{ rnd }}</router-link>
-        <router-link :to="{ params: { round: next } }" v-if="!tournament.isFinished"
-          :class="{ 'router-link-exact-active': round === next }">Aktuální</router-link>
+          {{ rnd }}.</router-link>
       </nav>
-
-
-      <div class="flex flex-column">
-        <RoundSeatings :round="round" :tournament="tournament" />
-      </div>
+      <h2 class="page-title">Nasazení na {{ round }}. kolo<template v-if="date">, {{ date.toLocaleDateString('cs-CZ') }}</template></h2>
+      <RoundSeatings :round="round" :tournament="tournament" />
 
     </template>
   </div>

@@ -1,22 +1,20 @@
 <template>
   <div>
     <template v-if="tournament && session">
-      <h2>Dohrávka {{ session.date?.toLocaleDateString('cs-CZ') }}</h2>
-      <nav>
-        <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
-      </nav>
+      <router-link :to="{ name: 'tournament-results' }" class="back">‹ Celkové výsledky</router-link>
+      <h2 class="page-title">Dohrávka {{ session.date?.toLocaleDateString('cs-CZ') }}</h2>
 
-      <div class="table-scroll">
+      <div class="table-scroll matches">
         <table class="table table-totals">
           <tr>
-            <th>Kolo</th>
+            <th class="rank">Kolo</th>
             <th>NS</th>
             <th>EW</th>
-            <th colspan="2">IMP</th>
-            <th colspan="2">VP</th>
+            <th colspan="2" class="num">IMP</th>
+            <th colspan="2" class="num">VP</th>
           </tr>
           <tr v-for="m in matches" :key="m.index">
-            <td>
+            <td class="rank">
               <router-link :to="{ name: 'round-results', params: { round: m.round } }">{{ m.round }}.</router-link>
             </td>
             <td class="col-name" v-for="pair in [m.ns, m.ew]" :key="pair">
@@ -24,25 +22,19 @@
                 {{ tournament.getPair(pair)?.title }}
               </router-link>
             </td>
-            <td v-for="[pair, imps] in [[m.ns, m.imp_ns], [m.ew, m.imp_ew]]" :key="pair">
+            <td v-for="[pair, imps] in [[m.ns, m.imp_ns], [m.ew, m.imp_ew]]" :key="pair" class="num">
               <router-link v-if="pair" :to="{ name: 'postponed-session-pair', params: { session: session.id, pair } }">
                 {{ imps }}
               </router-link>
             </td>
-            <td>{{ m.vp.ns.toFixed(2) }}</td>
-            <td>{{ m.vp.ew.toFixed(2) }}</td>
+            <td class="num strong">{{ m.vp.ns.toFixed(2) }}</td>
+            <td class="num strong">{{ m.vp.ew.toFixed(2) }}</td>
           </tr>
         </table>
       </div>
 
-      <nav class="board-nav">
-        <router-link v-for="b in session.boardNumbers" :key="b"
-          :class="{ 'router-link-exact-active': board === b }"
-          :to="{ name: 'postponed-session', params: { session: session.id, board: b } }">{{ b }}</router-link>
-        <router-link :to="{ name: 'postponed-session', params: { session: session.id, board: 'all' } }">
-          Zobrazit najednou
-        </router-link>
-      </nav>
+      <BoardStepper :boards="session.boardNumbers" :current="board"
+                    :to="(b) => ({ name: 'postponed-session', params: { session: session!.id, board: b } })" />
 
       <div class="flex flex-column justify-center gap">
         <PostponedSessionBoard v-for="b in shownBoards" :key="b" :board="b" :session="session"
@@ -60,6 +52,7 @@ import { Ref, computed, inject } from "vue";
 import { Tournament } from "@/model/Tournament";
 import { calculateVP } from "@/model/VP";
 import PostponedSessionBoard from "@/components/PostponedSessionBoard.vue";
+import BoardStepper from "@/components/BoardStepper.vue";
 
 const route = useRoute();
 const tournament = inject("tournament") as Ref<Tournament | undefined>;
@@ -87,9 +80,12 @@ const matches = computed(() => (session.value?.matchResults ?? []).filter((r) =>
 </script>
 
 <style scoped>
-.board-nav {
-  max-width: 660px;
-  margin: 0 auto;
+.matches {
+  margin: 10px 0 16px;
+  padding: 6px 4px;
+  border: 1px solid #e1e5e1;
+  border-radius: 12px;
+  background: white;
 }
 
 .gap {

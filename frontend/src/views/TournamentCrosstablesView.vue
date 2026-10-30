@@ -1,20 +1,11 @@
 <template>
   <div>
-    <h2>Křížové tabulky</h2>
-    <div class="flex flex-column">
-
-      <nav>
-        <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
-        <router-link :to="{ name: 'rounds-results' }">Výsledky kol</router-link>
-      </nav>
-      <template v-if="tournament">
-        <div class="flex flex-column justify-center">
-          <div v-for="group, i in tournament.groups" :key="i" class="flex flex-column">
-            <h3>Skupina {{ group.name }}</h3>
-            <TournamentGroupCrosstable :tournament="tournament" :groupIndex="i" />
-          </div>
-        </div>
-      </template>
+    <p class="page-lead">VP z každého zápasu, řádek proti sloupci. Číslo ve sloupci je číslo páru.</p>
+    <div v-if="tournament" class="stack">
+      <section v-for="group, i in tournament.groups" :key="i" class="card table-card cross-card">
+        <h3>Skupina {{ group.name }}</h3>
+        <TournamentGroupCrosstable :tournament="tournament" :groupIndex="i" />
+      </section>
     </div>
   </div>
 </template>

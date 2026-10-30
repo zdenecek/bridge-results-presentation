@@ -2,15 +2,15 @@
 
 <template>
   <div class="table-scroll" v-if="seatings">
-    <table class="table table-totals">
+    <table class="table table-totals aligned">
       <tr>
-        <th>Stůl</th>
+        <th class="rank">Stůl</th>
         <th>NS</th>
         <th>EW</th>
-        <th v-if="displayPostponedColumn">Odklady</th>
+        <th v-if="displayPostponedColumn" class="note">Odklady</th>
       </tr>
       <tr v-for="seating in seatings" :key="seating.table">
-        <td>{{ seating.table }}</td>
+        <td class="rank">{{ seating.table }}</td>
         <td class="col-name" v-for="key in ['ns', 'ew']" :key="key">
           <router-link :to="{ name: 'pair-results', params: { pair: seating[key as 'ns' | 'ew']?.id ?? 1 } }">
             {{ seating[key as 'ns' | 'ew']?.title }}
@@ -71,7 +71,9 @@ const displayPostponedColumn = computed(() => {
 </script>
 
 <style scoped>
-. .totals {
-  padding-bottom: 20px;
+@media (min-width: 641px) {
+  .table.aligned th.note {
+    width: 7em;
+  }
 }
 </style>

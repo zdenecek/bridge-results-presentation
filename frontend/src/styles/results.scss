@@ -1,0 +1,476 @@
+/*
+ * The public pages' look: the season results page, skupinovka presentations and rankings share
+ * these tokens, white cards on a light page and quiet tables. Admin and print keep the old look.
+ */
+.results-page,
+.results-hero {
+  --felt: #1a881a;
+  --felt-deep: #0e5a1b;
+  --suit-black: #000;
+  --ink: #222;
+  --ink-muted: #5f6661;
+  --rule: #e3e6e3;
+  --page: #eef1ee;
+  --row-hover: #f4f7f4;
+
+  font-family: 'Lexend', Verdana, sans-serif;
+}
+
+.content:has(> .container > .results-page) {
+  background: var(--page, #eef1ee);
+}
+
+.content:has(> .container > .results-page) > .container {
+  max-width: 1140px;
+}
+
+.results-page {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink);
+  text-align: left;
+}
+
+.results-page a {
+  color: var(--felt);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.results-page a:hover {
+  color: var(--felt-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.results-page a:focus-visible,
+.results-hero a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.results-page .card {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  padding: 16px 18px 14px;
+  border: 1px solid #e1e5e1;
+  overflow: hidden;
+}
+
+.results-page .card h3 {
+  font-size: 1.0625rem;
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 10px;
+}
+
+.results-page .card.quiet {
+  background: transparent;
+  border: 1px dashed #c4cbc5;
+}
+
+.results-page .card.quiet h3 {
+  margin-bottom: 2px;
+}
+
+/* Hero on the suits band: what the page is, and where to go within it. */
+.results-hero {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 8px 4px 4px;
+  color: white;
+  text-align: left;
+}
+
+.results-hero .crumb {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.875rem;
+  text-decoration: none;
+}
+
+.results-hero .crumb:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+.results-hero h1 {
+  margin: 10px 0 6px;
+  font-size: clamp(1.75rem, 6vw, 3rem);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.results-hero .status {
+  margin: 0 0 14px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9375rem;
+}
+
+.results-hero .tabs {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 -4px;
+  padding: 0 4px;
+}
+
+.results-hero .tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.results-hero .tabs a {
+  flex-shrink: 0;
+  padding: 7px 14px;
+  border-radius: 999px;
+  color: white;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.results-hero .tabs a:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.results-hero .tabs a.active {
+  background: white;
+  color: var(--suit-black);
+  font-weight: 600;
+}
+
+/*
+ * Tables on the public pages: no grid lines, a rule between rows, figures right-aligned in
+ * tabular digits so columns of VP and IMP line up, names as dark links.
+ */
+.results-page .table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.results-page .table td,
+.results-page .table th {
+  border: none;
+  border-bottom: 1px solid var(--rule);
+  padding: 8px 8px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.results-page .table tr:last-child td {
+  border-bottom: none;
+}
+
+.results-page .table th {
+  color: var(--ink-muted);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.results-page .table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.results-page .table .rank {
+  width: 2.5em;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.results-page .table td.col-name {
+  min-width: 0;
+}
+
+.results-page .table td.col-name > .flex {
+  justify-content: flex-start;
+}
+
+/* Everything clickable in a table is underlined; figures are green, names stay dark to read well. */
+.results-page .table td a {
+  color: var(--felt);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(26, 136, 26, 0.4);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.results-page .table td.col-name a {
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.results-page .table td a:hover {
+  color: var(--felt-deep);
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
+}
+
+.results-page .table tr:hover td {
+  background: var(--row-hover);
+}
+
+.results-page .table .strong {
+  font-weight: 700;
+}
+
+/*
+ * Tables of the same kind line up from card to card on a computer: fixed columns instead of ones
+ * sized by the longest name. A phone keeps the natural widths, every millimetre counts there.
+ */
+@media (min-width: 641px) {
+  .results-page .table.aligned {
+    table-layout: fixed;
+  }
+
+  .results-page .table.aligned th.rank {
+    width: 3.75em;
+  }
+
+  .results-page .table.aligned th.num {
+    width: 5.5em;
+  }
+}
+
+.results-page .table-scroll {
+  width: 100%;
+}
+
+/* Rows that open a detail underneath: the whole row is the target, the name carries a chevron. */
+.results-page .table tr.expandable {
+  cursor: pointer;
+}
+
+.results-page .table .row-toggle {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.results-page .table .row-toggle::after {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-right: 2px solid var(--ink-muted);
+  border-bottom: 2px solid var(--ink-muted);
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.15s ease;
+}
+
+.results-page .table tr.open .row-toggle::after {
+  transform: translateY(1px) rotate(-135deg);
+}
+
+.results-page .table tr.open td,
+.results-page .table tr.detail td {
+  background: #f6f9f6;
+}
+
+.results-page .table tr.open td {
+  border-bottom-color: transparent;
+}
+
+.results-page .table tr.detail:hover td {
+  background: #f6f9f6;
+}
+
+/* Cards that hold one table each, side by side on wider screens. */
+.results-page .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(440px, 100%), 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.results-page .card.table-card {
+  padding: 14px 10px 6px;
+}
+
+.results-page .card.table-card > h3 {
+  padding: 0 8px;
+}
+
+/* Secondary choices within a page, such as the round: a row of small pills. */
+.results-page .pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 16px;
+}
+
+.results-page .pills a {
+  min-width: 2.4em;
+  padding: 4px 12px;
+  border: 1px solid #dfe5df;
+  border-radius: 999px;
+  background: white;
+  color: var(--ink);
+  font-weight: 500;
+  text-align: center;
+}
+
+.results-page .pills a:hover {
+  border-color: var(--felt);
+  text-decoration: none;
+}
+
+.results-page .pills a.router-link-exact-active,
+.results-page .pills a.active {
+  background: var(--felt);
+  border-color: var(--felt);
+  color: white;
+}
+
+.results-page .page-title {
+  margin: 0 0 6px;
+  font-size: 1.375rem;
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.results-page .page-lead {
+  margin: 0 0 16px;
+  color: var(--ink-muted);
+}
+
+@media (max-width: 640px) {
+  .results-page {
+    padding: 0 8px;
+  }
+
+  .results-page .table {
+    font-size: 0.875rem;
+  }
+
+  .results-page .table td,
+  .results-page .table th {
+    padding: 7px 5px;
+  }
+
+  .results-page .card.table-card {
+    padding: 12px 6px 4px;
+  }
+}
+
+@media print {
+  .results-hero .tabs,
+  .results-page .pills {
+    display: none;
+  }
+}
+
+/* Skupinovka presentation pages, inside the results-page wrapper. */
+.presentation .stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.presentation .back {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-size: 0.9375rem;
+}
+
+/* The navigation rows of the deeper pages (boards, a pair in a round) become quiet pills. */
+.presentation nav:not(.pills) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 6px;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.presentation nav:not(.pills) a {
+  padding: 4px 12px;
+  border: 1px solid #dfe5df;
+  border-radius: 999px;
+  background: white;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.presentation nav:not(.pills) a:hover,
+.presentation nav:not(.pills) a.router-link-exact-active {
+  background: var(--felt);
+  border-color: var(--felt);
+  color: white;
+  text-decoration: none;
+}
+
+.presentation h2:not(.page-title) {
+  margin: 0 0 12px;
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: left;
+}
+
+/* Cross tables read as a grid, so they keep light lines between the VP cells. */
+.presentation .cross-card .table th,
+.presentation .cross-card .table td {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.presentation .cross-card .table td.col-name {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.presentation .cross-card .table td.col-name {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: white;
+}
+
+@media (max-width: 640px) {
+  .presentation .cross-card .table td.col-name {
+    white-space: normal;
+    min-width: 7.5em;
+  }
+}
+
+.presentation .cross-card .table td.col-vp {
+  border-left: 1px solid var(--rule);
+  min-width: 2.8em;
+}
+
+.presentation .cross-card .table td.col-vp.empty {
+  background: #f1f3f1;
+}
+
+.presentation .cross-card .table td.col-vp.missing {
+  background: #fff6e5;
+}
+
+.presentation .pair-card .table-scroll + .table-scroll {
+  margin-top: 14px;
+}
+
+.presentation .pair-card .bold {
+  font-weight: 700;
+}

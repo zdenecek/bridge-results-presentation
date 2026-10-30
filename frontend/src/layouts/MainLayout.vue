@@ -93,8 +93,9 @@ footer {
 }
 
 .footer-wrapper {
-  padding: 10px;
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('@/assets/suits.webp');
+  padding: 10px 15px;
+  /* Same shade as the header, so text on it reads as well. */
+  background: linear-gradient(rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.72)), url('@/assets/suits.webp');
   background-size: cover;
   display: flex;
   justify-content: center;

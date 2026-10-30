@@ -1,56 +1,14 @@
 <template>
-  <div>
+  <div class="boards-page">
     <template v-if="tournament && round">
-      <h2>Rozdání z {{ round.number }}. kola</h2>
-      <nav>
-        <router-link
-          :to="{ name: 'round-results', params: { round: round.number } }"
-          >Výsledky kola</router-link
-        >
-        <router-link :to="{ name: 'tournament-results' }"
-          >Celkové výsledky</router-link
-        >
-        <div class="nav-button" @click="download">Stáhnout .pbn</div>
+      <router-link :to="{ name: 'round-results', params: { round: round.number } }" class="back">‹ Výsledky {{ round.number }}. kola</router-link>
+      <div class="head">
+        <h2 class="page-title">Rozdání z {{ round.number }}. kola</h2>
+        <button type="button" class="download" @click="download">Stáhnout .pbn</button>
+      </div>
 
-      </nav>
-
-      <nav class="board-nav">
-        <router-link
-          v-for="b in boards"
-          :key="b"
-          :class="{ 'router-link-exact-active': board === b }"
-          :to="{
-            name: 'round-board-results',
-            params: { round: round.number, board: b },
-          }"
-          >{{ b }}</router-link
-        >
-
-        <router-link
-          :to="{
-            name: 'round-board-results',
-            params: { round: round.number, board: 'all' },
-          }"
-          >Zobrazit najednou</router-link
-        >
-
-      </nav>
-      <nav v-if="board !== 'all'">
-        <router-link
-          :to="{
-            name: 'round-board-results',
-            params: { round: round.number, board: prev },
-          }"
-          >Předchozí</router-link
-        >
-        <router-link
-          :to="{
-            name: 'round-board-results',
-            params: { round: round.number, board: next },
-          }"
-          >Další</router-link
-        >
-      </nav>
+      <BoardStepper :boards="boardList" :current="board"
+                    :to="(b) => ({ name: 'round-board-results', params: { round: round!.number, board: b } })" />
 
       <RoundAllBoardsResults
         :round="round"
@@ -74,6 +32,7 @@ import { Ref, computed, inject } from "vue";
 import { Tournament } from "@/model/Tournament";
 import RoundBoardResult from "@/components/RoundBoardResult.vue";
 import RoundAllBoardsResults from "@/components/RoundAllBoardsResults.vue";
+import BoardStepper from "@/components/BoardStepper.vue";
 import { downloadTextFile } from "@/utils/download";
 import { createPBN } from "@/model/PBN";
 
@@ -95,20 +54,7 @@ const board = (() => {
   return 1;
 })();
 
-const boardNum = computed(() => (board === "all" ? undefined : board));
-const boardMax = computed(() => Math.max(...boards.value.keys()));
-const boardMin = computed(() => Math.min(...boards.value.values()));
-
-const prev = computed(() =>
-  boardNum.value && boardNum.value > boardMin.value
-    ? boardNum.value - 1
-    : boardMin.value
-);
-const next = computed(() =>
-  boardNum.value && boardNum.value < boardMax.value
-    ? boardNum.value + 1
-    : boardMax.value
-);
+const boardList = computed(() => [...boards.value].sort((a, b) => a - b));
 
 function download() {
   const roundNumber = round.value?.number;
@@ -124,8 +70,38 @@ function download() {
 </script>
 
 <style scoped>
-.board-nav {
-  max-width: 660px;
-  margin: 0 auto;
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin-bottom: 10px;
+}
+
+.download {
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--felt);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.download:hover {
+  color: var(--felt-deep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+</style>
+
+<style>
+.boards-page .table-scroll {
+  margin-top: 12px;
+  padding: 6px 4px;
+  border: 1px solid #e1e5e1;
+  border-radius: 12px;
+  background: white;
 }
 </style>

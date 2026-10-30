@@ -41,6 +41,9 @@ const results = computed(() => {
   return r;
 });
 
+/** The column the ranking goes by is the bold one. */
+const byAverage = computed(() => props.tournament.settings.rankByAverage);
+
 const includeAdjustsColumn = computed(() => results.value.some(r => r.hasAdjusts));
 
 </script>
@@ -48,17 +51,17 @@ const includeAdjustsColumn = computed(() => results.value.some(r => r.hasAdjusts
 
 <template>
   <div class="table-scroll">
-    <table class="table table-totals print-no-break">
+    <table class="table table-totals print-no-break aligned">
       <tr>
-        <th>Pořadí</th>
+        <th class="rank">Pořadí</th>
         <th>Pár</th>
-        <th v-if="includeAdjustsColumn">+/-</th>
-        <th>Průměr</th>
-        <th>VP</th>
-        <th v-if="!tournament.isFinished && showMatches">zápasy</th>
+        <th v-if="includeAdjustsColumn" class="num">+/-</th>
+        <th class="num">Průměr</th>
+        <th class="num">VP</th>
+        <th v-if="!tournament.isFinished && showMatches" class="num">Zápasy</th>
       </tr>
       <tr v-for="result in results" :key="result.pair">
-        <td class="col-rank">{{ result.rank }}</td>
+        <td class="col-rank rank">{{ result.rank }}</td>
         <td class="col-name">
           <div class="flex gap-small justify-center align-center gap-none">
 
@@ -72,10 +75,10 @@ const includeAdjustsColumn = computed(() => results.value.some(r => r.hasAdjusts
         </div>
 
         </td>
-        <td v-if="includeAdjustsColumn" :title="result.adjustmentExplanation"> {{ result.hasAdjusts ? result.vpAdjustment.toFixed(2) : "" }} </td>
-        <td> {{ result.averageAsNumber.toFixed(2) }} </td>
-        <td> {{ result.vp.toFixed(2) }} </td>
-        <td v-if="!tournament.isFinished && showMatches"> {{ result.matchCount }} </td>
+        <td v-if="includeAdjustsColumn" class="num" :title="result.adjustmentExplanation"> {{ result.hasAdjusts ? result.vpAdjustment.toFixed(2) : "" }} </td>
+        <td class="num" :class="{ strong: byAverage }"> {{ result.averageAsNumber.toFixed(2) }} </td>
+        <td class="num" :class="{ strong: !byAverage }"> {{ result.vp.toFixed(2) }} </td>
+        <td v-if="!tournament.isFinished && showMatches" class="num"> {{ result.matchCount }} </td>
       </tr>
     </table>
   </div>

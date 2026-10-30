@@ -111,13 +111,5 @@ form {
   margin-top: 20px;
   background: white;
   border-top: 1px solid #d8dee4;
-  /* Room for the Joker chatbot button fixed in the bottom-right corner. */
-  padding-right: 120px;
-}
-
-@media (max-width: 520px) {
-  .save-bar {
-    padding-right: 96px;
-  }
 }
 </style>

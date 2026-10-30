@@ -1,12 +1,10 @@
 <template>
   <div>
-    <h2>Výsledky páru {{ pair?.title }}</h2>
-    <nav>
-      <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
-      <router-link :to="{ name: 'crosstables' }">Křížové tabulky</router-link>
-    </nav>
-
-    <tournament-pair-results v-if="tournament" :pair="pairNum" :tournament="tournament" />
+    <router-link :to="{ name: 'tournament-results' }" class="back">‹ Celkové výsledky</router-link>
+    <h2 class="page-title">{{ pair?.title }}</h2>
+    <section class="card table-card pair-card">
+      <tournament-pair-results v-if="tournament" :pair="pairNum" :tournament="tournament" />
+    </section>
   </div>
 </template>
 

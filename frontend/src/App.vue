@@ -6,6 +6,7 @@
 @import url('@/styles/base.scss');
 @import url('@/styles/hacks.scss');
 @import url('@/styles/flex.scss');
+@import url('@/styles/results.scss');
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

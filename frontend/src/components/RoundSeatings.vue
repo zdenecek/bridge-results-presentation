@@ -16,13 +16,11 @@ const props = defineProps({
 </script>
 
 <template>
-  <div class="flex flex-column justify-center">
-    <template v-for="group, i in props.tournament.groups" :key="i">
-
-      <h3>Skupina {{ group.name }} </h3>
+  <div class="grid">
+    <section v-for="group, i in props.tournament.groups" :key="i" class="card table-card">
+      <h3>Skupina {{ group.name }}</h3>
       <RoundGroupSeatings :round="props.round" :tournament="props.tournament" :groupIndex="i" />
-    </template>
-
+    </section>
   </div>
 </template>
 
