@@ -8,25 +8,27 @@
       </header>
 
       <div class="groups">
-        <section v-for="group in groups" :key="group.name" class="group">
-          <h2>Skupina {{ group.name }}</h2>
-          <table>
-            <thead>
-              <tr>
-                <th class="table-no">Stůl</th>
-                <th>NS</th>
-                <th>EW</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="seat in group.seats" :key="seat.table" :class="{ postponed: seat.postponed }">
-                <td class="table-no">{{ seat.table }}</td>
-                <td>{{ seat.ns }}</td>
-                <td>{{ seat.ew }}<span v-if="seat.postponed" class="flag">odloženo</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
+        <div v-for="row, r in rows" :key="r" class="row">
+          <section v-for="{ group } in row" :key="group.name" class="group">
+            <h2>Skupina {{ group.name }}</h2>
+            <table>
+              <thead>
+                <tr>
+                  <th class="table-no">Stůl</th>
+                  <th>NS</th>
+                  <th>EW</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="seat in group.seats" :key="seat.table" :class="{ postponed: seat.postponed }">
+                  <td class="table-no">{{ seat.table }}</td>
+                  <td>{{ seat.ns }}</td>
+                  <td>{{ seat.ew }}<span v-if="seat.postponed" class="flag">odloženo</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </div>
       </div>
     </template>
   </div>
@@ -37,6 +39,7 @@ import TournamentApi from '@/api/TournamentApi';
 import { Tournament } from '@/model/Tournament';
 import { computed, onBeforeUnmount, ref } from 'vue';
 import { useRoute } from 'vue-router';
+import { groupRows } from '@/utils/groupRows';
 
 /*
  * The seating for the club's TV: no menu, no links, big type. Not linked from anywhere and needs no
@@ -87,6 +90,8 @@ const groups = computed(() => {
       })),
   })).filter((g) => g.seats.length);
 });
+
+const rows = computed(() => groupRows(groups.value));
 </script>
 
 <style scoped>
@@ -119,7 +124,14 @@ h1 {
   font-weight: 600;
 }
 
+/* A level per row, its parallel groups side by side. */
 .groups {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2vh;
+}
+
+.row {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

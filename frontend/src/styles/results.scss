@@ -302,6 +302,32 @@
   align-items: start;
 }
 
+/* Groups of one level side by side, levels one under another; a lone group sits in the middle. */
+.results-page .group-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.results-page .group-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.results-page .group-row > * {
+  flex: 1 1 100%;
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .results-page .group-row > * {
+    flex: 0 1 calc((100% - 16px) / 2);
+  }
+}
+
 .results-page .card.table-card {
   padding: 14px 10px 6px;
 }
