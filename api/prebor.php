@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/schema.php';
 require_once __DIR__ . '/bavlnka.php';
 
 // The competitions running when the rankings moved here from Google Sheets; later seasons are added in the admin.
@@ -26,7 +27,7 @@ const PREBOR_SEED_COMPETITIONS = [
 
 const PREBOR_TIME_BUDGET = 60;
 const PREBOR_RESERVED_SLUGS = ['admin', 'update', 'competitions', 'rounds'];
-const PREBOR_COMPETITION_FIELDS = ['slug', 'season', 'title', 'unit', 'best', 'rounds', 'registration_csv'];
+const PREBOR_COMPETITION_FIELDS = ['slug', 'season', 'title', 'title_en', 'unit', 'best', 'rounds', 'registration_csv'];
 
 function preborEnsureSchema(PDO $pdo): void
 {
@@ -84,6 +85,8 @@ function preborEnsureSchema(PDO $pdo): void
         PRIMARY KEY (round_id, players_key)
     )$suffix");
 
+    schemaEnsureColumn($pdo, 'prebor_competitions', 'title_en', 'VARCHAR(255) NULL');
+
     if ((int) $pdo->query("SELECT COUNT(*) FROM prebor_competitions")->fetchColumn() === 0) {
         foreach (PREBOR_SEED_COMPETITIONS as $competition) {
             preborInsertCompetition($pdo, $competition);
@@ -93,8 +96,9 @@ function preborEnsureSchema(PDO $pdo): void
 
 function preborInsertCompetition(PDO $pdo, array $competition): int
 {
-    $pdo->prepare("INSERT INTO prebor_competitions (" . implode(', ', PREBOR_COMPETITION_FIELDS) . ") VALUES (?, ?, ?, ?, ?, ?, ?)")
-        ->execute(array_map(fn($field) => $competition[$field], PREBOR_COMPETITION_FIELDS));
+    $placeholders = implode(', ', array_fill(0, count(PREBOR_COMPETITION_FIELDS), '?'));
+    $pdo->prepare("INSERT INTO prebor_competitions (" . implode(', ', PREBOR_COMPETITION_FIELDS) . ") VALUES ($placeholders)")
+        ->execute(array_map(fn($field) => $competition[$field] ?? null, PREBOR_COMPETITION_FIELDS));
     return (int) $pdo->lastInsertId();
 }
 
@@ -132,6 +136,7 @@ function preborSaveCompetition(PDO $pdo, array $data, ?int $id = null): array
         'slug' => trim((string) ($data['slug'] ?? '')),
         'season' => trim((string) ($data['season'] ?? '')),
         'title' => bavlnkaCleanText((string) ($data['title'] ?? '')),
+        'title_en' => bavlnkaCleanText((string) ($data['title_en'] ?? '')) ?: null,
         'unit' => trim((string) ($data['unit'] ?? '')),
         'best' => (int) ($data['best'] ?? 0),
         'rounds' => (int) ($data['rounds'] ?? 0),
@@ -583,6 +588,7 @@ function preborComputeRanking(array $competition, array $rounds, array $results,
         'slug' => $competition['slug'],
         'season' => $competition['season'],
         'title' => $competition['title'],
+        'title_en' => $competition['title_en'] ?? null,
         'unit' => $competition['unit'],
         'best' => $competition['best'],
         'totalRounds' => $competition['rounds'],

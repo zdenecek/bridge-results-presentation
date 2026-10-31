@@ -145,6 +145,7 @@
       <p v-if="selectedId === null" class="muted">Každá sezóna každého přeboru je samostatná soutěž s vlastními koly a přihláškami.</p>
       <form class="admin-form" @submit.prevent="saveCompetition">
         <label>Název <input v-model="form.title" required size="34"></label>
+        <label>Anglicky <input v-model="form.title_en" size="30" :placeholder="suggestEnglish(form.title)"></label>
         <label>Sezóna <input v-model="form.season" required placeholder="2027/28" size="8"></label>
         <label>Adresa <input v-model="form.slug" required pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="top-2027" size="12"></label>
         <label>Jednotka <input v-model="form.unit" required placeholder="% nebo VP" size="5"></label>
@@ -170,6 +171,7 @@
 </template>
 
 <script setup lang="ts">
+import { suggestEnglish } from '@/i18n/names';
 import PreborApi, { PreborAdminData, PreborCompetition, PreborResultKind } from '@/api/PreborApi';
 import { adminKey } from '@/utils/adminKey';
 import { computed, reactive, ref } from 'vue';
@@ -180,7 +182,7 @@ const current = computed(() => data.value?.competitions.find((c) => c.id === sel
 const review = computed(() => [...current.value?.review ?? []].sort((a, b) =>
   Number(b.kind === 'conflict') - Number(a.kind === 'conflict') || String(a.date).localeCompare(String(b.date))));
 const conflicts = computed(() => review.value.filter((r) => r.kind === 'conflict').length);
-const emptyForm: PreborCompetition = { slug: '', season: '', title: '', unit: '', best: 8, rounds: 10, registration_csv: '' };
+const emptyForm: PreborCompetition = { slug: '', season: '', title: '', title_en: '', unit: '', best: 8, rounds: 10, registration_csv: '' };
 const form = reactive<PreborCompetition>({ ...emptyForm });
 const mode = ref<'tc' | 'manual'>('tc');
 const newUrl = ref('');
@@ -243,7 +245,7 @@ function select(id: number | null) {
   selectedId.value = id;
   const competition = current.value;
   Object.assign(form, competition
-    ? { slug: competition.slug, season: competition.season, title: competition.title, unit: competition.unit,
+    ? { slug: competition.slug, season: competition.season, title: competition.title, title_en: competition.title_en ?? '', unit: competition.unit,
         best: competition.best, rounds: competition.rounds, registration_csv: competition.registration_csv ?? '' }
     : emptyForm);
 }

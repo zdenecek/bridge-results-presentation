@@ -28,6 +28,8 @@ export type TournamentData = {
     rankByAverage?: boolean;
   };
   title: string;
+  /** English name for the English pages; without it a suggestion from the Czech one is shown. */
+  titleEn?: string;
   totalRounds: number;
   td?: {
     name: string;
@@ -56,6 +58,7 @@ export type UpcomingMatch = {
 export class Tournament {
   type: TournamentType;
   title: string;
+  titleEn?: string;
   td?: {
     name: string;
     email?: string;
@@ -81,6 +84,7 @@ export class Tournament {
   constructor(tournamentData: TournamentData) {
     this.type = tournamentData.type ?? TournamentType.BKP_SKUPINOVKA;
     this.title = tournamentData.title;
+    this.titleEn = tournamentData.titleEn;
     this.td = tournamentData.td;
     this.totalRounds = tournamentData.totalRounds;
     this.groups = tournamentData.groups;

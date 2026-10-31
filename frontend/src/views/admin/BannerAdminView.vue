@@ -18,8 +18,11 @@
       <label class="check"><input v-model="form.enabled" type="checkbox"> Zobrazovat na webu</label>
       <label class="wide">Nadpis <input v-model="form.title" :required="form.enabled" maxlength="255" placeholder="Velká cena Prahy 2026"></label>
       <label class="wide">Text <input v-model="form.text" maxlength="500" placeholder="Termín, místo, do kdy se hlásit"></label>
+      <label class="wide">Nadpis anglicky <input v-model="form.titleEn" maxlength="255" :placeholder="suggestEnglish(form.title)"></label>
+      <label class="wide">Text anglicky <input v-model="form.textEn" maxlength="500" placeholder="Bez něj se v angličtině ukáže český text"></label>
       <label class="grow">Odkaz <input v-model="form.url" type="url" maxlength="500" placeholder="https://www.bkpraha.cz/…"></label>
       <label>Text tlačítka <input v-model="form.linkLabel" maxlength="100" placeholder="Více informací" size="16"></label>
+      <label>Anglicky <input v-model="form.linkLabelEn" maxlength="100" placeholder="More information" size="16"></label>
       <label>Zobrazovat do <input v-model="form.until" type="date"></label>
       <button class="button primary" type="submit" :disabled="busy">Uložit</button>
       <p v-if="message" :class="isError ? 'error' : 'muted'" class="wide">{{ message }}</p>
@@ -37,6 +40,7 @@
 <script setup lang="ts">
 import BannerApi, { BannerSettings } from '@/api/BannerApi';
 import SiteBanner from '@/components/SiteBanner.vue';
+import { suggestEnglish } from '@/i18n/names';
 import { adminKey } from '@/utils/adminKey';
 import { ref } from 'vue';
 

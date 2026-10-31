@@ -13,6 +13,7 @@
 
     <div class="admin-form edit-fields">
       <label>Název turnaje <input v-model="title" type="text" required size="40"></label>
+      <label>Anglicky <input v-model="titleEn" type="text" size="36" :placeholder="suggestEnglish(title)"></label>
       <label>Adresa (slug) <input v-model="slug" type="text" required size="30"></label>
     </div>
 
@@ -34,8 +35,10 @@ import { useRoute } from 'vue-router';
 import TournamentDataEditor from '@/views/admin/TournamentDataEditor.vue';
 import { Tournament, TournamentData } from '@/model/Tournament';
 import { adminKey } from '@/utils/adminKey';
+import { suggestEnglish } from '@/i18n/names';
 
 const title = ref("");
+const titleEn = ref("");
 const slug = ref("");
 const initialData = ref({});
 const dataToSend = ref({});
@@ -53,6 +56,7 @@ onMounted(() => {
   // Always fresh: editing a cached copy and saving it would undo a recent save.
   TournamentApi.getTournament(route.params['tournament'] as string, true).then((tournament) => {
     title.value = tournament.name;
+    titleEn.value = (tournament.data as { titleEn?: string }).titleEn ?? "";
     slug.value = tournament.slug;
     initialData.value = tournament.data;
     dataToSend.value = tournament.data;
@@ -66,7 +70,8 @@ onMounted(() => {
 function submit() {
   const id = Number.parseInt(route.params['tournament'] as string);
   saving.value = true;
-  TournamentApi.updateTournament(id, title.value, slug.value, dataToSend.value, adminKey.value).then(() => {
+  const data = { ...(dataToSend.value as object), titleEn: titleEn.value.trim() || undefined };
+  TournamentApi.updateTournament(id, title.value, slug.value, data, adminKey.value).then(() => {
     message.value = 'Uloženo v ' + new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
     isError.value = false;
   }).catch((e) => {

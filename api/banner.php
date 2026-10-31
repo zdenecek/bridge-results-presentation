@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/schema.php';
+
 // The invitation shown at the top of the public pages, such as the next Velká cena Prahy. One row.
 
 function bannerEnsureSchema(PDO $pdo): void
@@ -18,12 +20,15 @@ function bannerEnsureSchema(PDO $pdo): void
         link_label VARCHAR(100) NULL,
         until DATE NULL
     )$suffix");
+    schemaEnsureColumn($pdo, 'site_banner', 'title_en', 'VARCHAR(255) NULL');
+    schemaEnsureColumn($pdo, 'site_banner', 'text_en', 'VARCHAR(500) NULL');
+    schemaEnsureColumn($pdo, 'site_banner', 'link_label_en', 'VARCHAR(100) NULL');
 }
 
 function bannerGet(PDO $pdo): array
 {
     bannerEnsureSchema($pdo);
-    $row = $pdo->query("SELECT enabled, title, text, url, link_label, until FROM site_banner WHERE id = 1")->fetch(PDO::FETCH_ASSOC);
+    $row = $pdo->query("SELECT enabled, title, text, url, link_label, until, title_en, text_en, link_label_en FROM site_banner WHERE id = 1")->fetch(PDO::FETCH_ASSOC);
     return [
         'enabled' => (bool) ($row['enabled'] ?? false),
         'title' => (string) ($row['title'] ?? ''),
@@ -31,6 +36,9 @@ function bannerGet(PDO $pdo): array
         'url' => ($row['url'] ?? '') ?: null,
         'linkLabel' => ($row['link_label'] ?? '') ?: null,
         'until' => ($row['until'] ?? '') ?: null,
+        'titleEn' => ($row['title_en'] ?? '') ?: null,
+        'textEn' => ($row['text_en'] ?? '') ?: null,
+        'linkLabelEn' => ($row['link_label_en'] ?? '') ?: null,
     ];
 }
 
@@ -56,7 +64,8 @@ function bannerSave(PDO $pdo, array $data): array
     if ($until !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $until)) throw new InvalidArgumentException('Datum musí být ve tvaru RRRR-MM-DD.');
 
     $pdo->exec("DELETE FROM site_banner WHERE id = 1");
-    $insert = $pdo->prepare("INSERT INTO site_banner (id, enabled, title, text, url, link_label, until) VALUES (1, ?, ?, ?, ?, ?, ?)");
+    $insert = $pdo->prepare("INSERT INTO site_banner (id, enabled, title, text, url, link_label, until, title_en, text_en, link_label_en)
+        VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
     $insert->execute([
         $enabled ? 1 : 0,
         mb_substr($title, 0, 255),
@@ -64,6 +73,9 @@ function bannerSave(PDO $pdo, array $data): array
         $url ?: null,
         mb_substr(trim((string) ($data['linkLabel'] ?? '')), 0, 100) ?: null,
         $until ?: null,
+        mb_substr(trim((string) ($data['titleEn'] ?? '')), 0, 255) ?: null,
+        mb_substr(trim((string) ($data['textEn'] ?? '')), 0, 500) ?: null,
+        mb_substr(trim((string) ($data['linkLabelEn'] ?? '')), 0, 100) ?: null,
     ]);
     return bannerGet($pdo);
 }

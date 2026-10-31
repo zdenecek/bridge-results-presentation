@@ -14,6 +14,7 @@ export interface ResultsEvent {
     id: number;
     date: string | null;
     title: string | null;
+    title_en?: string | null;
     url: string | null;
     ongoing?: boolean;
     winner: ResultsWinner | null;
@@ -35,6 +36,7 @@ export interface ResultsSection {
     id: number;
     parent: number | null;
     title: string;
+    title_en?: string | null;
     kind: "group" | "events" | "tournament" | "prebor" | "bavlnka";
     ref: string | null;
     note: string | null;
@@ -116,6 +118,7 @@ export interface ResultsSectionInput {
     season: string;
     parent_id: number | null;
     title: string;
+    title_en: string | null;
     kind: ResultsSection["kind"];
     ref: string | null;
     note: string | null;
@@ -125,6 +128,7 @@ export interface ResultsEventInput {
     url?: string;
     date: string | null;
     title: string | null;
+    title_en?: string | null;
     winner_override?: string | null;
     ongoing: boolean;
 }

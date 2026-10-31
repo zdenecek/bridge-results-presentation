@@ -23,6 +23,7 @@
       <form class="admin-form" @submit.prevent="save">
         <label>Datum <input v-model="form.date" type="date"></label>
         <label class="grow">Název (nepovinný) <input v-model="form.title" placeholder="Hlavní párový turnaj"></label>
+        <label class="grow">Anglicky <input v-model="form.title_en" :placeholder="form.title ? suggestEnglish(form.title) : 'Main pairs tournament'"></label>
         <label class="wide">Vítěz napsaný ručně – přepíše vítěze přečteného z výsledků
           <input v-model="form.winner_override" :placeholder="winnerText(readWinner) || 'Jana ERDEOVÁ - Jiří EMMER'">
         </label>
@@ -46,11 +47,12 @@ import ResultsApi, { ResultsEvent, winnerText } from '@/api/ResultsApi';
 import { adminKey } from '@/utils/adminKey';
 import { allSections, resultsAdminKey } from '@/views/admin/results/resultsAdmin';
 import { computed, inject, reactive, ref } from 'vue';
+import { suggestEnglish } from '@/i18n/names';
 
 const props = defineProps<{ event: ResultsEvent; sectionId: number }>();
 const admin = inject(resultsAdminKey)!;
 const editing = ref(false);
-const form = reactive({ date: '', title: '', winner_override: '', ongoing: false, section_id: 0 });
+const form = reactive({ date: '', title: '', title_en: '', winner_override: '', ongoing: false, section_id: 0 });
 
 const eventSections = computed(() => allSections(admin.page.value).filter((s) => s.kind === 'events'));
 // The winner the results page gave, shown as a hint while a hand-written one replaces it.
@@ -66,6 +68,7 @@ function startEdit() {
   Object.assign(form, {
     date: props.event.date ?? '',
     title: props.event.title ?? '',
+    title_en: props.event.title_en ?? '',
     winner_override: props.event.winner_override ?? '',
     ongoing: !!props.event.ongoing,
     section_id: props.sectionId,
@@ -77,6 +80,7 @@ async function save() {
   const ok = await admin.run(() => ResultsApi.updateEvent(props.event.id, {
     date: form.date || null,
     title: form.title || null,
+    title_en: form.title_en || null,
     winner_override: form.winner_override || null,
     ongoing: form.ongoing,
     section_id: form.section_id,

@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/schema.php';
 require_once __DIR__ . '/bavlnka.php';
 require_once __DIR__ . '/prebor.php';
 
@@ -49,6 +50,8 @@ function resultsEnsureSchema(PDO $pdo): void
         error TEXT NULL,
         fetched_at DATETIME NULL
     )$suffix");
+    schemaEnsureColumn($pdo, 'results_sections', 'title_en', 'VARCHAR(255) NULL');
+    schemaEnsureColumn($pdo, 'results_events', 'title_en', 'VARCHAR(255) NULL');
 }
 
 /** "2026-27" for anything played from September 2026 to August 2027. */
@@ -141,6 +144,7 @@ function resultsSaveSection(PDO $pdo, array $data, ?int $id = null): int
         'season' => trim((string) ($data['season'] ?? '')),
         'parent_id' => isset($data['parent_id']) && $data['parent_id'] !== '' && $data['parent_id'] !== null ? (int) $data['parent_id'] : null,
         'title' => bavlnkaCleanText((string) ($data['title'] ?? '')),
+        'title_en' => bavlnkaCleanText((string) ($data['title_en'] ?? '')) ?: null,
         'kind' => (string) ($data['kind'] ?? 'events'),
         'ref' => trim((string) ($data['ref'] ?? '')) ?: null,
         'note' => trim((string) ($data['note'] ?? '')) ?: null,
@@ -162,15 +166,16 @@ function resultsSaveSection(PDO $pdo, array $data, ?int $id = null): int
         $position = $pdo->prepare("SELECT COALESCE(MAX(position), 0) + 1 FROM results_sections WHERE season = ? AND "
             . ($section['parent_id'] === null ? "parent_id IS NULL" : "parent_id = ?"));
         $position->execute(array_values(array_filter([$section['season'], $section['parent_id']], fn($v) => $v !== null)));
-        $pdo->prepare("INSERT INTO results_sections (season, parent_id, position, title, kind, ref, note) VALUES (?, ?, ?, ?, ?, ?, ?)")
+        $pdo->prepare("INSERT INTO results_sections (season, parent_id, position, title, title_en, kind, ref, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
             ->execute([$section['season'], $section['parent_id'], (int) $position->fetchColumn(), $section['title'],
-                $section['kind'], $section['ref'], $section['note']]);
+                $section['title_en'], $section['kind'], $section['ref'], $section['note']]);
         return (int) $pdo->lastInsertId();
     }
 
     resultsSection($pdo, $id);
-    $pdo->prepare("UPDATE results_sections SET season = ?, parent_id = ?, title = ?, kind = ?, ref = ?, note = ? WHERE id = ?")
-        ->execute([$section['season'], $section['parent_id'], $section['title'], $section['kind'], $section['ref'], $section['note'], $id]);
+    $pdo->prepare("UPDATE results_sections SET season = ?, parent_id = ?, title = ?, title_en = ?, kind = ?, ref = ?, note = ? WHERE id = ?")
+        ->execute([$section['season'], $section['parent_id'], $section['title'], $section['title_en'], $section['kind'], $section['ref'],
+            $section['note'], $id]);
     return $id;
 }
 
@@ -211,8 +216,8 @@ function resultsAddEvent(PDO $pdo, int $sectionId, array $data, ?callable $http 
     if ($event['url'] === null && $event['winner_override'] === null) {
         throw new InvalidArgumentException('Zadej adresu výsledků nebo vítěze');
     }
-    $pdo->prepare("INSERT INTO results_events (section_id, date, title, url, winner_override, ongoing, status) VALUES (?, ?, ?, ?, ?, ?, ?)")
-        ->execute([$sectionId, $event['date'], $event['title'], $event['url'], $event['winner_override'], $event['ongoing'],
+    $pdo->prepare("INSERT INTO results_events (section_id, date, title, title_en, url, winner_override, ongoing, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+        ->execute([$sectionId, $event['date'], $event['title'], $event['title_en'], $event['url'], $event['winner_override'], $event['ongoing'],
             $event['url'] ? 'pending' : 'link']);
     $id = (int) $pdo->lastInsertId();
     return $event['url'] ? resultsFetchEvent($pdo, ['id' => $id] + $event, $http) : ['id' => $id, 'status' => 'link'];
@@ -229,6 +234,7 @@ function resultsEventFields(array $data): array
     return [
         'date' => $date,
         'title' => bavlnkaCleanText((string) ($data['title'] ?? '')) ?: null,
+        'title_en' => bavlnkaCleanText((string) ($data['title_en'] ?? '')) ?: null,
         'url' => $url,
         'winner_override' => bavlnkaCleanText((string) ($data['winner_override'] ?? '')) ?: null,
         // A league or other competition still being played: its first place leads rather than won.
@@ -240,8 +246,8 @@ function resultsUpdateEvent(PDO $pdo, int $id, array $data): void
 {
     resultsEnsureSchema($pdo);
     $event = resultsEventFields($data);
-    $sets = ['date = ?', 'title = ?', 'winner_override = ?', 'ongoing = ?'];
-    $values = [$event['date'], $event['title'], $event['winner_override'], $event['ongoing']];
+    $sets = ['date = ?', 'title = ?', 'title_en = ?', 'winner_override = ?', 'ongoing = ?'];
+    $values = [$event['date'], $event['title'], $event['title_en'], $event['winner_override'], $event['ongoing']];
     if (isset($data['section_id'])) {
         if (resultsSection($pdo, (int) $data['section_id'])['kind'] !== 'events') {
             throw new InvalidArgumentException('Do této sekce se turnaje nepřidávají');
@@ -306,12 +312,13 @@ function resultsCopySeason(PDO $pdo, string $from, string $to): int
     if (in_array($to, resultsSeasons($pdo), true)) throw new InvalidArgumentException("Sezóna $to už existuje");
     $select = $pdo->prepare("SELECT * FROM results_sections WHERE season = ? ORDER BY parent_id IS NOT NULL, position, id");
     $select->execute([$from]);
-    $insert = $pdo->prepare("INSERT INTO results_sections (season, parent_id, position, title, kind, ref, note) VALUES (?, ?, ?, ?, ?, NULL, NULL)");
+    $insert = $pdo->prepare("INSERT INTO results_sections (season, parent_id, position, title, title_en, kind, ref, note) VALUES (?, ?, ?, ?, ?, ?, NULL, NULL)");
     $map = [];
     foreach ($select->fetchAll(PDO::FETCH_ASSOC) as $section) {
         // A skupinovka or přebor of the new season is chosen again; until then the section is a plain list.
         $kind = in_array($section['kind'], ['tournament', 'prebor'], true) ? 'events' : $section['kind'];
-        $insert->execute([$to, $section['parent_id'] === null ? null : $map[$section['parent_id']], $section['position'], $section['title'], $kind]);
+        $insert->execute([$to, $section['parent_id'] === null ? null : $map[$section['parent_id']], $section['position'], $section['title'],
+            $section['title_en'], $kind]);
         $map[$section['id']] = (int) $pdo->lastInsertId();
     }
     return count($map);
@@ -340,6 +347,7 @@ function resultsPage(PDO $pdo, string $season, bool $admin = false, ?string $tod
             'id' => (int) $event['id'],
             'date' => $event['date'],
             'title' => $event['title'],
+            'title_en' => $event['title_en'],
             'url' => $event['url'],
             'ongoing' => (bool) $event['ongoing'],
             'winner' => $event['winner_override'] !== null ? ['kind' => 'text', 'text' => $event['winner_override']]
@@ -357,6 +365,7 @@ function resultsPage(PDO $pdo, string $season, bool $admin = false, ?string $tod
             'id' => (int) $section['id'],
             'parent' => $section['parent_id'] === null ? null : (int) $section['parent_id'],
             'title' => $section['title'],
+            'title_en' => $section['title_en'],
             'kind' => $section['kind'],
             'ref' => $section['ref'],
             'note' => $section['note'],
@@ -452,6 +461,7 @@ function resultsPreborSummary(PDO $pdo, ?string $slug): ?array
     return [
         'slug' => $competition['slug'],
         'title' => $competition['title'],
+        'title_en' => $competition['title_en'] ?? null,
         'played' => count($rounds),
         'rounds' => $competition['rounds'],
         'lastRound' => $last ? [

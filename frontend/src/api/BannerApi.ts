@@ -6,6 +6,9 @@ export interface Banner {
     url: string | null;
     linkLabel: string | null;
     until: string | null;
+    titleEn: string | null;
+    textEn: string | null;
+    linkLabelEn: string | null;
 }
 
 export interface BannerSettings extends Banner {

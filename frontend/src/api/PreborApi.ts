@@ -34,6 +34,7 @@ export interface PreborCompetition {
     slug: string;
     season: string;
     title: string;
+    title_en?: string | null;
     unit: string;
     best: number;
     rounds: number;
@@ -48,6 +49,7 @@ export interface PreborRanking {
     slug: string;
     season: string;
     title: string;
+    title_en?: string | null;
     unit: string;
     best: number;
     totalRounds: number;

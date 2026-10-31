@@ -1,6 +1,7 @@
 <template>
   <form class="admin-form section-form" @submit.prevent="save">
     <label>Název <input v-model="form.title" required size="34"></label>
+    <label>Anglicky <input v-model="form.title_en" size="30" :placeholder="suggestEnglish(form.title)"></label>
     <label>Obsah
       <select v-model="form.kind">
         <option v-for="(label, kind) in KIND_LABELS" :key="kind" :value="kind" :disabled="kind === 'group' && form.parent_id !== null">{{ label }}</option>
@@ -39,6 +40,7 @@ import ResultsApi, { ResultsSection, ResultsSectionInput } from '@/api/ResultsAp
 import { adminKey } from '@/utils/adminKey';
 import { KIND_LABELS, resultsAdminKey } from '@/views/admin/results/resultsAdmin';
 import { computed, inject, reactive, watch } from 'vue';
+import { suggestEnglish } from '@/i18n/names';
 
 const props = defineProps<{ section?: ResultsSection; parentId?: number | null }>();
 const emit = defineEmits<{ done: [] }>();
@@ -48,6 +50,7 @@ const form = reactive<ResultsSectionInput>({
   season: admin.season.value,
   parent_id: props.section?.parent ?? props.parentId ?? null,
   title: props.section?.title ?? '',
+  title_en: props.section?.title_en ?? null,
   kind: props.section?.kind ?? 'events',
   ref: props.section?.ref ?? null,
   note: props.section?.note ?? null,
@@ -64,7 +67,7 @@ async function save() {
   const ok = await admin.run(() => ResultsApi.saveSection({ ...form, season: admin.season.value }, props.section?.id ?? null, adminKey.value),
     props.section ? 'Sekce uložena' : 'Sekce přidána');
   if (ok) {
-    if (!props.section) Object.assign(form, { title: '', ref: null, note: null });
+    if (!props.section) Object.assign(form, { title: '', title_en: null, ref: null, note: null });
     emit('done');
   }
 }
