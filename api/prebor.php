@@ -307,10 +307,33 @@ function preborStoreResults(PDO $pdo, int $roundId, array $pairs): void
     }
 }
 
+/**
+ * A presentation with robot averages lists the robots as pairs. They are not players: they are left
+ * out and the people are ranked among themselves, ties sharing the places.
+ */
+function preborWithoutRobots(array $pairs): array
+{
+    $people = array_values(array_filter($pairs, fn($pair) =>
+        array_filter($pair['players'], fn($player) => !preg_match('/^\s*robot\s*$/iu', $player['name']))));
+    if (count($people) === count($pairs)) return $pairs;
+
+    usort($people, fn($a, $b) => $b['score'] <=> $a['score']);
+    foreach ($people as $i => $pair) {
+        $from = $i;
+        while ($from > 0 && $people[$from - 1]['score'] == $pair['score']) $from--;
+        $to = $i;
+        while ($to < count($people) - 1 && $people[$to + 1]['score'] == $pair['score']) $to++;
+        $people[$i]['rankFrom'] = $from + 1;
+        $people[$i]['rankTo'] = $to + 1;
+    }
+    return $people;
+}
+
 function preborFetchRound(PDO $pdo, array $round, callable $http): array
 {
     try {
         $parsed = bavlnkaFetchResults($round['url'], $http);
+        $parsed['pairs'] = preborWithoutRobots($parsed['pairs']);
         $date = $round['date'] ?: $parsed['date'];
         if (!$date) {
             throw new RuntimeException('Neznámé datum kola, zadej ho ručně');

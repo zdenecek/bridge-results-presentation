@@ -128,6 +128,19 @@ $decided = preborComputeRanking($cfg, $rounds, $results, $entries, [5 => [prebor
 $dan = array_values(array_filter($decided['ranking'], fn($s) => $s['number'] === 2))[0];
 check('admin decision moves the result', [$dan['total'], array_column($dan['results'], 'kind')], [74.0, ['assigned', 'registered']]);
 
+// Robot averages: the robots drop out and the people are ranked among themselves
+$person = fn(string $name) => ['name' => $name];
+$withRobots = preborWithoutRobots([
+    ['pair' => 1, 'rankFrom' => 1, 'rankTo' => 1, 'score' => 61.68, 'players' => [$person('Robot'), $person('Robot')]],
+    ['pair' => 2, 'rankFrom' => 2, 'rankTo' => 2, 'score' => 60.04, 'players' => [$person('Bahníková Eva'), $person('Bahník Petr')]],
+    ['pair' => 3, 'rankFrom' => 3, 'rankTo' => 4, 'score' => 59.75, 'players' => [$person('Raboch Pavel'), $person('Spálovský Luboš')]],
+    ['pair' => 4, 'rankFrom' => 3, 'rankTo' => 4, 'score' => 59.75, 'players' => [$person('Robot'), $person('Robot')]],
+    ['pair' => 5, 'rankFrom' => 5, 'rankTo' => 6, 'score' => 55.0, 'players' => [$person('Franz Vojtěch'), $person('Krása Mikuláš')]],
+    ['pair' => 6, 'rankFrom' => 5, 'rankTo' => 6, 'score' => 55.0, 'players' => [$person('Hubený Petr'), $person('Hanák Vladimír')]],
+]);
+check('robots left out, people re-ranked', array_map(fn($p) => [$p['pair'], $p['rankFrom'], $p['rankTo']], $withRobots),
+    [[2, 1, 1], [3, 2, 2], [5, 3, 4], [6, 3, 4]]);
+
 // Competitions
 check('both seeded', array_column(preborCompetitions($pdo), 'slug'), ['imp-2026', 'top-2026']);
 $next = preborSaveCompetition($pdo, ['slug' => 'top-2027', 'season' => '2027/28', 'title' => 'Topový přebor BKP 2027/28',
