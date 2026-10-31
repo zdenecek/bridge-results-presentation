@@ -2,14 +2,16 @@
   <div class="club-bar" :class="{ hidden }">
     <a href="https://www.bkpraha.cz/" class="club-home" tabindex="-1" aria-hidden="true">
       <img src="@/assets/logo.png" alt="" class="club-logo">
-      <span class="club-name">Bridžový klub Praha</span>
+      <span class="club-name">{{ $t('club.name') }}</span>
     </a>
-    <a href="https://www.bkpraha.cz/" class="club-back">
-      <svg viewBox="0 0 16 16" aria-hidden="true">
-        <path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-      Zpět na bkpraha.cz
-    </a>
+    <div class="club-actions">
+      <a href="https://www.bkpraha.cz/" class="club-back">
+        <svg viewBox="0 0 16 16" aria-hidden="true">
+          <path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        {{ $t('club.back') }}
+      </a>
+    </div>
   </div>
 </template>
 
@@ -81,6 +83,13 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
   white-space: nowrap;
 }
 
+.club-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
 /* Spelled out for everyone: where the button goes and that it goes back. */
 .club-back {
   display: inline-flex;
@@ -124,9 +133,18 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll));
     height: 40px;
   }
 
-  /* On a phone the logo names the club and the button gets the room. */
+  /* On a phone the logo names the club and the buttons get the room. */
   .club-name {
     display: none;
+  }
+
+  .club-actions {
+    gap: 8px;
+  }
+
+  .club-back {
+    padding: 6px 12px 6px 8px;
+    font-size: 0.875rem;
   }
 }
 

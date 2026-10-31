@@ -1,22 +1,22 @@
 <template>
   <section class="band" :aria-labelledby="`section-${section.id}`">
-    <h2 :id="`section-${section.id}`">{{ section.title }}</h2>
+    <h2 :id="`section-${section.id}`">{{ localName(language, section.title, section.title_en) }}</h2>
 
     <div class="cards">
       <results-slip v-for="child in section.children" :key="child.id" :section="child" />
 
       <template v-if="section.kind === 'bavlnka'">
         <article v-if="section.leaders?.players.length" class="card podium">
-          <h3>Čelo žebříčku</h3>
+          <h3>{{ $t('results.podium') }}</h3>
           <ol>
             <li v-for="player in section.leaders.players" :key="player.first + player.last">
-              <span class="medal" role="img" :aria-label="`${player.rank}. místo`">{{ MEDALS[player.rank - 1] }}</span>
+              <span class="medal" role="img" :aria-label="$t('results.place', { n: player.rank })">{{ MEDALS[player.rank - 1] }}</span>
               <span class="podium-name">{{ player.first }} <strong>{{ player.last.toLocaleUpperCase('cs-CZ') }}</strong></span>
-              <span class="podium-points">{{ player.points.toLocaleString('cs-CZ') }}</span>
+              <span class="podium-points">{{ formatNumber(player.points) }}</span>
             </li>
           </ol>
           <div class="podium-foot">
-            <router-link :to="{ name: 'bavlnka-ranking' }">Celý žebříček</router-link>
+            <router-link :to="{ name: 'bavlnka-ranking' }">{{ $t('results.wholeRanking') }}</router-link>
           </div>
         </article>
         <article v-for="month in months" :key="month.label" class="card">
@@ -42,18 +42,19 @@ import ResultsEventRow from '@/components/results/ResultsEventRow.vue';
 import ResultsSlip from '@/components/results/ResultsSlip.vue';
 import ResultsSlipContent from '@/components/results/ResultsSlipContent.vue';
 import { computed } from 'vue';
+import { formatNumber, language, monthName } from '@/i18n';
+import { localName } from '@/i18n/names';
 
 const props = defineProps<{ section: ResultsSection }>();
 
 const MEDALS = ['🥇', '🥈', '🥉'];
-const MONTHS = ['Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec'];
 
 const hasOwnContent = computed(() => props.section.kind !== 'events' || (props.section.events?.length ?? 0) > 0 || !!props.section.note);
 
 const months = computed(() => {
   const groups: { label: string; events: ResultsEvent[] }[] = [];
   for (const event of props.section.events ?? []) {
-    const label = event.date ? MONTHS[Number(event.date.slice(5, 7)) - 1] ?? '' : '';
+    const label = event.date ? monthName(Number(event.date.slice(5, 7))) : '';
     let last = groups[groups.length - 1];
     if (last?.label !== label) groups.push(last = { label, events: [] });
     last.events.push(event);

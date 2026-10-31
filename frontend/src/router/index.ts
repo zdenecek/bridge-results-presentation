@@ -4,6 +4,7 @@ import {
     RouteLocationNormalized,
     RouteRecordRaw,
 } from "vue-router";
+import { applyRouteLanguage, t } from "@/i18n";
 import TournamentView from "../views/TournamentView.vue";
 
 import TournamentResultsView from "../views/TournamentResultsView.vue";
@@ -45,7 +46,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "/skupinovky",
         name: "tournaments",
         component: TournamentsIndexView,
-        meta: { title: () => "Skupinovky – BK Praha" },
+        meta: { title: () => t("routes.tournaments") },
     },
     {
         path: "/admin",
@@ -93,7 +94,7 @@ const routes: Array<RouteRecordRaw> = [
         path: "/bavlnka",
         name: "bavlnka-ranking",
         component: BavlnkaRankingView,
-        meta: { title: () => "Bavlnka – žebříček" },
+        meta: { title: () => t("routes.bavlnka") },
     },
     {
         path: "/vysledky/:season(\\d{4}-\\d{2})?",
@@ -104,13 +105,13 @@ const routes: Array<RouteRecordRaw> = [
         path: "/prebor",
         name: "prebor-index",
         component: PreborIndexView,
-        meta: { title: () => "Přebory BKP" },
+        meta: { title: () => t("routes.prebory") },
     },
     {
         path: "/prebor/:slug",
         name: "prebor-ranking",
         component: PreborRankingView,
-        meta: { title: () => "Přebor – celkové pořadí" },
+        meta: { title: () => t("routes.prebor") },
     },
     {
         path: "/tv/:tournament/:round?",
@@ -186,8 +187,9 @@ const router = createRouter({
     routes,
 });
 
-const defaultTitle = (window.location.hostname === 'localhost') ? "(DEV) Výsledky turnaje " : "Výsledky turnaje";
 router.beforeEach((to, _, next) => {
+    applyRouteLanguage(String(to.name ?? ""));
+    const defaultTitle = (window.location.hostname === 'localhost' ? "(DEV) " : "") + t("tournament.defaultTitle");
     const getter = to.meta["title"] as
         | ((route: RouteLocationNormalized) => string)
         | undefined;

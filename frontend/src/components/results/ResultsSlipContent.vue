@@ -7,17 +7,17 @@
   <template v-else-if="section.kind === 'prebor'">
     <template v-if="section.prebor?.lastRound">
       <p class="lead">
-        Vítězem {{ section.prebor.lastRound.number }}. kola hraného {{ formatDate(section.prebor.lastRound.date) }} je
-        {{ section.prebor.lastRound.winner.kind === 'pair' && section.prebor.lastRound.winner.entries.length > 1 ? 'dvojice' : 'pár' }}
+        {{ $t(section.prebor.lastRound.winner.kind === 'pair' && section.prebor.lastRound.winner.entries.length > 1 ? 'results.roundWinnerPairs' : 'results.roundWinnerPair',
+              { n: section.prebor.lastRound.number, date: formatDate(section.prebor.lastRound.date) }) }}
       </p>
       <p class="winner-line"><span class="trophy" aria-hidden="true">🏆</span><winner-names :winner="section.prebor.lastRound.winner" /></p>
       <div class="links">
-        <a v-if="section.prebor.lastRound.url" :href="section.prebor.lastRound.url" target="_blank">Výsledky kola</a>
-        <router-link :to="{ name: 'prebor-ranking', params: { slug: section.prebor.slug } }">Celkové pořadí</router-link>
+        <a v-if="section.prebor.lastRound.url" :href="section.prebor.lastRound.url" target="_blank">{{ $t('results.roundResults') }}</a>
+        <router-link :to="{ name: 'prebor-ranking', params: { slug: section.prebor.slug } }">{{ $t('results.standings') }}</router-link>
       </div>
     </template>
     <p v-else-if="section.note" class="note">{{ section.note }}</p>
-    <p v-else-if="section.prebor" class="note">Soutěž zatím nezačala.</p>
+    <p v-else-if="section.prebor" class="note">{{ $t('results.notStarted') }}</p>
   </template>
 
   <template v-else>
@@ -33,13 +33,10 @@ import { ResultsSection } from '@/api/ResultsApi';
 import ResultsEventRow from '@/components/results/ResultsEventRow.vue';
 import TournamentLeader from '@/components/results/TournamentLeader.vue';
 import WinnerNames from '@/components/results/WinnerNames.vue';
+import { formatDate } from '@/i18n';
 
 defineProps<{ section: ResultsSection }>();
 
-function formatDate(date: string): string {
-  const [year, month, day] = date.split('-').map(Number);
-  return `${day}. ${month}. ${year}`;
-}
 </script>
 
 <style scoped>

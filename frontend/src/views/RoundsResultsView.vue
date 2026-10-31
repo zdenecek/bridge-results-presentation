@@ -4,13 +4,13 @@
       <nav class="pills" aria-label="Kolo">
         <router-link :to="{ params: { round: rnd } }"
                      :class="{ 'router-link-exact-active': round === rnd }"
-                     v-for="rnd in tournament.totalRounds" :key="rnd">{{ rnd }}.</router-link>
+                     v-for="rnd in tournament.totalRounds" :key="rnd">{{ $t('common.roundShort', { n: rnd }) }}</router-link>
       </nav>
       <div class="round-head">
         <h2 class="page-title">
-          {{ round }}. kolo<template v-if="tournament.getRound(round)?.date">, {{ tournament.getRound(round)?.date?.toLocaleDateString('cs-CZ') }}</template>
+          {{ tournament.getRound(round)?.date ? $t('common.roundDate', { n: round, date: formatDate(tournament.getRound(round)?.date) }) : $t('common.round', { n: round }) }}
         </h2>
-        <router-link v-show="played" :to="{ name: 'round-board-results', params: { round: round } }">Rozdání</router-link>
+        <router-link v-show="played" :to="{ name: 'round-board-results', params: { round: round } }">{{ $t('tournament.boards') }}</router-link>
       </div>
       <RoundTotals :round="round" :tournament="tournament" />
     </template>
@@ -19,6 +19,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
+import { formatDate } from '@/i18n';
 
 import RoundTotals from '@/components/RoundTotals.vue';
 import { Ref, computed, inject } from 'vue';

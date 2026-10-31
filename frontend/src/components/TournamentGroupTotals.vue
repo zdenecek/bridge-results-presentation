@@ -53,12 +53,12 @@ const includeAdjustsColumn = computed(() => results.value.some(r => r.hasAdjusts
   <div class="table-scroll">
     <table class="table table-totals print-no-break aligned">
       <tr>
-        <th class="rank">Pořadí</th>
-        <th>Pár</th>
+        <th class="rank">{{ $t('common.rank') }}</th>
+        <th>{{ $t('common.pair') }}</th>
         <th v-if="includeAdjustsColumn" class="num">+/-</th>
-        <th class="num">Průměr</th>
+        <th class="num">{{ $t('common.average') }}</th>
         <th class="num">VP</th>
-        <th v-if="!tournament.isFinished && showMatches" class="num">Zápasy</th>
+        <th v-if="!tournament.isFinished && showMatches" class="num">{{ $t('common.matches') }}</th>
       </tr>
       <tr v-for="result in results" :key="result.pair">
         <td class="col-rank rank">{{ result.rank }}</td>

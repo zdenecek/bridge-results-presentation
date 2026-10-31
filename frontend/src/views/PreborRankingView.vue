@@ -2,10 +2,10 @@
   <main-layout>
     <template #hero>
       <div class="results-hero">
-        <router-link :to="{ name: 'home' }" class="crumb">‹ Všechny výsledky</router-link>
-        <h1>{{ ranking?.title ?? 'Přebor' }}</h1>
-        <p v-if="state === 'loading'" class="status">Načítám pořadí…</p>
-        <p v-else-if="state === 'error'" class="status">Pořadí se nepodařilo načíst. Zkuste stránku obnovit.</p>
+        <router-link :to="{ name: 'home' }" class="crumb">{{ $t('common.allResults') }}</router-link>
+        <h1>{{ ranking ? localName(language, ranking.title, ranking.title_en) : $t('prebor.default') }}</h1>
+        <p v-if="state === 'loading'" class="status">{{ $t('prebor.loading') }}</p>
+        <p v-else-if="state === 'error'" class="status">{{ $t('prebor.error') }}</p>
         <p v-else-if="ranking" class="status">{{ status }}</p>
       </div>
     </template>
@@ -13,20 +13,20 @@
     <template #default>
       <div v-if="ranking" class="results-page ranking">
         <section class="card table-card">
-          <h3>Celkové pořadí</h3>
-          <p v-if="!ranking.ranking.length" class="empty">Zatím se nehrálo žádné kolo.</p>
+          <h3>{{ $t('prebor.standings') }}</h3>
+          <p v-if="!ranking.ranking.length" class="empty">{{ $t('prebor.noRounds') }}</p>
           <div v-else class="table-scroll">
             <table class="table">
               <thead>
                 <tr>
-                  <th class="rank">Pořadí</th>
-                  <th>Dvojice</th>
+                  <th class="rank">{{ $t('common.rank') }}</th>
+                  <th>{{ $t('prebor.pair') }}</th>
                   <th v-for="n in ranking.totalRounds" :key="n" class="num round wide">
-                    <a v-if="roundOf(n)?.url" :href="roundOf(n)!.url!" target="_blank" :title="formatDate(roundOf(n)!.date)">{{ n }}.</a>
-                    <span v-else :title="roundOf(n) ? formatDate(roundOf(n)!.date) : undefined">{{ n }}.</span>
+                    <a v-if="roundOf(n)?.url" :href="roundOf(n)!.url!" target="_blank" :title="formatDate(roundOf(n)!.date)">{{ $t('common.roundShort', { n }) }}</a>
+                    <span v-else :title="roundOf(n) ? formatDate(roundOf(n)!.date) : undefined">{{ $t('common.roundShort', { n }) }}</span>
                   </th>
-                  <th class="num">Kol</th>
-                  <th class="num">Celkem</th>
+                  <th class="num">{{ $t('common.rounds') }}</th>
+                  <th class="num">{{ $t('common.total') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -53,9 +53,9 @@
                     <td :colspan="ranking.totalRounds + 4">
                       <ul class="rounds">
                         <li v-for="result in standing.results" :key="result.number" :class="{ dropped: !result.counted }">
-                          <span class="round-no">{{ result.number }}. kolo</span>
+                          <span class="round-no">{{ $t('common.round', { n: result.number }) }}</span>
                           <span class="round-date">{{ roundOf(result.number) ? formatShortDate(roundOf(result.number)!.date) : '' }}</span>
-                          <span class="round-place">{{ result.rank }}. z {{ roundOf(result.number)?.pairs }}</span>
+                          <span class="round-place">{{ $t('prebor.roundPlace', { rank: result.rank, pairs: roundOf(result.number)?.pairs ?? '' }) }}</span>
                           <a v-if="roundOf(result.number)?.url" class="round-score" :href="roundOf(result.number)!.url!"
                              target="_blank" @click.stop>{{ formatScore(result.score) }}</a>
                           <span v-else class="round-score">{{ formatScore(result.score) }}</span>
@@ -72,25 +72,19 @@
 
         <div class="below">
           <section v-if="ranking.rounds.length" class="card">
-            <h3>Odehraná kola</h3>
+            <h3>{{ $t('prebor.playedRounds') }}</h3>
             <ul class="played">
               <li v-for="round in ranking.rounds" :key="round.id">
-                <span>{{ round.number }}. kolo, {{ formatDate(round.date) }}</span>
-                <a v-if="round.url" :href="round.url" target="_blank">Výsledky</a>
+                <span>{{ $t('common.roundDate', { n: round.number, date: formatDate(round.date) }) }}</span>
+                <a v-if="round.url" :href="round.url" target="_blank">{{ $t('common.results') }}</a>
               </li>
             </ul>
           </section>
 
           <section class="card quiet rules">
-            <h3>Jak se pořadí počítá</h3>
-            <p>
-              Hraje se {{ ranking.totalRounds }} kol, do celkového pořadí se sčítá {{ ranking.best }} nejlepších
-              výsledků ({{ ranking.unit }}). Přeškrtnuté výsledky se nezapočítávají.
-            </p>
-            <p>
-              Klepnutím na dvojici se zobrazí její výsledky z jednotlivých kol i sestava, ve které hrála.
-              Výsledek kola vede na jeho prezentaci.
-            </p>
+            <h3>{{ $t('prebor.howTitle') }}</h3>
+            <p>{{ $t('prebor.how', { rounds: ranking.totalRounds, best: ranking.best, unit: ranking.unit }) }}</p>
+            <p>{{ $t('prebor.howTap') }}</p>
           </section>
         </div>
       </div>
@@ -103,6 +97,8 @@ import MainLayout from '@/layouts/MainLayout.vue';
 import PreborApi, { PreborRanking, PreborStanding } from '@/api/PreborApi';
 import { computed, reactive, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { formatDate, formatNumber, language, t as tr } from '@/i18n';
+import { localName } from '@/i18n/names';
 
 const route = useRoute();
 const ranking = ref<PreborRanking>();
@@ -114,7 +110,7 @@ watch(() => route.params.slug, (slug) => {
   PreborApi.getRanking(String(slug)).then((data) => {
     ranking.value = data;
     state.value = 'loaded';
-    document.title = `${data.title} – celkové pořadí`;
+    document.title = tr('prebor.pageTitle', { title: localName(language.value, data.title, data.title_en) });
   }).catch((e) => {
     console.error(e);
     state.value = 'error';
@@ -125,10 +121,10 @@ const status = computed(() => {
   const r = ranking.value;
   if (!r) return '';
   const played = r.rounds.length;
-  const rule = `počítá se ${r.best} nejlepších z ${r.totalRounds}`;
-  if (!played) return `Sezóna ${r.season}, ${rule}`;
-  if (played >= r.totalRounds) return `Dohráno, ${rule}`;
-  return `Po ${played}. kole z ${r.totalRounds} (${formatDate(r.rounds[played - 1]!.date)}), ${rule}`;
+  const rule = tr('prebor.rule', { best: r.best, rounds: r.totalRounds });
+  if (!played) return tr('prebor.statusSeason', { season: r.season, rule });
+  if (played >= r.totalRounds) return tr('prebor.statusDone', { rule });
+  return tr('prebor.statusAfter', { n: played, total: r.totalRounds, date: formatDate(r.rounds[played - 1]!.date), rule });
 });
 
 function toggle(name: string) {
@@ -148,21 +144,15 @@ function titleOf(standing: PreborStanding, n: number): string | undefined {
   const result = resultOf(standing, n);
   const round = roundOf(n);
   if (!result || !round) return undefined;
-  return `${formatDate(round.date)}: ${result.rank}. z ${round.pairs}, ${result.lineup}`;
-}
-
-function formatDate(date: string): string {
-  const [year, month, day] = date.split('-').map(Number);
-  return `${day}. ${month}. ${year}`;
+  return `${formatDate(round.date)}: ${tr('prebor.roundPlace', { rank: result.rank, pairs: round.pairs })}, ${result.lineup}`;
 }
 
 function formatShortDate(date: string): string {
-  const [, month, day] = date.split('-').map(Number);
-  return `${day}. ${month}.`;
+  return formatDate(date, true);
 }
 
 function formatScore(score: number): string {
-  return score.toLocaleString('cs-CZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return formatNumber(score, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 </script>
 

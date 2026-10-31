@@ -1,23 +1,23 @@
 <template>
   <div ref="root" class="board-stepper">
-    <nav class="pills board-pills" aria-label="Rozdání">
+    <nav class="pills board-pills" :aria-label="$t('stepper.label')">
       <router-link v-for="b in boards" :key="b" :class="{ active: current === b }" :to="to(b)">{{ b }}</router-link>
-      <router-link :class="{ active: current === 'all' }" :to="to('all')">Všechna</router-link>
+      <router-link :class="{ active: current === 'all' }" :to="to('all')">{{ $t('stepper.all') }}</router-link>
     </nav>
 
     <!-- On a phone it floats at the bottom, under the thumb, and the list of boards becomes a dropdown. -->
     <div class="step" :class="{ all: current === 'all' }">
-      <router-link v-if="prev !== undefined" class="step-btn" :to="to(prev)">‹ Předchozí</router-link>
-      <span v-else class="step-btn disabled" aria-hidden="true">‹ Předchozí</span>
+      <router-link v-if="prev !== undefined" class="step-btn" :to="to(prev)">{{ $t('stepper.prev') }}</router-link>
+      <span v-else class="step-btn disabled" aria-hidden="true">{{ $t('stepper.prev') }}</span>
 
       <span class="step-label">{{ current }} / {{ boards[boards.length - 1] }}</span>
-      <select class="step-select" :value="current" aria-label="Rozdání" @change="pick">
-        <option v-for="b in boards" :key="b" :value="b">Rozdání {{ b }}</option>
-        <option value="all">Všechna rozdání</option>
+      <select class="step-select" :value="current" :aria-label="$t('stepper.label')" @change="pick">
+        <option v-for="b in boards" :key="b" :value="b">{{ $t('common.boardN', { n: b }) }}</option>
+        <option value="all">{{ $t('stepper.allBoards') }}</option>
       </select>
 
-      <router-link v-if="next !== undefined" class="step-btn" :to="to(next)">Další ›</router-link>
-      <span v-else class="step-btn disabled" aria-hidden="true">Další ›</span>
+      <router-link v-if="next !== undefined" class="step-btn" :to="to(next)">{{ $t('stepper.next') }}</router-link>
+      <span v-else class="step-btn disabled" aria-hidden="true">{{ $t('stepper.next') }}</span>
     </div>
   </div>
 </template>

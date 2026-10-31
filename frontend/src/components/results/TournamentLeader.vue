@@ -1,12 +1,9 @@
 <template>
-  <p v-if="!leader" class="lead">Načítám…</p>
+  <p v-if="!leader" class="lead">{{ $t('common.loading') }}</p>
   <template v-else>
-    <p v-if="leader.round === 0" class="lead">Výsledky prvního kola zatím nejsou.</p>
+    <p v-if="leader.round === 0" class="lead">{{ $t('results.noFirstRound') }}</p>
     <template v-else>
-      <p class="lead">
-        {{ leader.finished ? 'Vítězem je' : `Po ${leader.round}. kole${leader.date ? ' hraném ' + leader.date : ''} vede` }}
-        {{ leader.names.length > 1 ? 'dvojice' : 'pár' }}
-      </p>
+      <p class="lead">{{ leadText }}</p>
       <p class="winner-line">
         <span v-if="leader.finished" class="trophy" aria-hidden="true">🏆</span>
         <winner-names :winner="{ kind: 'pair', entries: leader.names.map((players) => ({ players })) }" />
@@ -14,13 +11,16 @@
     </template>
 
     <p v-if="leader.next" class="next">
-      {{ leader.next.round }}. kolo se hraje <time :datetime="leader.next.iso">{{ leader.next.date }}</time>
+      <i18n-t keypath="results.nextRound" tag="span">
+        <template #n>{{ leader.next.round }}</template>
+        <template #date><time :datetime="leader.next.iso">{{ formatDate(leader.next.date) }}</time></template>
+      </i18n-t>
     </p>
 
     <div class="links">
-      <router-link :to="{ name: 'tournament-results', params: { tournament: slug } }">Prezentace</router-link>
+      <router-link :to="{ name: 'tournament-results', params: { tournament: slug } }">{{ $t('common.presentation') }}</router-link>
       <router-link v-if="leader.next" :to="{ name: 'seatings', params: { tournament: slug, round: leader.next.round } }">
-        Nasazení {{ leader.next.round }}. kola
+        {{ $t('results.seatingsOf', { n: leader.next.round }) }}
       </router-link>
     </div>
   </template>
@@ -31,15 +31,16 @@ import TournamentApi from '@/api/TournamentApi';
 import { ResultsPlayer } from '@/api/ResultsApi';
 import WinnerNames from '@/components/results/WinnerNames.vue';
 import { Tournament } from '@/model/Tournament';
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
+import { formatDate, t as tr } from '@/i18n';
 
 const props = defineProps<{ slug: string }>();
 const leader = ref<{
   round: number;
-  date: string;
+  date: Date | undefined;
   finished: boolean;
   names: ResultsPlayer[][];
-  next: { round: number; date: string; iso: string } | null;
+  next: { round: number; date: Date; iso: string } | null;
 }>();
 
 /** "Vozábal David" as the seeding stores names: the last word is the first name. */
@@ -55,11 +56,20 @@ function nextRound(tournament: Tournament) {
     const date = tournament.getRound(round)?.date;
     if (date) {
       const iso = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-      return { round, date: date.toLocaleDateString('cs-CZ'), iso };
+      return { round, date, iso };
     }
   }
   return null;
 }
+
+const leadText = computed(() => {
+  const l = leader.value;
+  if (!l) return '';
+  const several = l.names.length > 1;
+  if (l.finished) return tr(several ? 'results.winnerPairs' : 'results.winnerPair');
+  const key = several ? (l.date ? 'results.leadersAfterDate' : 'results.leadersAfter') : (l.date ? 'results.leaderAfterDate' : 'results.leaderAfter');
+  return tr(key, { n: l.round, date: formatDate(l.date) });
+});
 
 watch(() => props.slug, async (slug) => {
   const entry = await TournamentApi.getTournament(slug);
@@ -71,7 +81,7 @@ watch(() => props.slug, async (slug) => {
   const date = tournament.getRound(round)?.date;
   leader.value = {
     round,
-    date: date ? date.toLocaleDateString('cs-CZ') : '',
+    date,
     finished: tournament.isFinished,
     names: results.filter((r) => r.rank.toOrdinal() === best)
       .map((r) => (tournament.getPair(r.pair)?.players ?? []).map((p) => split(p.name))),

@@ -1,10 +1,10 @@
 <template>
   <div class="boards-page">
     <template v-if="tournament && round">
-      <router-link :to="{ name: 'round-results', params: { round: round.number } }" class="back">‹ Výsledky {{ round.number }}. kola</router-link>
+      <router-link :to="{ name: 'round-results', params: { round: round.number } }" class="back">{{ $t('tournament.backRound', { n: round.number }) }}</router-link>
       <div class="head">
-        <h2 class="page-title">Rozdání z {{ round.number }}. kola</h2>
-        <button type="button" class="download" @click="download">Stáhnout .pbn</button>
+        <h2 class="page-title">{{ $t('tournament.boardsOfRound', { n: round.number }) }}</h2>
+        <button type="button" class="download" @click="download">{{ $t('tournament.downloadPbn') }}</button>
       </div>
 
       <BoardStepper :boards="boardList" :current="board"

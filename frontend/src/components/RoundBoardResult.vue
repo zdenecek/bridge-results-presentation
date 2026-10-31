@@ -41,19 +41,19 @@ const boardData = computed(() => props.round.boards?.get(props.board));
 
 <template>
   <div class="flex flex-column justify-center">
-    <h3>Rozdání číslo {{ props.board }}</h3>
+    <h3>{{ $t('common.boardNumber', { n: props.board }) }}</h3>
 
     <div class="flex flex-column justify-center">
       <BoardPartial v-if="boardData" :board="boardData" :number="board" />
-      <div v-else>Detaily rozdání nejsou k dispozici.</div>
+      <div v-else>{{ $t('tournament.boardUnavailable') }}</div>
 
       <div class="table-scroll" v-if="results">
         <table class="table table-results">
           <tr>
             <th>NS</th>
             <th>EW</th>
-            <th>Závazek</th>
-            <th colspan="2">Výsledek</th>
+            <th>{{ $t('common.contract') }}</th>
+            <th colspan="2">{{ $t('common.result') }}</th>
             <th>IMP</th>
           </tr>
 
@@ -75,7 +75,7 @@ const boardData = computed(() => props.round.boards?.get(props.board));
               <td>{{ (result as PlayedBoardResult).res_ns }}</td>
             </template>
             <template v-else-if="result.status === 'not-played'">
-              <td colspan="5">Nehráno</td>
+              <td colspan="5">{{ $t('common.notPlayed') }}</td>
             </template>
             <template v-else-if="result.status === 'adjusted'">
               <td colspan="4" :title="result.text ?? ''">UV</td>
@@ -84,7 +84,7 @@ const boardData = computed(() => props.round.boards?.get(props.board));
           </tr>
           <tr v-if="average">
             <td colspan="2"></td>
-            <td colspan="4">Průměr: {{ average }}</td>
+            <td colspan="4">{{ $t('common.averageValue', { value: average }) }}</td>
           </tr>
         </table>
       </div>

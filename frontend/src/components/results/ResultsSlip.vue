@@ -1,6 +1,6 @@
 <template>
   <article class="card" :class="{ wide: (section.events?.length ?? 0) > 4, quiet: onlyNote }">
-    <h3>{{ section.title }}</h3>
+    <h3>{{ localName(language, section.title, section.title_en) }}</h3>
     <results-slip-content :section="section" />
   </article>
 </template>
@@ -9,6 +9,8 @@
 import { ResultsSection } from '@/api/ResultsApi';
 import ResultsSlipContent from '@/components/results/ResultsSlipContent.vue';
 import { computed } from 'vue';
+import { language } from '@/i18n';
+import { localName } from '@/i18n/names';
 
 const props = defineProps<{ section: ResultsSection }>();
 

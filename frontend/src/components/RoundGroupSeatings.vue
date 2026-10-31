@@ -4,7 +4,7 @@
   <div class="table-scroll" v-if="seatings">
     <table class="table table-totals aligned">
       <tr>
-        <th class="rank">Stůl</th>
+        <th class="rank">{{ $t('common.table') }}</th>
         <th>NS</th>
         <th>EW</th>
         <th v-if="displayPostponedColumn" class="note">Odklady</th>
@@ -17,13 +17,13 @@
           </router-link>
         </td>
         <td v-if="displayPostponedColumn">
-          <span v-if="seating.postponed"> Odloženo </span>
+          <span v-if="seating.postponed">{{ $t('common.postponed') }}</span>
         </td>
       </tr>
     </table>
   </div>
   <div v-else>
-    <p>Posazení není dostupné.</p>
+    <p>{{ $t('tournament.seatingsUnavailable') }}</p>
   </div>
 </template>
 

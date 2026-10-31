@@ -20,7 +20,7 @@
     </div>
     <div class="board-down-right" >
       <DoubleDummyPartial v-if="board.ability && board.minimax" :dd="board.ability" :minimax="board.minimax" />
-      <a :href="bridgesolverLink" target="_blank" class="bridgesolver-link">Otevřít v Bridge Solveru</a>
+      <a :href="bridgesolverLink" target="_blank" class="bridgesolver-link">{{ $t('tournament.openSolver') }}</a>
     </div>
   </div>
 </template>

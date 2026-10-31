@@ -2,6 +2,7 @@
 
 import { Tournament } from '@/model/Tournament';
 import { computed } from 'vue';
+import { formatDate } from '@/i18n';
 
 const props = defineProps({
   tournament: {
@@ -34,11 +35,11 @@ const adjusts = computed(() => {
     <div class="table-scroll">
       <table class="table">
         <tr>
-          <td>VP po posledním kole</td>
+          <td>{{ $t('tournament.vpAfterLast') }}</td>
           <td class="bold">{{ finalResult.vp.toFixed(2) }}</td>
         </tr>
         <tr>
-          <td>Pořadí po posledním kole</td>
+          <td>{{ $t('tournament.rankAfterLast') }}</td>
           <td class="bold">{{ finalResult.rank }}</td>
         </tr>
       </table>
@@ -47,7 +48,7 @@ const adjusts = computed(() => {
     <div class="table-scroll" v-if="players?.length">
       <table class="table">
         <tr>
-          <th colspan="3">Hráči</th>
+          <th colspan="3">{{ $t('common.players') }}</th>
         </tr>
         <tr v-for="player in players" :key="player.id">
           <td>{{ player.name }}</td>
@@ -61,16 +62,16 @@ const adjusts = computed(() => {
     <div class="table-scroll" v-if="adjusts.length">
       <table class="table">
         <tr>
-          <th colspan="3">Úpravy a penalizace</th>
+          <th colspan="3">{{ $t('tournament.adjustments') }}</th>
         </tr>
-        <tr><th>Kolo</th><th>+/-</th><th>Důvod</th></tr>
+        <tr><th>{{ $t('common.roundCol') }}</th><th>+/-</th><th>{{ $t('tournament.reason') }}</th></tr>
         <tr v-for="adjust in adjusts" :key="adjust.round">
-          <td>{{ adjust.round }}.</td>
+          <td>{{ $t('common.roundShort', { n: adjust.round }) }}</td>
           <td>{{ adjust.vpAdjustment.toFixed(2) }}</td>
           <td>{{ adjust.reason }}</td>
         </tr>
         <tr>
-          <td colspan="3">Celkem: {{ finalResult.vpAdjustment.toFixed(2) }}</td>
+          <td colspan="3">{{ $t('common.totalValue', { value: finalResult.vpAdjustment.toFixed(2) }) }}</td>
         </tr>
       </table>
     </div> 
@@ -78,15 +79,15 @@ const adjusts = computed(() => {
     <div class="table-scroll" v-if="results.length">
       <table class="table table-totals">
         <tr>
-          <th>Kolo</th>
-          <th>Soupeři</th>
+          <th>{{ $t('common.roundCol') }}</th>
+          <th>{{ $t('common.opponents') }}</th>
           <th>IMP</th>
           <th>VP</th>
         </tr>
         <tr v-for="result in results" :key="result.ops">
           <td>
             <router-link :to="{ name: 'round-results', params: { round: result.round } }">
-              {{ result.round }}.
+              {{ $t('common.roundShort', { n: result.round }) }}
             </router-link>
           </td>
           <td class="col-name">
@@ -95,8 +96,8 @@ const adjusts = computed(() => {
             </router-link>
             <span class="small" v-if="result.tableResult.status === 'postponed'">&nbsp;<router-link
                 v-if="result.tableResult.session"
-                :to="{ name: 'postponed-session', params: { session: result.tableResult.session } }">(dohrávka)</router-link
-              ><template v-else>(dohrávka)</template></span>
+                :to="{ name: 'postponed-session', params: { session: result.tableResult.session } }">{{ $t('tournament.postponedLabel') }}</router-link
+              ><template v-else>{{ $t('tournament.postponedLabel') }}</template></span>
           </td>
           <td>
             <router-link v-if="result.tableResult.status === 'played'"
@@ -116,31 +117,31 @@ const adjusts = computed(() => {
       </table>
     </div>
     <div v-else>
-      <p>Zatím nejsou dostupné žádné výsledky</p>
+      <p>{{ $t('tournament.noResults') }}</p>
     </div>
 
     <div class="table-scroll" v-if="upcoming.length">
       <table class="table table-totals">
         <tr>
-          <th colspan="4">Zápasy k odehrání</th>
+          <th colspan="4">{{ $t('tournament.toPlay') }}</th>
         </tr>
         <tr>
-          <th>Kolo</th>
-          <th>Datum</th>
-          <th>Stůl</th>
-          <th>Soupeři</th>
+          <th>{{ $t('common.roundCol') }}</th>
+          <th>{{ $t('tournament.date') }}</th>
+          <th>{{ $t('common.table') }}</th>
+          <th>{{ $t('common.opponents') }}</th>
         </tr>
         <tr v-for="match in upcoming" :key="`${match.round}-${match.table}`">
           <td>
-            <router-link :to="{ name: 'seatings', params: { round: match.round } }">{{ match.round }}.</router-link>
+            <router-link :to="{ name: 'seatings', params: { round: match.round } }">{{ $t('common.roundShort', { n: match.round }) }}</router-link>
           </td>
-          <td>{{ match.date?.toLocaleDateString('cs-CZ') }}</td>
+          <td>{{ formatDate(match.date) }}</td>
           <td>{{ match.table }} {{ match.ns ? 'NS' : 'EW' }}</td>
           <td class="col-name">
             <router-link :to="{ name: 'pair-results', params: { pair: match.opponent } }">
               {{ tournament.getPair(match.opponent)?.title }}
             </router-link>
-            <span class="small" v-if="match.postponed">&nbsp;(odloženo)</span>
+            <span class="small" v-if="match.postponed">&nbsp;{{ $t('tournament.postponedLower') }}</span>
           </td>
         </tr>
       </table>

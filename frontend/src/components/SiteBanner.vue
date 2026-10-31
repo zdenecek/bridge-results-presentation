@@ -1,5 +1,5 @@
 <template>
-  <aside v-if="shown" class="site-banner" aria-label="Pozvánka">
+  <aside v-if="shown" class="site-banner" v-bind:aria-label="$t('banner.label')">
     <div class="inner">
       <span class="badge" aria-hidden="true">
         <svg viewBox="0 0 24 24">
@@ -8,18 +8,18 @@
         </svg>
       </span>
       <div class="message">
-        <span class="kicker">Pozvánka</span>
-        <strong class="title">{{ shown.title }}</strong>
-        <span v-if="shown.text" class="text">{{ shown.text }}</span>
+        <span class="kicker">{{ $t('banner.label') }}</span>
+        <strong class="title">{{ localName(language, shown.title, shown.titleEn) }}</strong>
+        <span v-if="shown.text" class="text">{{ (language === 'en' && shown.textEn) || shown.text }}</span>
       </div>
       <component :is="preview ? 'span' : 'a'" v-if="shown.url" :href="preview ? undefined : shown.url"
                  :target="preview ? undefined : '_blank'" class="cta">
-        {{ shown.linkLabel || 'Více informací' }}
+        {{ (language === 'en' ? shown.linkLabelEn : shown.linkLabel) || $t('banner.more') }}
         <svg viewBox="0 0 16 16" aria-hidden="true">
           <path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </component>
-      <button v-if="!preview" type="button" class="close" aria-label="Skrýt pozvánku" @click="dismiss">
+      <button v-if="!preview" type="button" class="close" :aria-label="$t('banner.hide')" @click="dismiss">
         <svg viewBox="0 0 16 16" aria-hidden="true">
           <path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
         </svg>
@@ -31,6 +31,8 @@
 <script setup lang="ts">
 import BannerApi, { Banner } from '@/api/BannerApi';
 import { computed, ref } from 'vue';
+import { language } from '@/i18n';
+import { localName } from '@/i18n/names';
 import { useRoute } from 'vue-router';
 
 /** With a preview, as in the admin, it shows that banner as it is and never loads or hides. */

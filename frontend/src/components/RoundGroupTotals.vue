@@ -36,15 +36,15 @@ function score(result: TableRoundResult, key: 'imp_ns' | 'imp_ew' | 'vp_ns' | 'v
 <template>
   <div class="round-group">
     <template v-if="results.length && wasPlayed">
-      <h4 class="sub">Pořadí po {{ round }}. kole</h4>
+      <h4 class="sub">{{ $t('tournament.standingsAfter', { n: round }) }}</h4>
       <TournamentGroupTotals :tournament="tournament" :groupIndex="groupIndex" :untilRound="round" :showMatches="false" />
 
-      <h4 class="sub">Zápasy</h4>
+      <h4 class="sub">{{ $t('common.matches') }}</h4>
       <div class="table-scroll">
         <table class="table table-totals matches aligned">
           <tr>
-            <th class="rank">Stůl</th>
-            <th>Páry</th>
+            <th class="rank">{{ $t('common.table') }}</th>
+            <th>{{ $t('common.pairs') }}</th>
             <th class="num imp">IMP</th>
             <th class="num vp">VP</th>
           </tr>
@@ -67,11 +67,11 @@ function score(result: TableRoundResult, key: 'imp_ns' | 'imp_ew' | 'vp_ns' | 'v
                                :to="{ name: 'round-pair-results', params: { pair: result[key], round: props.round } }">
                     {{ score(result, `imp_${key}`) }}
                   </router-link>
-                  <router-link v-else-if="result.status === 'postponed' && result.session" title="Dohrávka"
+                  <router-link v-else-if="result.status === 'postponed' && result.session" :title="$t('postponed.label')"
                                :to="{ name: 'postponed-session-pair', params: { session: result.session, pair: result[key] } }">
                     {{ score(result, `imp_${key}`) }}
                   </router-link>
-                  <span v-else title="Dohrávka">{{ score(result, `imp_${key}`) }}</span>
+                  <span v-else :title="$t('postponed.label')">{{ score(result, `imp_${key}`) }}</span>
                 </span>
               </div>
             </td>
@@ -85,7 +85,7 @@ function score(result: TableRoundResult, key: 'imp_ns' | 'imp_ew' | 'vp_ns' | 'v
         </table>
       </div>
     </template>
-    <p v-else class="empty">Výsledky nejsou dostupné.</p>
+    <p v-else class="empty">{{ $t('tournament.resultsUnavailable') }}</p>
   </div>
 </template>
 

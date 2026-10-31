@@ -1,13 +1,13 @@
 <template>
   <div>
     <template v-if="tournament && session">
-      <router-link :to="{ name: 'tournament-results' }" class="back">‹ Celkové výsledky</router-link>
-      <h2 class="page-title">Dohrávka {{ session.date?.toLocaleDateString('cs-CZ') }}</h2>
+      <router-link :to="{ name: 'tournament-results' }" class="back">{{ $t('tournament.backStandings') }}</router-link>
+      <h2 class="page-title">{{ $t('postponed.title', { date: formatDate(session.date) }) }}</h2>
 
       <div class="table-scroll matches">
         <table class="table table-totals">
           <tr>
-            <th class="rank">Kolo</th>
+            <th class="rank">{{ $t('common.roundCol') }}</th>
             <th>NS</th>
             <th>EW</th>
             <th colspan="2" class="num">IMP</th>
@@ -15,7 +15,7 @@
           </tr>
           <tr v-for="m in matches" :key="m.index">
             <td class="rank">
-              <router-link :to="{ name: 'round-results', params: { round: m.round } }">{{ m.round }}.</router-link>
+              <router-link :to="{ name: 'round-results', params: { round: m.round } }">{{ $t('common.roundShort', { n: m.round }) }}</router-link>
             </td>
             <td class="col-name" v-for="pair in [m.ns, m.ew]" :key="pair">
               <router-link v-if="pair" :to="{ name: 'pair-results', params: { pair } }">
@@ -40,14 +40,15 @@
         <PostponedSessionBoard v-for="b in shownBoards" :key="b" :board="b" :session="session"
           :tournament="tournament" />
       </div>
-      <p class="small">Srovnávací pole tvoří {{ session.fieldTables }} stolů odehraných programem Jack.</p>
+      <p class="small">{{ $t('postponed.field', { n: session.fieldTables }) }}</p>
     </template>
-    <p v-else-if="tournament">Dohrávka nenalezena.</p>
+    <p v-else-if="tournament">{{ $t('postponed.notFound') }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
+import { formatDate } from "@/i18n";
 import { Ref, computed, inject } from "vue";
 import { Tournament } from "@/model/Tournament";
 import { calculateVP } from "@/model/VP";

@@ -1,18 +1,18 @@
 <template>
   <div>
-    <h2>Výsledky páru {{ pair?.title }} v dohrávce {{ session?.date?.toLocaleDateString('cs-CZ') }}</h2>
+    <h2>{{ $t('postponed.pairTitle', { pair: pair?.title ?? '', date: formatDate(session?.date) }) }}</h2>
 
     <nav>
-      <router-link :to="{ name: 'postponed-session', params: { session: route.params['session'] } }">Dohrávka</router-link>
-      <router-link :to="{ name: 'tournament-results' }">Celkové výsledky</router-link>
-      <router-link :to="{ name: 'pair-results' }">Celkové výsledky páru</router-link>
+      <router-link :to="{ name: 'postponed-session', params: { session: route.params['session'] } }">{{ $t('postponed.label') }}</router-link>
+      <router-link :to="{ name: 'tournament-results' }">{{ $t('tournament.tabResults') }}</router-link>
+      <router-link :to="{ name: 'pair-results' }">{{ $t('tournament.pairStandings') }}</router-link>
     </nav>
 
     <div class="flex flex-column justify-center padding" v-if="tournament && session && result && seating">
       <div class="table-scroll">
         <table class="table">
           <tr>
-            <th colspan="2">Výsledek</th>
+            <th colspan="2">{{ $t('common.result') }}</th>
             <th>IMP</th>
             <th>VP</th>
           </tr>
@@ -33,13 +33,13 @@
       <div class="table-scroll">
         <table class="table table-results">
           <tr>
-            <th class="sortable" title="Seřadit podle čísla rozdání" @click="sortBy('board')">
-              Rozdání <span class="sort">{{ indicator('board') }}</span>
+            <th class="sortable" :title="$t('common.sortByBoard')" @click="sortBy('board')">
+              {{ $t('common.board') }} <span class="sort">{{ indicator('board') }}</span>
             </th>
-            <th>Závazek</th>
-            <th colspan="2">Výsledek</th>
-            <th>Průměr</th>
-            <th class="sortable" title="Seřadit podle IMPů" @click="sortBy('imp')">
+            <th>{{ $t('common.contract') }}</th>
+            <th colspan="2">{{ $t('common.result') }}</th>
+            <th>{{ $t('common.average') }}</th>
+            <th class="sortable" :title="$t('common.sortByImp')" @click="sortBy('imp')">
               IMPy <span class="sort">{{ indicator('imp') }}</span>
             </th>
           </tr>
@@ -58,17 +58,18 @@
               <td>{{ session.averages.get(board) }}</td>
               <td>{{ pairImps(board) }}</td>
             </template>
-            <td v-else colspan="5">Nehráno</td>
+            <td v-else colspan="5">{{ $t('common.notPlayed') }}</td>
           </tr>
         </table>
       </div>
     </div>
-    <p v-else-if="tournament && session">Pár v této dohrávce nehrál.</p>
+    <p v-else-if="tournament && session">{{ $t('postponed.pairNotPlayed') }}</p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useRoute } from "vue-router";
+import { formatDate } from "@/i18n";
 import { Ref, computed, inject } from "vue";
 import { Tournament } from "@/model/Tournament";
 import { ScoredLine } from "@/model/PostponedSession";

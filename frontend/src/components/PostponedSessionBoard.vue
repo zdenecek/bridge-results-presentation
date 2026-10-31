@@ -39,7 +39,7 @@ function playUrl(line: ScoredLine): string | undefined {
 
 <template>
   <div class="flex flex-column justify-center">
-    <h3>Rozdání číslo {{ props.board }}</h3>
+    <h3>{{ $t('common.boardNumber', { n: props.board }) }}</h3>
 
     <div class="flex flex-column justify-center">
       <BoardPartial v-if="boardData" :board="boardData" :number="board" />
@@ -49,8 +49,8 @@ function playUrl(line: ScoredLine): string | undefined {
           <tr>
             <th>NS</th>
             <th>EW</th>
-            <th>Závazek</th>
-            <th colspan="2">Výsledek</th>
+            <th>{{ $t('common.contract') }}</th>
+            <th colspan="2">{{ $t('common.result') }}</th>
             <th>IMP</th>
           </tr>
           <tr v-for="(line, index) in lines" :key="index" :class="{ jack: !line.seating }">
@@ -68,7 +68,7 @@ function playUrl(line: ScoredLine): string | undefined {
             </td>
             <td>
               <a v-if="playUrl(line)" class="play-link" :href="playUrl(line)" target="_blank" rel="noopener"
-                title="Přehrát dražbu a sehrávku">{{ line.result }}<sup>▷</sup></a>
+                :title="$t('tournament.replay')">{{ line.result }}<sup>▷</sup></a>
               <template v-else>{{ line.result }}</template>
             </td>
             <td>{{ line.points }}</td>
@@ -76,7 +76,7 @@ function playUrl(line: ScoredLine): string | undefined {
           </tr>
           <tr v-if="average !== undefined">
             <td colspan="2"></td>
-            <td colspan="4">Průměr: {{ average }}</td>
+            <td colspan="4">{{ $t('common.averageValue', { value: average }) }}</td>
           </tr>
         </table>
       </div>

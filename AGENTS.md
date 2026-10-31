@@ -277,3 +277,11 @@ chtěl vrátit zpět na akci, musí upstream nejdřív ten pin zvednout.
 
 Mirror běží **bez** `--delete`, takže na serveru nic nemaže; staré assety tam
 zůstávají ležet.
+
+## Jazyky
+
+Veřejné stránky jsou česky a anglicky (`frontend/src/i18n`, vue-i18n). Jazyk se bere z `?lang=`,
+pak z `localStorage` `lang`, pak z jazyka prohlížeče, jinak čeština; přepínač je v patičce.
+Admin a tisk jsou vždy česky. `en.ts` je typovaný podle `cs.ts`, chybějící klíč shodí type-check.
+Názvy z adminu mají nepovinnou anglickou variantu (`title_en`, u turnaje `data.titleEn`); bez ní
+anglická stránka ukáže návrh z `suggestEnglish` v `i18n/names.ts`.

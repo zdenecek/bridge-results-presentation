@@ -1,16 +1,16 @@
 <template>
   <component :is="event.url ? 'a' : 'div'" class="event" :class="{ linked: event.url, undated: !event.date }"
              :href="event.url ?? undefined" :target="event.url ? '_blank' : undefined"
-             :title="event.url ? 'Zobrazit výsledky' : undefined">
-    <time v-if="event.date" :datetime="event.date" class="date">{{ formatDate(event.date) }}</time>
+             :title="event.url ? $t('common.showResults') : undefined">
+    <time v-if="event.date" :datetime="event.date" class="date">{{ shortDate(event.date) }}</time>
     <span class="event-body">
-      <span v-if="event.title" class="title">{{ event.title }}</span>
+      <span v-if="event.title" class="title">{{ localName(language, event.title, event.title_en) }}</span>
       <span v-if="event.winner" class="names">
         <span v-if="event.ongoing" class="leads">{{ leadsLabel }}</span>
-        <span v-else class="trophy" role="img" aria-label="Vítěz">🏆</span>
+        <span v-else class="trophy" role="img" :aria-label="$t('common.winner')">🏆</span>
         <winner-names :winner="event.winner" />
       </span>
-      <span v-else-if="event.url" class="presentation">Prezentace</span>
+      <span v-else-if="event.url" class="presentation">{{ $t('common.presentation') }}</span>
     </span>
     <svg v-if="event.url" class="open" viewBox="0 0 16 16" aria-hidden="true">
       <path d="M6 3h7v7M13 3 4 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
@@ -22,6 +22,8 @@
 import { ResultsEvent } from '@/api/ResultsApi';
 import WinnerNames from '@/components/results/WinnerNames.vue';
 import { computed } from 'vue';
+import { formatDate, language, t as tr } from '@/i18n';
+import { localName } from '@/i18n/names';
 
 const props = defineProps<{ event: ResultsEvent }>();
 
@@ -29,13 +31,12 @@ const props = defineProps<{ event: ResultsEvent }>();
 const leadsLabel = computed(() => {
   const winner = props.event.winner;
   const several = winner && winner.kind !== 'text' && winner.entries.length > 1;
-  if (winner?.kind === 'team') return several ? 'Vedou týmy' : 'Vede tým';
-  return several ? 'Vedou dvojice' : 'Vede pár';
+  if (winner?.kind === 'team') return tr(several ? 'results.leadsTeams' : 'results.leadsTeam');
+  return tr(several ? 'results.leadsPairs' : 'results.leadsPair');
 });
 
-function formatDate(date: string): string {
-  const [, month, day] = date.split('-').map(Number);
-  return `${day}. ${month}.`;
+function shortDate(date: string): string {
+  return formatDate(date, true);
 }
 </script>
 

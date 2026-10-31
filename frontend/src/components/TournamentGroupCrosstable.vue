@@ -69,9 +69,9 @@ const hasAdjusts = computed(() => {
             <th v-for="player in group.players" :key="player" :title="tournament.getPair(player)?.title">{{ player }}</th>
             <th v-for="i in additionalColumnsTitles" :key="i">{{ i }}</th>
             <th v-if="hasAdjusts">+/-</th>
-            <th>Průměr</th>
+            <th>{{ $t('common.average') }}</th>
             <th>Celkem</th>
-            <th>Pořadí</th>
+            <th>{{ $t('common.rank') }}</th>
           </tr>
           <tr v-for="player, i in group.players" :key="player">
             <td>

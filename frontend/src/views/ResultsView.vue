@@ -2,8 +2,8 @@
   <main-layout>
     <template #hero>
       <div class="results-hero">
-        <h1>Výsledky <span class="season">{{ seasonLabel(season) }}</span></h1>
-        <div v-if="page && season !== current" class="seasons" role="navigation" aria-label="Sezóny">
+        <h1>{{ $t('results.title') }} <span class="season">{{ seasonLabel(season) }}</span></h1>
+        <div v-if="page && season !== current" class="seasons" role="navigation" :aria-label="$t('results.seasons')">
           <router-link v-for="s in page.seasons" :key="s" :to="s === current ? { name: 'home' } : { name: 'results', params: { season: s } }"
                        :class="{ active: s === season }" :aria-current="s === season ? 'page' : undefined">{{ seasonLabel(s) }}</router-link>
         </div>
@@ -11,20 +11,22 @@
     </template>
     <template #default>
       <div class="results-page">
-        <p v-if="state === 'loading'" class="status">Načítám výsledky…</p>
-        <p v-else-if="state === 'error'" class="status">Výsledky se nepodařilo načíst. Zkuste stránku obnovit.</p>
-        <p v-else-if="page && !page.sections.length" class="status">Pro sezónu {{ seasonLabel(season) }} zatím nejsou žádné výsledky.</p>
+        <p v-if="state === 'loading'" class="status">{{ $t('results.loading') }}</p>
+        <p v-else-if="state === 'error'" class="status">{{ $t('results.error') }}</p>
+        <p v-else-if="page && !page.sections.length" class="status">{{ $t('results.empty', { season: seasonLabel(season) }) }}</p>
 
         <results-section-block v-for="section in sections" :key="section.id" :section="section" />
 
         <section v-if="page" class="archive" aria-labelledby="archive-title">
-          <h2 id="archive-title">Archiv</h2>
+          <h2 id="archive-title">{{ $t('results.archive') }}</h2>
           <div v-if="pastSeasons.length" class="archive-seasons">
-            <router-link v-for="s in pastSeasons" :key="s" :to="{ name: 'results', params: { season: s } }">Sezóna {{ seasonLabel(s) }}</router-link>
+            <router-link v-for="s in pastSeasons" :key="s" :to="{ name: 'results', params: { season: s } }">{{ $t('results.season', { season: seasonLabel(s) }) }}</router-link>
           </div>
-          <p>
-            Prezentace všech skupinovek od roku 2023 najdete v <router-link :to="{ name: 'tournaments' }">přehledu skupinovek</router-link>.
-          </p>
+          <i18n-t keypath="results.allTournaments" tag="p">
+            <template #link>
+              <router-link :to="{ name: 'tournaments' }">{{ $t('results.allTournamentsLink') }}</router-link>
+            </template>
+          </i18n-t>
         </section>
       </div>
     </template>
@@ -37,6 +39,8 @@ import ResultsApi, { ResultsPage, ResultsSection, currentSeason, seasonLabel } f
 import ResultsSectionBlock from '@/components/results/ResultsSectionBlock.vue';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
+import { t as tr } from '@/i18n';
+import { localName } from '@/i18n/names';
 
 const route = useRoute();
 const current = currentSeason();
@@ -69,6 +73,7 @@ const sections = computed(() => {
       running.push(...section.children.filter((c) => c.state === 'running').map((c) => ({
         ...c,
         title: `${section.title} – ${c.title.includes(' ') ? c.title : c.title.toLocaleLowerCase('cs-CZ')}`,
+        title_en: `${localName('en', section.title, section.title_en)} – ${localName('en', c.title, c.title_en)}`,
       })));
       const others = section.children.filter((c) => c.state !== 'running');
       if (others.length) rest.push({ ...section, children: others });
@@ -79,14 +84,14 @@ const sections = computed(() => {
     }
   }
   const now: ResultsSection[] = running.length
-    ? [{ id: -1, parent: null, title: 'Hraje se', kind: 'group', ref: null, note: null, state: 'running', children: running }]
+    ? [{ id: -1, parent: null, title: tr('results.playing'), title_en: tr('results.playing'), kind: 'group', ref: null, note: null, state: 'running', children: running }]
     : [];
   return [...now, ...series, ...rest];
 });
 
 watch(season, (s) => {
   state.value = 'loading';
-  document.title = `Výsledky ${seasonLabel(s)} – BK Praha`;
+  document.title = tr('results.pageTitle', { season: seasonLabel(s) });
   ResultsApi.getPage(s).then((data) => {
     page.value = data;
     state.value = 'loaded';

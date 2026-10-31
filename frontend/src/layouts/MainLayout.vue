@@ -21,8 +21,17 @@
         <div class="footer-inner">
           <slot name="footer"></slot>
           <p class="webmaster">
-            Našli jste chybu? Napište webmasterovi
-            <a href="mailto:zdnek.tomis@gmail.com">zdnek.tomis@gmail.com</a>
+            <span>
+              {{ $t('footer.bug') }}
+              <a href="mailto:zdnek.tomis@gmail.com">zdnek.tomis@gmail.com</a>
+            </span>
+            <span v-if="!czechOnly" class="lang">
+              <template v-for="(lang, i) in LANGS" :key="lang">
+                <span v-if="i" aria-hidden="true"> · </span>
+                <strong v-if="language === lang" :lang="lang">{{ $t(`lang.${lang}Name`) }}</strong>
+                <a v-else href="#" :lang="lang" @click.prevent="setLanguage(lang)">{{ $t(`lang.${lang}Name`) }}</a>
+              </template>
+            </span>
           </p>
         </div>
       </div>
@@ -33,6 +42,13 @@
 <script setup lang="ts">
 import ClubBar from '@/components/ClubBar.vue';
 import SiteBanner from '@/components/SiteBanner.vue';
+import { LANGS, language, setLanguage } from '@/i18n';
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+/** The admin and print pages are Czech only, so they offer no choice. */
+const czechOnly = computed(() => /^(admin|print)/.test(String(route.name ?? '')));
 </script>
 
 <style>
@@ -135,6 +151,18 @@ footer {
 
 .webmaster a:hover {
   color: white;
+}
+
+.webmaster {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+}
+
+.webmaster .lang strong {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
 }
 
 @media print {

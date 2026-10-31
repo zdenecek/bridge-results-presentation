@@ -1,10 +1,10 @@
 <template>
   <div>
-    <router-link :to="{ name: 'round-results', params: { round: roundNum } }" class="back">‹ Výsledky {{ roundNum }}. kola</router-link>
-    <h2 class="page-title">{{ pair?.title }} v {{ roundNum }}. kole</h2>
+    <router-link :to="{ name: 'round-results', params: { round: roundNum } }" class="back">{{ $t('tournament.backRound', { n: roundNum }) }}</router-link>
+    <h2 class="page-title">{{ $t('tournament.pairInRound', { pair: pair?.title ?? '', n: roundNum }) }}</h2>
     <p class="page-lead links">
-      <router-link :to="{ name: 'pair-results' }">Všechna kola páru</router-link>
-      <router-link v-show="roundHasDeals" :to="{ name: 'round-board-results' }">Rozdání kola</router-link>
+      <router-link :to="{ name: 'pair-results' }">{{ $t('tournament.pairAllRounds') }}</router-link>
+      <router-link v-show="roundHasDeals" :to="{ name: 'round-board-results' }">{{ $t('tournament.roundBoards') }}</router-link>
     </p>
 
     <template v-if="tournament && round && pair">

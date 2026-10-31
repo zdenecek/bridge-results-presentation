@@ -5,9 +5,9 @@
         <router-link :to="{ params: { round: rnd } }"
           :class="{ 'router-link-exact-active': round === rnd, disabled: false }" v-for="rnd in tournament.totalRounds"
           :key="rnd">
-          {{ rnd }}.</router-link>
+          {{ $t('common.roundShort', { n: rnd }) }}</router-link>
       </nav>
-      <h2 class="page-title">Nasazení na {{ round }}. kolo<template v-if="date">, {{ date.toLocaleDateString('cs-CZ') }}</template></h2>
+      <h2 class="page-title">{{ date ? $t('tournament.seatingsTitleDate', { n: round, date: formatDate(date) }) : $t('tournament.seatingsTitle', { n: round }) }}</h2>
       <RoundSeatings :round="round" :tournament="tournament" />
 
     </template>
@@ -16,6 +16,7 @@
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
+import { formatDate } from '@/i18n';
 
 import { Ref, computed, inject } from 'vue';
 import { Tournament } from '@/model/Tournament';

@@ -82,7 +82,7 @@ function open(deal: number) {
         <table class="table">
           <tr>
             <th class="rank"></th>
-            <th>Pár</th>
+            <th>{{ $t('common.pair') }}</th>
             <th class="num">IMP</th>
             <th class="num">VP</th>
           </tr>
@@ -106,17 +106,17 @@ function open(deal: number) {
         <div class="table-scroll">
           <table class="table table-results">
             <tr>
-              <th class="sortable rank" title="Seřadit podle čísla rozdání" @click="sortBy('board')">
+              <th class="sortable rank" :title="$t('common.sortByBoard')" @click="sortBy('board')">
                 Rozd. <span class="sort">{{ indicator('board') }}</span>
               </th>
               <template v-if="!mergeNames">
                 <th>NS</th>
                 <th>EW</th>
               </template>
-              <th>Závazek</th>
-              <th colspan="2">Výsledek</th>
-              <th v-if="averages" class="num">Průměr</th>
-              <th class="sortable num" title="Seřadit podle IMPů" @click="sortBy('imp')">
+              <th>{{ $t('common.contract') }}</th>
+              <th colspan="2">{{ $t('common.result') }}</th>
+              <th v-if="averages" class="num">{{ $t('common.average') }}</th>
+              <th class="sortable num" :title="$t('common.sortByImp')" @click="sortBy('imp')">
                 IMP <span class="sort">{{ indicator('imp') }}</span>
               </th>
             </tr>
@@ -150,7 +150,7 @@ function open(deal: number) {
                 <td class="num strong">{{ ns ? (result as AdjustedBoardResult).res_ns : (result as AdjustedBoardResult).res_ew }}</td>
               </template>
               <template v-else-if="result.status === 'not-played'">
-                <td :colspan="averages ? 5 : 4" class="muted">Nehráno</td>
+                <td :colspan="averages ? 5 : 4" class="muted">{{ $t('common.notPlayed') }}</td>
               </template>
             </tr>
           </table>
@@ -160,14 +160,14 @@ function open(deal: number) {
       <aside v-if="hasBoards" class="card board-card">
         <template v-if="selectedBoard && selected !== undefined">
           <div class="board-head">
-            <h3>Rozdání {{ selected }}</h3>
+            <h3>{{ $t('common.boardN', { n: selected }) }}</h3>
             <router-link :to="{ name: 'round-board-results', params: { round: round.number, board: selected } }">
-              Všechny výsledky rozdání ›
+              {{ $t('tournament.allBoardResults') }}
             </router-link>
           </div>
           <BoardPartial :key="selected" :board="selectedBoard" :number="selected" />
         </template>
-        <p v-else class="hint">Klepněte na řádek a ukáže se tady rozdání.</p>
+        <p v-else class="hint">{{ $t('tournament.tapRow') }}</p>
       </aside>
     </div>
   </div>

@@ -2,12 +2,12 @@
   <main-layout>
     <template #hero>
       <div class="results-hero">
-        <router-link :to="{ name: 'home' }" class="crumb">‹ Všechny výsledky</router-link>
-        <h1>Bavlnka – žebříček</h1>
-        <p v-if="state === 'loading'" class="status">Načítám žebříček…</p>
-        <p v-else-if="state === 'error'" class="status">Žebříček se nepodařilo načíst. Zkuste stránku obnovit.</p>
+        <router-link :to="{ name: 'home' }" class="crumb">{{ $t('common.allResults') }}</router-link>
+        <h1>{{ $t('bavlnka.title') }}</h1>
+        <p v-if="state === 'loading'" class="status">{{ $t('bavlnka.loading') }}</p>
+        <p v-else-if="state === 'error'" class="status">{{ $t('bavlnka.error') }}</p>
         <p v-else-if="ranking?.updated" class="status">
-          Úterní párové turnaje, po turnaji {{ formatDate(ranking.updated) }}
+          {{ $t('bavlnka.status', { date: formatDate(ranking.updated) }) }}
         </p>
       </div>
     </template>
@@ -15,15 +15,15 @@
     <template #default>
       <div v-if="ranking" class="results-page ranking">
         <section class="card table-card">
-          <h3>Pořadí hráčů</h3>
+          <h3>{{ $t('bavlnka.ranking') }}</h3>
           <div class="table-scroll">
             <table class="table">
               <thead>
                 <tr>
-                  <th class="rank">Pořadí</th>
-                  <th>Hráč</th>
-                  <th class="num">Turnajů</th>
-                  <th class="num">Body</th>
+                  <th class="rank">{{ $t('common.rank') }}</th>
+                  <th>{{ $t('common.player') }}</th>
+                  <th class="num">{{ $t('bavlnka.tournaments') }}</th>
+                  <th class="num">{{ $t('bavlnka.points') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -45,7 +45,7 @@
                           <a :href="urlOf(t.id)" target="_blank" @click.stop>{{ formatDate(t.date) }}</a>
                           <span class="muted">{{ t.rank }}. z {{ t.pairs }}</span>
                           <span class="muted">{{ t.weight < 1 ? Math.round(t.weight * 100) + ' %' : '' }}</span>
-                          <span class="points">{{ t.points.toLocaleString('cs-CZ', { maximumFractionDigits: 1 }) }}</span>
+                          <span class="points">{{ formatNumber(t.points, { maximumFractionDigits: 1 }) }}</span>
                         </li>
                       </ul>
                     </td>
@@ -57,19 +57,14 @@
         </section>
 
         <section class="card quiet rules">
-          <h3>Jak se body počítají</h3>
+          <h3>{{ $t('bavlnka.howTitle') }}</h3>
           <p>
-            Do žebříčku se počítají výsledky z posledních {{ ranking.rules.window }} turnajů.
-            Za každou účast získává hráč {{ ranking.rules.participationPoints }} bodů a za každou
-            dvojici, která skončila za ním, dalších {{ ranking.rules.pointsPerPairBeaten }}.
-            Při rovnosti pořadí se body rovnoměrně rozdělí mezi všechny stejně umístěné dvojice.
+            {{ $t('bavlnka.how1', { window: ranking.rules.window, participation: ranking.rules.participationPoints, beaten: ranking.rules.pointsPerPairBeaten }) }}
           </p>
           <p>
-            Body z posledních {{ ranking.rules.blockSize }} turnajů se započítávají v plné hodnotě.
-            Za každých dalších {{ ranking.rules.blockSize }} turnajů se bodový zisk snižuje
-            o {{ Math.round(ranking.rules.blockDecay * 100) }} %.
+            {{ $t('bavlnka.how2', { block: ranking.rules.blockSize, decay: Math.round(ranking.rules.blockDecay * 100) }) }}
           </p>
-          <p>Klepnutím na hráče se zobrazí body z jednotlivých turnajů.</p>
+          <p>{{ $t('bavlnka.howTap') }}</p>
         </section>
       </div>
     </template>
@@ -80,6 +75,7 @@
 import MainLayout from '@/layouts/MainLayout.vue';
 import BavlnkaApi, { BavlnkaRanking } from '@/api/BavlnkaApi';
 import { reactive, ref } from 'vue';
+import { formatDate, formatNumber } from '@/i18n';
 
 const ranking = ref<BavlnkaRanking>();
 const state = ref<'loading' | 'loaded' | 'error'>('loading');
@@ -102,13 +98,8 @@ function urlOf(id: number): string | undefined {
   return ranking.value?.tournaments.find((t) => t.id === id)?.url;
 }
 
-function formatDate(date: string): string {
-  const [year, month, day] = date.split('-').map(Number);
-  return `${day}. ${month}. ${year}`;
-}
-
 function formatPoints(points: number): string {
-  return points.toLocaleString('cs-CZ');
+  return formatNumber(points);
 }
 </script>
 

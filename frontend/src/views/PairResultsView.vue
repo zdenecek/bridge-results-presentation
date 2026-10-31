@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-link :to="{ name: 'tournament-results' }" class="back">‹ Celkové výsledky</router-link>
+    <router-link :to="{ name: 'tournament-results' }" class="back">{{ $t('tournament.backStandings') }}</router-link>
     <h2 class="page-title">{{ pair?.title }}</h2>
     <section class="card table-card pair-card">
       <tournament-pair-results v-if="tournament" :pair="pairNum" :tournament="tournament" />

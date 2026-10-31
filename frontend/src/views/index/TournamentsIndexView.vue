@@ -1,16 +1,16 @@
 <template>
   <main-layout>
     <template #header>
-      Výsledky turnajů Bridžového klubu Praha
+      {{ $t('index.title') }}
     </template>
     <template #default>
 
       <p>
-        <router-link :to="{ name: 'bavlnka-ranking' }">Bavlnka – žebříček</router-link>
+        <router-link :to="{ name: 'bavlnka-ranking' }">{{ $t('index.bavlnka') }}</router-link>
       </p>
 
-      <h2>Seznam turnajů</h2>
-      <p v-if="!tournaments" class="note">Načítám turnaje ...</p>
+      <h2>{{ $t('index.list') }}</h2>
+      <p v-if="!tournaments" class="note">{{ $t('index.loading') }}</p>
       <div class="years">
         <section v-for="year in years" :key="year.label" class="year">
           <h3>{{ year.label }}</h3>
@@ -30,6 +30,8 @@
 </template>
 
 <script setup lang="ts">
+import { language, t as tr } from '@/i18n';
+import { localName } from '@/i18n/names';
 import MainLayout from '@/layouts/MainLayout.vue';
 import TournamentApi from '@/api/TournamentApi';
 import { computed, ref } from 'vue';
@@ -51,8 +53,9 @@ function seasonOf(tournament: TournamentEntry): number {
 
 /** The year is already the group heading, so drop it from the name. */
 function labelOf(tournament: TournamentEntry, year: number | undefined): string {
-  if (!year) return tournament.name;
-  return tournament.name.replace(new RegExp(`\\s*${year}\\s*$`), '') || tournament.name;
+  const name = localName(language.value, tournament.name);
+  if (!year) return name;
+  return name.replace(new RegExp(`\\s*${year}\\s*$`), '') || name;
 }
 
 const years = computed(() => {
@@ -66,7 +69,7 @@ const years = computed(() => {
   return Array.from(byYear.entries())
     .sort(([a], [b]) => (b ?? 0) - (a ?? 0))
     .map(([year, entries]) => ({
-      label: year?.toString() ?? 'Ostatní',
+      label: year?.toString() ?? tr('index.other'),
       tournaments: entries
         .sort((a, b) => seasonOf(a) - seasonOf(b) || a.name.localeCompare(b.name, 'cs'))
         .map(entry => ({ slug: entry.slug, label: labelOf(entry, year) })),

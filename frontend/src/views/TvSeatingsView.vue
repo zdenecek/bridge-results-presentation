@@ -1,20 +1,20 @@
 <template>
   <div class="tv">
-    <p v-if="state === 'error'" class="note">Turnaj se nepodařilo načíst.</p>
+    <p v-if="state === 'error'" class="note">{{ $t('tv.error') }}</p>
     <template v-else-if="tournament">
       <header>
-        <h1>{{ tournament.title }}</h1>
-        <p class="sub">Nasazení na {{ round }}. kolo<template v-if="date">, {{ date.toLocaleDateString('cs-CZ') }}</template></p>
+        <h1>{{ localName(language, tournament.title, tournament.titleEn) }}</h1>
+        <p class="sub">{{ date ? $t('tournament.seatingsTitleDate', { n: round, date: formatDate(date) }) : $t('tournament.seatingsTitle', { n: round }) }}</p>
       </header>
 
       <div class="groups">
         <div v-for="row, r in rows" :key="r" class="row">
           <section v-for="{ group } in row" :key="group.name" class="group">
-            <h2>Skupina {{ group.name }}</h2>
+            <h2>{{ $t('tournament.group', { name: group.name }) }}</h2>
             <table>
               <thead>
                 <tr>
-                  <th class="table-no">Stůl</th>
+                  <th class="table-no">{{ $t('common.table') }}</th>
                   <th>NS</th>
                   <th>EW</th>
                 </tr>
@@ -23,7 +23,7 @@
                 <tr v-for="seat in group.seats" :key="seat.table" :class="{ postponed: seat.postponed }">
                   <td class="table-no">{{ seat.table }}</td>
                   <td>{{ seat.ns }}</td>
-                  <td>{{ seat.ew }}<span v-if="seat.postponed" class="flag">odloženo</span></td>
+                  <td>{{ seat.ew }}<span v-if="seat.postponed" class="flag">{{ $t('tournament.postponedFlag') }}</span></td>
                 </tr>
               </tbody>
             </table>
@@ -40,6 +40,8 @@ import { Tournament } from '@/model/Tournament';
 import { computed, onBeforeUnmount, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { groupRows } from '@/utils/groupRows';
+import { formatDate, language, t as tr } from '@/i18n';
+import { localName } from '@/i18n/names';
 
 /*
  * The seating for the club's TV: no menu, no links, big type. Not linked from anywhere and needs no
@@ -55,7 +57,7 @@ function load() {
   TournamentApi.getTournament(String(route.params.tournament), true).then((data) => {
     tournament.value = new Tournament(data.data);
     state.value = 'loaded';
-    document.title = `Nasazení – ${data.name}`;
+    document.title = tr('tv.title', { name: data.name });
   }).catch((e) => {
     console.error(e);
     if (!tournament.value) state.value = 'error';

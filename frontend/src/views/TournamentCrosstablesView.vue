@@ -1,9 +1,9 @@
 <template>
   <div>
-    <p class="page-lead">VP z každého zápasu, řádek proti sloupci. Číslo ve sloupci je číslo páru.</p>
+    <p class="page-lead">{{ $t('tournament.crossLead') }}</p>
     <div v-if="tournament" class="stack">
       <section v-for="group, i in tournament.groups" :key="i" class="card table-card cross-card">
-        <h3>Skupina {{ group.name }}</h3>
+        <h3>{{ $t('tournament.group', { name: group.name }) }}</h3>
         <TournamentGroupCrosstable :tournament="tournament" :groupIndex="i" />
       </section>
     </div>
