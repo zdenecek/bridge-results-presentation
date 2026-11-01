@@ -31,6 +31,7 @@ import TournamentApi from '@/api/TournamentApi';
 import { ResultsPlayer } from '@/api/ResultsApi';
 import WinnerNames from '@/components/results/WinnerNames.vue';
 import { Tournament } from '@/model/Tournament';
+import { Pair } from '@/model/modelTypes';
 import { computed, ref, watch } from 'vue';
 import { formatDate, t as tr } from '@/i18n';
 
@@ -51,6 +52,13 @@ function split(name: string): ResultsPlayer {
 }
 
 /** The first round after the standing that has a date set; rounds are created ahead with their dates. */
+/** Older tournaments keep only matrika numbers for players, so the surnames come from the pair title. */
+function pairNames(pair: Pair | undefined): ResultsPlayer[] {
+  const players = pair?.players ?? [];
+  if (players.length && players.every((p) => p.name?.trim())) return players.map((p) => split(p.name));
+  return (pair?.title ?? '').split(/\s+-\s+/).filter(Boolean).map((last) => ({ first: '', last: last.trim() }));
+}
+
 function nextRound(tournament: Tournament) {
   for (let round = tournament.standing + 1; round <= tournament.totalRounds; round++) {
     const date = tournament.getRound(round)?.date;
@@ -84,7 +92,7 @@ watch(() => props.slug, async (slug) => {
     date,
     finished: tournament.isFinished,
     names: results.filter((r) => r.rank.toOrdinal() === best)
-      .map((r) => (tournament.getPair(r.pair)?.players ?? []).map((p) => split(p.name))),
+      .map((r) => pairNames(tournament.getPair(r.pair))),
     next: tournament.isFinished ? null : nextRound(tournament),
   };
 }, { immediate: true });
