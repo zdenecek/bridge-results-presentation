@@ -55,9 +55,15 @@ const leader = ref<{
   next: { round: number; date: Date; iso: string } | null;
 }>();
 
-/** "Vozábal David" as the seeding stores names: the last word is the first name. */
-function split(name: string): ResultsPlayer {
-  const parts = name.trim().split(/\s+/);
+/**
+ * "Vozábal David" as the seeding stores names. A surname from the pair title wins, so "Černá Anna Marie"
+ * keeps both first names; otherwise the last word is the first name.
+ */
+function split(name: string, surnames: string[] = []): ResultsPlayer {
+  const trimmed = name.trim();
+  const surname = surnames.find((s) => trimmed.startsWith(`${s} `));
+  if (surname) return { first: trimmed.slice(surname.length).trim(), last: surname };
+  const parts = trimmed.split(/\s+/);
   const first = parts.length > 1 ? parts.pop()! : '';
   return { first, last: parts.join(' ') };
 }
@@ -65,8 +71,9 @@ function split(name: string): ResultsPlayer {
 /** Older tournaments keep only matrika numbers for players, so the surnames come from the pair title. */
 function pairNames(pair: Pair | undefined): ResultsPlayer[] {
   const players = pair?.players ?? [];
-  if (players.length && players.every((p) => p.name?.trim())) return players.map((p) => split(p.name));
-  return (pair?.title ?? '').split(/\s+-\s+/).filter(Boolean).map((last) => ({ first: '', last: last.trim() }));
+  const surnames = (pair?.title ?? '').split(/\s+-\s+/).map((s) => s.trim()).filter(Boolean);
+  if (players.length && players.every((p) => p.name?.trim())) return players.map((p) => split(p.name, surnames));
+  return surnames.map((last) => ({ first: '', last }));
 }
 
 /** The first round after the standing that has a date set; rounds are created ahead with their dates. */
