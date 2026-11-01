@@ -8,6 +8,15 @@
         <span v-if="leader.finished" class="trophy" aria-hidden="true">🏆</span>
         <winner-names :winner="{ kind: 'pair', entries: leader.names.map((players) => ({ players })) }" />
       </p>
+      <template v-if="leader.finished && leader.others.length">
+        <p class="lead others-lead">{{ $t('results.groupWinners') }}</p>
+        <ul class="others">
+          <li v-for="group in leader.others" :key="group.name">
+            <span class="group-name">{{ group.name }}</span>
+            <winner-names :winner="{ kind: 'pair', entries: group.names.map((players) => ({ players })) }" />
+          </li>
+        </ul>
+      </template>
     </template>
 
     <p v-if="leader.next" class="next">
@@ -41,6 +50,8 @@ const leader = ref<{
   date: Date | undefined;
   finished: boolean;
   names: ResultsPlayer[][];
+  /** Winners of the groups below the first one, shown once the tournament is over. */
+  others: { name: string; names: ResultsPlayer[][] }[];
   next: { round: number; date: Date; iso: string } | null;
 }>();
 
@@ -51,7 +62,6 @@ function split(name: string): ResultsPlayer {
   return { first, last: parts.join(' ') };
 }
 
-/** The first round after the standing that has a date set; rounds are created ahead with their dates. */
 /** Older tournaments keep only matrika numbers for players, so the surnames come from the pair title. */
 function pairNames(pair: Pair | undefined): ResultsPlayer[] {
   const players = pair?.players ?? [];
@@ -59,6 +69,7 @@ function pairNames(pair: Pair | undefined): ResultsPlayer[] {
   return (pair?.title ?? '').split(/\s+-\s+/).filter(Boolean).map((last) => ({ first: '', last: last.trim() }));
 }
 
+/** The first round after the standing that has a date set; rounds are created ahead with their dates. */
 function nextRound(tournament: Tournament) {
   for (let round = tournament.standing + 1; round <= tournament.totalRounds; round++) {
     const date = tournament.getRound(round)?.date;
@@ -83,16 +94,22 @@ watch(() => props.slug, async (slug) => {
   const entry = await TournamentApi.getTournament(slug);
   const tournament = new Tournament(entry.data);
   const round = tournament.standing;
-  const group = tournament.groups[0];
-  const results = (group?.players ?? []).map((pair) => tournament.getPairResult(pair));
-  const best = Math.min(...results.map((r) => r.rank.toOrdinal()));
-  const date = tournament.getRound(round)?.date;
+  const winners = tournament.groups
+    .filter((group) => group.players.length)
+    .map((group) => {
+      const results = group.players.map((pair) => tournament.getPairResult(pair));
+      const best = Math.min(...results.map((r) => r.rank.toOrdinal()));
+      return {
+        name: group.name,
+        names: results.filter((r) => r.rank.toOrdinal() === best).map((r) => pairNames(tournament.getPair(r.pair))),
+      };
+    });
   leader.value = {
     round,
-    date,
+    date: tournament.getRound(round)?.date,
     finished: tournament.isFinished,
-    names: results.filter((r) => r.rank.toOrdinal() === best)
-      .map((r) => pairNames(tournament.getPair(r.pair))),
+    names: winners[0]?.names ?? [],
+    others: winners.slice(1),
     next: tournament.isFinished ? null : nextRound(tournament),
   };
 }, { immediate: true });
@@ -111,6 +128,30 @@ watch(() => props.slug, async (slug) => {
 
 .trophy {
   margin-right: 6px;
+}
+
+.others-lead {
+  margin-top: 10px;
+}
+
+.others {
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9375rem;
+}
+
+.others li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.group-name {
+  flex: 0 0 2.5em;
+  color: var(--ink-muted);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .next {

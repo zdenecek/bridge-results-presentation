@@ -83,6 +83,7 @@ const cs = {
         notStarted: "Soutěž zatím nezačala.",
         noFirstRound: "Výsledky prvního kola zatím nejsou.",
         winnerPair: "Vítězem je pár",
+        groupWinners: "Vítězové dalších skupin",
         winnerPairs: "Vítězi jsou dvojice",
         leaderAfter: "Po {n}. kole vede pár",
         leaderAfterDate: "Po {n}. kole hraném {date} vede pár",

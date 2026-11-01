@@ -85,6 +85,7 @@ const en: Messages = {
         notStarted: "The competition has not started yet.",
         noFirstRound: "There are no results of the first round yet.",
         winnerPair: "The winners are",
+        groupWinners: "Winners of the other groups",
         winnerPairs: "The winners are",
         leaderAfter: "Leading after round {n}",
         leaderAfterDate: "Leading after round {n} played on {date}",
