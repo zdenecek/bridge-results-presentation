@@ -90,7 +90,7 @@ Dvě pasti:
 ```
 
 - Čísla párů jdou postupně napříč skupinami v pořadí nasazení, stoly taktéž.
-- `settings.rankByAverage` se u novějších ročníků nepoužívá, vynech ho.
+- `settings.rankByAverage` (v editoru „Pořadí podle průměru místo VP“) řadí podle průměru místo součtu VP; jinak ho vynech.
 - **Pauza (bye)**: pár `{ "id": N, "isBye": true, "title": "pauza", "players": [] }`.
   Je v `rotations`, ale **není** v `groups[].players` – jinak by se počítal do
   velikosti skupiny. Patří na poslední místo ve skupině.

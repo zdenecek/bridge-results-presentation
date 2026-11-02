@@ -15,6 +15,7 @@
       <label>Název turnaje <input v-model="title" type="text" required size="40"></label>
       <label>Anglicky <input v-model="titleEn" type="text" size="36" :placeholder="suggestEnglish(title)"></label>
       <label>Adresa (slug) <input v-model="slug" type="text" required size="30"></label>
+      <label class="check"><input v-model="rankByAverage" type="checkbox"> Pořadí podle průměru místo VP</label>
     </div>
 
     <tournament-data-editor :tournamentData="(initialData as TournamentData)" @change="updateData">
@@ -40,6 +41,7 @@ import { suggestEnglish } from '@/i18n/names';
 const title = ref("");
 const titleEn = ref("");
 const slug = ref("");
+const rankByAverage = ref(false);
 const initialData = ref({});
 const dataToSend = ref({});
 const saving = ref(false);
@@ -58,6 +60,7 @@ onMounted(() => {
     title.value = tournament.name;
     titleEn.value = (tournament.data as { titleEn?: string }).titleEn ?? "";
     slug.value = tournament.slug;
+    rankByAverage.value = (tournament.data as TournamentData).settings?.rankByAverage ?? false;
     initialData.value = tournament.data;
     dataToSend.value = tournament.data;
   }).catch((e) => {
@@ -70,7 +73,13 @@ onMounted(() => {
 function submit() {
   const id = Number.parseInt(route.params['tournament'] as string);
   saving.value = true;
-  const data = { ...(dataToSend.value as object), titleEn: titleEn.value.trim() || undefined };
+  const current = dataToSend.value as TournamentData;
+  const settings = { ...current.settings, rankByAverage: rankByAverage.value || undefined };
+  const data = {
+    ...current,
+    titleEn: titleEn.value.trim() || undefined,
+    settings: Object.values(settings).some((v) => v !== undefined) ? settings : undefined,
+  };
   TournamentApi.updateTournament(id, title.value, slug.value, data, adminKey.value).then(() => {
     message.value = 'Uloženo v ' + new Date().toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
     isError.value = false;
@@ -103,6 +112,13 @@ form {
 
 .edit-fields {
   margin-bottom: 16px;
+}
+
+.edit-fields label.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 6px;
 }
 
 .save-bar {
