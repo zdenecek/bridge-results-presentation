@@ -12,6 +12,8 @@
   --rule: #e3e6e3;
   --page: #eef1ee;
   --row-hover: #f4f7f4;
+  --followed: #fff4c2;
+  --followed-edge: #e0a800;
 
   font-family: 'Lexend', Verdana, sans-serif;
 }
@@ -219,6 +221,19 @@
 
 .results-page .table tr:hover td {
   background: var(--row-hover);
+}
+
+/* The followed pair or player, as in the Tournament Calculator presentation. */
+.results-page .table tr.followed td {
+  background: var(--followed);
+}
+
+.results-page .table tr.followed td:first-child {
+  box-shadow: inset 4px 0 0 var(--followed-edge);
+}
+
+.results-page .table .followed-name a {
+  font-weight: 700;
 }
 
 .results-page .table .strong {

@@ -3,6 +3,8 @@
 import { Tournament } from '@/model/Tournament';
 import { computed } from 'vue';
 import { formatDate } from '@/i18n';
+import { settings } from '@/settings';
+import FollowButton from './partial/FollowButton.vue';
 
 const props = defineProps({
   tournament: {
@@ -48,13 +50,18 @@ const adjusts = computed(() => {
     <div class="table-scroll" v-if="players?.length">
       <table class="table">
         <tr>
-          <th colspan="3">{{ $t('common.players') }}</th>
+          <th colspan="4">{{ $t('common.players') }}</th>
         </tr>
         <tr v-for="player in players" :key="player.id">
           <td>{{ player.name }}</td>
           <td><a v-if="player.id" target="_blank" :href="'https://www.matrikacbs.cz/Detail-hrace.aspx?id=' + player.id">{{ player.id }}</a>
           </td>
           <td>{{ player.club }}</td>
+          <td class="follow-cell">
+            <follow-button v-if="player.id" small :active="settings.followPlayer === player.id"
+                           :label="$t('settings.followPlayer')" :active-label="$t('settings.followingPlayer')"
+                           @toggle="settings.followPlayer = settings.followPlayer === player.id ? '' : player.id" />
+          </td>
         </tr>
       </table>
     </div>
@@ -154,6 +161,11 @@ const adjusts = computed(() => {
 
 .bold {
   font-weight: bold;
+}
+
+.follow-cell {
+  text-align: right;
+  width: 1%;
 }
 
 .small {

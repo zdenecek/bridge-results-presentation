@@ -5,6 +5,7 @@ import { computed, reactive } from 'vue';
 import TournamentGroupTotals from './TournamentGroupTotals.vue';
 import { TableRoundResult } from '@/model/MatchResult';
 import { Group } from '@/model/modelTypes';
+import { useFollowed } from '@/settings';
 
 const props = defineProps({
   tournament: {
@@ -24,6 +25,8 @@ const props = defineProps({
 
 const group = reactive(props.tournament.groups[props.groupIndex] as Group);
 const results = computed(() => props.tournament.getRoundResults(props.round)?.filter(r => group.players.includes(r.ns) || group.players.includes(r.ew)));
+
+const followed = useFollowed(() => props.tournament);
 
 const wasPlayed = computed(() => props.tournament.getRound(props.round)?.hasMatchResults ?? false);
 
@@ -49,11 +52,11 @@ function score(result: TableRoundResult, key: 'imp_ns' | 'imp_ew' | 'vp_ns' | 'v
             <th class="num vp">VP</th>
           </tr>
           <!-- A phone stacks the two pairs of a table, a computer puts them side by side. -->
-          <tr v-for="result in results" :key="result.ns">
+          <tr v-for="result in results" :key="result.ns" :class="{ followed: followed(result.ns) || followed(result.ew) }">
             <td class="rank">{{ result.table }}</td>
             <td class="col-name">
               <div class="pairs">
-                <span v-for="key in (['ns', 'ew'] as const)" :key="key">
+                <span v-for="key in (['ns', 'ew'] as const)" :key="key" :class="{ 'followed-name': followed(result[key]) }">
                   <router-link :to="{ name: 'pair-results', params: { pair: result[key] } }">
                     {{ tournament.getPair(result[key])?.title }}
                   </router-link>

@@ -6,6 +6,7 @@ import Contract from './partial/ContractPartial.vue';
 import BoardPartial from './partial/BoardPartial.vue';
 import { Round } from '@/model/Round';
 import { AdjustedBoardResult, BoardResult, PlayedBoardResult } from '@/model/BoardResult';
+import { settings, useFollowed } from '@/settings';
 
 const props = defineProps({
   tournament: {
@@ -23,9 +24,13 @@ const props = defineProps({
 })
 
 
+/** The stored results carry their table, the type does not say so. */
+const tableOf = (r: BoardResult) => (r as BoardResult & { table?: number }).table ?? 0;
+
 const results = computed(() => {
   const res = props.round.boardResults?.filter(r => r.deal === props.board);
   res?.sort((a, b) => {
+    if (settings.resultsOrder === 'table') return tableOf(a) - tableOf(b);
     if (a.status === 'not-played' || a.status === 'adjusted') return 1;
     if (b.status === 'not-played' || b.status === 'adjusted') return -1;
     return (b as PlayedBoardResult).points - (a as PlayedBoardResult).points;
@@ -33,6 +38,8 @@ const results = computed(() => {
   return res;
 });
 
+
+const followed = useFollowed(() => props.tournament);
 
 const average = computed(() => props.round.getBoardAverage(props.board));
 const boardData = computed(() => props.round.boards?.get(props.board));
@@ -58,8 +65,8 @@ const boardData = computed(() => props.round.boards?.get(props.board));
           </tr>
 
 
-          <tr v-for="result in results" :key="result.ns">
-            <td class="col-name" v-for="line in ['ns', 'ew']" :key="line">
+          <tr v-for="result in results" :key="result.ns" :class="{ followed: followed(result.ns) || followed(result.ew) }">
+            <td class="col-name" v-for="line in ['ns', 'ew']" :key="line" :class="{ 'followed-name': followed(result[line as 'ns' | 'ew']) }">
               <router-link
                 :to="{ name: 'round-pair-results', params: { pair: result[line as keyof BoardResult], round: props.round.number } }">
                 {{ tournament.getPair(result[line as 'ns' | 'ew'])?.title }}

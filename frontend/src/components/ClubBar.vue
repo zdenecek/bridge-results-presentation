@@ -5,6 +5,7 @@
       <span class="club-name">{{ $t('club.name') }}</span>
     </a>
     <div class="club-actions">
+      <settings-dialog />
       <a href="https://www.bkpraha.cz/" class="club-back">
         <svg viewBox="0 0 16 16" aria-hidden="true">
           <path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -17,6 +18,7 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import SettingsDialog from './SettingsDialog.vue';
 
 /** Like the header of bkpraha.cz, but out of the way while reading down and back as soon as you scroll up. */
 const hidden = ref(false);

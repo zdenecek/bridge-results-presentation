@@ -9,9 +9,9 @@
         <th>EW</th>
         <th v-if="displayPostponedColumn" class="note">Odklady</th>
       </tr>
-      <tr v-for="seating in seatings" :key="seating.table">
+      <tr v-for="seating in seatings" :key="seating.table" :class="{ followed: isFollowed(seating.ns) || isFollowed(seating.ew) }">
         <td class="rank">{{ seating.table }}</td>
-        <td class="col-name" v-for="key in ['ns', 'ew']" :key="key">
+        <td class="col-name" v-for="key in ['ns', 'ew']" :key="key" :class="{ 'followed-name': isFollowed(seating[key as 'ns' | 'ew']) }">
           <router-link :to="{ name: 'pair-results', params: { pair: seating[key as 'ns' | 'ew']?.id ?? 1 } }">
             {{ seating[key as 'ns' | 'ew']?.title }}
           </router-link>
@@ -31,6 +31,9 @@
 
 import { Tournament } from '@/model/Tournament';
 import { computed, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { isFollowed as followedIn } from '@/settings';
+import { Pair } from '@/model/modelTypes';
 
 const props = defineProps({
   tournament: {
@@ -68,6 +71,8 @@ const displayPostponedColumn = computed(() => {
   return seatings.value?.some(s => s.postponed);
 })
 
+const route = useRoute();
+const isFollowed = (pair: Pair | undefined) => followedIn(String(route.params.tournament), pair);
 </script>
 
 <style scoped>

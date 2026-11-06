@@ -4,6 +4,7 @@ import { PairTableRoundResult } from '@/model/MatchResult';
 import { Group, PairNumber } from '@/model/modelTypes';
 import { Tournament } from '@/model/Tournament';
 import { computed, reactive } from 'vue';
+import { useFollowed } from '@/settings';
 
 const props = defineProps({
   tournament: {
@@ -59,6 +60,7 @@ const hasAdjusts = computed(() => {
   return group.players.map(p => pairResults.value.get(p)).some(r =>  r?.hasAdjusts);
 });
 
+const followed = useFollowed(() => props.tournament);
 </script>
 
 <template>
@@ -73,11 +75,11 @@ const hasAdjusts = computed(() => {
             <th>Celkem</th>
             <th>{{ $t('common.rank') }}</th>
           </tr>
-          <tr v-for="player, i in group.players" :key="player">
+          <tr v-for="player, i in group.players" :key="player" :class="{ followed: followed(player) }">
             <td>
               <router-link :to="{ name: 'pair-results', params: { pair: player } }">{{ player }}</router-link>
             </td>
-            <td class="col-name"> {{ tournament.getPair(player)?.title }} </td>
+            <td class="col-name" :class="{ 'followed-name': followed(player) }"> {{ tournament.getPair(player)?.title }} </td>
             <td v-for="player2, i2 in group.players" :key="player2"
                 class="col-vp"
                 :class="{ empty: player === player2, missing: (results[i]?.[i2]?.round ?? 100) <= tournament.standing && results[i]?.[i2]?.tableResult.status === 'not-played' && !tournament.isFinished }"

@@ -4,6 +4,7 @@ import { Tournament } from '@/model/Tournament';
 import { computed, reactive } from 'vue';
 import WinnerCupIconPartial from './partial/WinnerCupIconPartial.vue';
 import { Group, PairNumber } from '@/model/modelTypes';
+import { useFollowed } from '@/settings';
 
 const props = defineProps({
   tournament: {
@@ -46,6 +47,8 @@ const byAverage = computed(() => props.tournament.settings.rankByAverage);
 
 const includeAdjustsColumn = computed(() => results.value.some(r => r.hasAdjusts));
 
+const followed = useFollowed(() => props.tournament);
+
 </script>
 
 
@@ -60,9 +63,9 @@ const includeAdjustsColumn = computed(() => results.value.some(r => r.hasAdjusts
         <th class="num">VP</th>
         <th v-if="!tournament.isFinished && showMatches" class="num">{{ $t('common.matches') }}</th>
       </tr>
-      <tr v-for="result in results" :key="result.pair">
+      <tr v-for="result in results" :key="result.pair" :class="{ followed: followed(result.pair) }">
         <td class="col-rank rank">{{ result.rank }}</td>
-        <td class="col-name">
+        <td class="col-name" :class="{ 'followed-name': followed(result.pair) }">
           <div class="flex gap-small justify-center align-center gap-none">
 
           <winner-cup-icon-partial class="cup cup-left" :place="result.rank.rank"

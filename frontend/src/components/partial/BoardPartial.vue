@@ -11,10 +11,13 @@
         <span class="sub"> {{ board.vul }} / {{ board.dealer }}</span>
       </div>
       <div class="board-center">
-        <div class="indicator-n indicator"><span :class="{ 'vul': vulNS, 'dealer': board.dealer === 'N' }">N</span></div>
-        <div class="indicator-E indicator"><span :class="{ 'vul': vulEW, 'dealer': board.dealer === 'E' }">E</span></div>
-        <div class="indicator-S indicator"><span :class="{ 'vul': vulNS, 'dealer': board.dealer === 'S' }">S</span></div>
-        <div class="indicator-W indicator"><span :class="{ 'vul': vulEW, 'dealer': board.dealer === 'W' }">W</span></div>
+        <BoardCompass :dealer="board.dealer" :vul="board.vul" />
+      </div>
+      <div v-if="settings.showHcp" class="hcp" :aria-label="$t('settings.hcp')">
+        <span class="hcp-n">{{ hcp[0] }}</span>
+        <span class="hcp-e">{{ hcp[1] }}</span>
+        <span class="hcp-s">{{ hcp[2] }}</span>
+        <span class="hcp-w">{{ hcp[3] }}</span>
       </div>
 
     </div>
@@ -31,6 +34,8 @@ import BoardCardsPartial from './BoardCardsPartial.vue';
 import { Board } from '@/model/Board';
 import DoubleDummyPartial from './DoubleDummyPartial.vue';
 import { getBSHandviewerUrl } from '@/utils/handviewers';
+import BoardCompass from './BoardCompass.vue';
+import { settings } from '@/settings';
 // eslint-disable-next-line
 const props = defineProps({
   number: {
@@ -44,8 +49,8 @@ const props = defineProps({
 })
 
 
-const vulNS = props.board.vul === "NS" || props.board.vul === "All";
-const vulEW = props.board.vul === "EW" || props.board.vul === "All";
+const POINTS: Record<string, number> = { A: 4, K: 3, Q: 2, J: 1 };
+const hcp = computed(() => props.board.deal.map((hand) => [...hand].reduce((sum, card) => sum + (POINTS[card] ?? 0), 0)));
 
 const bridgesolverLink = computed(() => getBSHandviewerUrl(props.board, props.number ));
   
@@ -78,63 +83,32 @@ const bridgesolverLink = computed(() => getBSHandviewerUrl(props.board, props.nu
   padding: 5px;
   grid-row: 2;
   grid-column: 2;
-  display: grid;
-  grid-template-rows: 1fr 1fr 1fr;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-
-.indicator {
   display: flex;
-  justify-content: center;
   align-items: center;
-}
-
-
-
-.indicator span {
-  display: flex;
   justify-content: center;
-  align-items: center;
-  text-align: center;
-  width: 26px;
-  color: white;
-
-  background-color: #1a881a;
-  border-radius: 50%;
-  aspect-ratio: 1/1;
-  font-weight: bold;
 }
 
-.indicator .vul {
-  background-color: #ff4d4d;
-}
-
-.indicator span.dealer {
-
-  border-radius: 10%;
-  width: 20px;
-}
-
-.indicator-n {
-  grid-column: 2 / span 2;
-  grid-row: 1;
-
-}
-
-.indicator-E {
-  grid-column: 3 / span 2;
-  grid-row: 2;
-}
-
-.indicator-S {
-  grid-column: 2 / span 2;
+/* Points of each hand, laid out like the seats, in the empty corner by West and South. */
+.hcp {
   grid-row: 3;
+  grid-column: 1;
+  align-self: end;
+  justify-self: center;
+  display: grid;
+  grid-template-columns: repeat(3, 1.6em);
+  grid-template-rows: repeat(3, 1.4em);
+  place-items: center;
+  margin-bottom: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-muted, #5f6661);
 }
 
-.indicator-W {
-  grid-column: 1 / span 2;
-  grid-row: 2;
-}
+.hcp-n { grid-row: 1; grid-column: 2; }
+.hcp-e { grid-row: 2; grid-column: 3; }
+.hcp-s { grid-row: 3; grid-column: 2; }
+.hcp-w { grid-row: 2; grid-column: 1; }
 
 .board-down-right {
   grid-column: 3;

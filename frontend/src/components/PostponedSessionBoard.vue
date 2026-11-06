@@ -6,6 +6,7 @@ import Contract from './partial/ContractPartial.vue';
 import BoardPartial from './partial/BoardPartial.vue';
 import { PostponedSession, ScoredLine } from '@/model/PostponedSession';
 import { getBBOPlayUrl } from '@/utils/handviewers';
+import { useFollowed } from '@/settings';
 
 const props = defineProps({
   tournament: {
@@ -35,6 +36,7 @@ function playUrl(line: ScoredLine): string | undefined {
   return getBBOPlayUrl(boardData.value, props.board, line.auction, line.play);
 }
 
+const followed = useFollowed(() => props.tournament);
 </script>
 
 <template>
@@ -53,9 +55,9 @@ function playUrl(line: ScoredLine): string | undefined {
             <th colspan="2">{{ $t('common.result') }}</th>
             <th>IMP</th>
           </tr>
-          <tr v-for="(line, index) in lines" :key="index" :class="{ jack: !line.seating }">
+          <tr v-for="(line, index) in lines" :key="index" :class="{ jack: !line.seating, followed: followed(line.seating?.ns) || followed(line.seating?.ew) }">
             <template v-if="line.seating">
-              <td class="col-name" v-for="seat in (['ns', 'ew'] as const)" :key="seat">
+              <td class="col-name" v-for="seat in (['ns', 'ew'] as const)" :key="seat" :class="{ 'followed-name': followed(line.seating[seat]) }">
                 <router-link v-if="line.seating[seat]"
                   :to="{ name: 'pair-results', params: { pair: line.seating[seat] } }">
                   {{ tournament.getPair(line.seating[seat]!)?.title }}
