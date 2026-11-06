@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import { RouteLocationRaw, useRouter } from 'vue-router';
 
 const props = defineProps<{
@@ -48,6 +48,20 @@ function pick(event: Event) {
 onMounted(() => nextTick(() => {
   if (root.value && root.value.getBoundingClientRect().top < 0) root.value.scrollIntoView();
 }));
+
+/** The arrow keys step through the boards, unless they are moving a cursor or a choice somewhere. */
+function onKey(event: KeyboardEvent) {
+  if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.defaultPrevented) return;
+  const target = event.target as HTMLElement | null;
+  if (target?.closest('input, select, textarea, [contenteditable], dialog[open]')) return;
+  const board = event.key === 'ArrowLeft' ? prev.value : event.key === 'ArrowRight' ? next.value : undefined;
+  if (board === undefined) return;
+  event.preventDefault();
+  router.push(props.to(board));
+}
+
+onMounted(() => window.addEventListener('keydown', onKey));
+onBeforeUnmount(() => window.removeEventListener('keydown', onKey));
 </script>
 
 <style scoped>
