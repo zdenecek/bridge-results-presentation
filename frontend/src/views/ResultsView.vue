@@ -83,6 +83,9 @@ const sections = computed(() => {
       rest.push(section);
     }
   }
+  // Skupinovky first, then přebory, so in two columns A sits beside B and TOP beside IMP.
+  const pairing = (s: ResultsSection) => ({ tournament: 0, prebor: 1 } as Record<string, number>)[s.kind] ?? 2;
+  running.sort((a, b) => pairing(a) - pairing(b));
   const now: ResultsSection[] = running.length
     ? [{ id: -1, parent: null, title: tr('results.playing'), title_en: tr('results.playing'), kind: 'group', ref: null, note: null, state: 'running', children: running }]
     : [];
