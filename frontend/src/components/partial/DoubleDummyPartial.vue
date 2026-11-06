@@ -1,6 +1,4 @@
 <template>
-  <div class="flex gap-small flex-column">
-
     <table>
       <tr>
         <th></th>
@@ -27,70 +25,47 @@
         </td>
       </tr>
     </table>
-    <div>
-      Minimax:
-      <ContractPartial :contract="minimaxContract" :declarer="minimaxDecl" /> <span>{{ minimaxResult.charAt(0) === "-" ?
-        minimaxResult : "+" + minimaxResult }}</span>
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
 import SuitPartial from './SuitPartial.vue';
-import ContractPartial from './ContractPartial.vue';
 
-
-const props = defineProps({
+defineProps({
   dd: {
     type: Array,
     required: true,
   },
-  minimax: {
-    type: String,
-    required: true,
-  }
-
 })
-
-const minimaxContract = computed(() => props.minimax.charAt(2) === "D" ?
-  props.minimax.substring(0, 3) :
-  props.minimax.substring(0, 2));
-const minimaxDecl = computed(() => {
-  const char2 = props.minimax.charAt(2);
-  if (char2 === "D") return props.minimax.charAt(3);
-  return char2;
-});
-const minimaxResult = computed(() => props.minimax.substring(props.minimax.charAt(2) === "D" ? 4 : 3));
-
-
-
 </script>
 
 <style scoped>
 table {
   border-collapse: collapse;
+  font-size: 0.75rem;
+  line-height: 1.2;
+  color: var(--ink-muted, #5f6661);
 }
 
 th {
-  width: 1em;
-  padding: 4px;
-
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
+  padding: 2px 3px;
+  border-bottom: 1px solid var(--rule, #e3e6e3);
 }
 
-td:first-child {
-  padding-right: 10px;
+/* Grey suits and figures: the coloured ones belong to the cards. */
+th :deep(.suit) {
+  color: var(--ink-muted, #5f6661);
 }
 
 td {
-  width: 2em;
-  padding: 6px;
+  padding: 1px 4px;
   text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: #4a504c;
 }
 
-tr:nth-child(2n) {
-  background-color: #f2f2f2;
+td:first-child {
+  padding-left: 0;
+  color: var(--ink-muted, #5f6661);
+  font-weight: 600;
 }
 </style>

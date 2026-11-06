@@ -26,6 +26,7 @@ const suits = computed(() => props.cards?.split('.'));
 .hand {
   display: grid;
   grid-template-columns: 15px auto;
+  column-gap: 4px;
   font-size: 1.05em;
 }
 

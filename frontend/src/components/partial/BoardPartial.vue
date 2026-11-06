@@ -19,11 +19,11 @@
         <span class="hcp-s">{{ hcp[2] }}</span>
         <span class="hcp-w">{{ hcp[3] }}</span>
       </div>
-
-    </div>
-    <div class="board-down-right" >
-      <DoubleDummyPartial v-if="board.ability && board.minimax" :dd="board.ability" :minimax="board.minimax" />
-      <a :href="bridgesolverLink" target="_blank" class="bridgesolver-link">{{ $t('tournament.openSolver') }}</a>
+      <DoubleDummyPartial v-if="board.ability" class="board-up-right" :dd="board.ability" />
+      <div class="board-down-right">
+        <MinimaxPartial v-if="board.minimax" :minimax="board.minimax" />
+        <a :href="bridgesolverLink" target="_blank" class="bridgesolver-link">{{ $t('tournament.openSolver') }}</a>
+      </div>
     </div>
   </div>
 </template>
@@ -33,6 +33,7 @@ import { computed } from 'vue';
 import BoardCardsPartial from './BoardCardsPartial.vue';
 import { Board } from '@/model/Board';
 import DoubleDummyPartial from './DoubleDummyPartial.vue';
+import MinimaxPartial from './MinimaxPartial.vue';
 import { getBSHandviewerUrl } from '@/utils/handviewers';
 import BoardCompass from './BoardCompass.vue';
 import { settings } from '@/settings';
@@ -67,25 +68,34 @@ const bridgesolverLink = computed(() => getBSHandviewerUrl(props.board, props.nu
   justify-content: center;
 }
 
+/* Sized by the cards, so every hand sits right by the compass. */
 .board {
   display: grid;
-  grid-template-columns: minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr);
+  grid-template-columns: auto auto auto;
+  justify-content: center;
+  align-items: center;
+  gap: 2px 6px;
 }
 
 .board-header {
+  grid-row: 1;
+  grid-column: 1;
+  align-self: center;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
 .board-center {
-  padding: 5px;
   grid-row: 2;
   grid-column: 2;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.board-center .compass {
+  width: 76px;
 }
 
 /* Points of each hand, laid out like the seats, in the empty corner by West and South. */
@@ -95,11 +105,10 @@ const bridgesolverLink = computed(() => getBSHandviewerUrl(props.board, props.nu
   align-self: end;
   justify-self: center;
   display: grid;
-  grid-template-columns: repeat(3, 1.6em);
-  grid-template-rows: repeat(3, 1.4em);
+  grid-template-columns: repeat(3, 1.5em);
+  grid-template-rows: repeat(3, 1.25em);
   place-items: center;
-  margin-bottom: 8px;
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--ink-muted, #5f6661);
@@ -110,87 +119,80 @@ const bridgesolverLink = computed(() => getBSHandviewerUrl(props.board, props.nu
 .hcp-s { grid-row: 3; grid-column: 2; }
 .hcp-w { grid-row: 2; grid-column: 1; }
 
+/* The double dummy table and the minimax are notes beside the deal, kept small in the free corners. */
+.board-up-right {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: start;
+  justify-self: end;
+  margin-left: 10px;
+}
+
 .board-down-right {
   grid-column: 3;
   grid-row: 3;
+  align-self: end;
+  justify-self: end;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  align-items: flex-end;
+  gap: 4px;
+  margin-left: 10px;
+  font-size: 0.75rem;
+  color: var(--ink-muted, #5f6661);
 }
 
 .bridgesolver-link {
   text-decoration: none;
-  text-align: center;
-  color: #000;
+  color: var(--ink-muted, #5f6661);
   font-size: 0.7rem;
+  font-weight: 400;
+  opacity: 0.8;
+}
+
+.bridgesolver-link:hover {
+  opacity: 1;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 
 .num {
   font-size: 1.5rem;
   font-weight: bold;
-  text-align: center;
+  line-height: 1.1;
 }
 
 .sub {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
 }
 
 .hand {
-  padding: 5px;
-  margin: auto;
+  padding: 2px;
 }
 
 .hand-n {
   grid-column: 2;
   grid-row: 1;
+  align-self: end;
+  justify-self: center;
 }
 
 .hand-e {
   grid-column: 3;
   grid-row: 2;
+  justify-self: start;
 }
 
 .hand-s {
   grid-column: 2;
   grid-row: 3;
+  align-self: start;
+  justify-self: center;
 }
 
 .hand-w {
   grid-column: 1;
   grid-row: 2;
-}
-
-/* On a phone the double dummy table takes the empty corner beside South instead of a row of its own. */
-@media (max-width: 600px) {
-  .wrapper {
-    display: grid;
-    grid-template-columns: auto minmax(96px, auto) 1fr;
-    align-items: center;
-  }
-
-  .board {
-    display: contents;
-  }
-
-  .board-down-right {
-    align-self: end;
-    gap: 6px;
-    font-size: 0.875rem;
-  }
-
-  .board-down-right :deep(th) {
-    padding: 3px 2px;
-  }
-
-  .board-down-right :deep(td) {
-    width: auto;
-    padding: 3px 4px;
-  }
-
-  .board-down-right :deep(td:first-child) {
-    padding-right: 4px;
-  }
+  justify-self: end;
 }
 </style>
