@@ -49,6 +49,7 @@ const played = computed(() => tournament.value?.wasRoundPlayed(round.value) );
 .round-head {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   align-items: baseline;
   gap: 4px 16px;
   margin-bottom: 12px;

@@ -33,6 +33,7 @@ const roundHasDeals = computed(() => (round.value?.boards?.size ?? 0) > 0);
 .links {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 4px 18px;
 }
 </style>

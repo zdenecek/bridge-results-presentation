@@ -74,7 +74,7 @@ function download() {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  justify-content: space-between;
+  justify-content: center;
   gap: 4px 16px;
   margin-bottom: 10px;
 }

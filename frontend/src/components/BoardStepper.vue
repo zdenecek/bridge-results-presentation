@@ -58,6 +58,7 @@ onMounted(() => nextTick(() => {
 .step {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 14px;
   margin: 0 0 16px;
 }
