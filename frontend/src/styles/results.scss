@@ -236,6 +236,31 @@
   font-weight: 700;
 }
 
+/* With room for both, the deal stays in view beside its results instead of above them. */
+@media (min-width: 900px) {
+  .results-page .board-with-results {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 48px;
+  }
+
+  .results-page .board-with-results > * {
+    margin: 0;
+  }
+
+  .results-page .board-with-results > .wrapper {
+    flex: none;
+    position: sticky;
+    top: 16px;
+  }
+
+  .results-page .board-with-results > .table-scroll {
+    flex: 1;
+    min-width: 0;
+    margin-top: 0;
+  }
+}
+
 .results-page .table .strong {
   font-weight: 700;
 }

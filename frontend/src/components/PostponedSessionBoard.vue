@@ -43,7 +43,7 @@ const followed = useFollowed(() => props.tournament);
   <div class="flex flex-column justify-center">
     <h3>{{ $t('common.boardNumber', { n: props.board }) }}</h3>
 
-    <div class="flex flex-column justify-center">
+    <div class="flex flex-column justify-center board-with-results">
       <BoardPartial v-if="boardData" :board="boardData" :number="board" />
 
       <div class="table-scroll">

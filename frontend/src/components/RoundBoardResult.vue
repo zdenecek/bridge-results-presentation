@@ -50,7 +50,7 @@ const boardData = computed(() => props.round.boards?.get(props.board));
   <div class="flex flex-column justify-center">
     <h3>{{ $t('common.boardNumber', { n: props.board }) }}</h3>
 
-    <div class="flex flex-column justify-center">
+    <div class="flex flex-column justify-center board-with-results">
       <BoardPartial v-if="boardData" :board="boardData" :number="board" />
       <div v-else>{{ $t('tournament.boardUnavailable') }}</div>
 
