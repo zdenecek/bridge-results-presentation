@@ -187,4 +187,36 @@ const bridgesolverLink = computed(() => getBSHandviewerUrl(props.board, props.nu
   grid-column: 1;
   grid-row: 2;
 }
+
+/* On a phone the double dummy table takes the empty corner beside South instead of a row of its own. */
+@media (max-width: 600px) {
+  .wrapper {
+    display: grid;
+    grid-template-columns: auto minmax(96px, auto) 1fr;
+    align-items: center;
+  }
+
+  .board {
+    display: contents;
+  }
+
+  .board-down-right {
+    align-self: end;
+    gap: 6px;
+    font-size: 0.875rem;
+  }
+
+  .board-down-right :deep(th) {
+    padding: 3px 2px;
+  }
+
+  .board-down-right :deep(td) {
+    width: auto;
+    padding: 3px 4px;
+  }
+
+  .board-down-right :deep(td:first-child) {
+    padding-right: 4px;
+  }
+}
 </style>
