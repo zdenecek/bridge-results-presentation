@@ -204,6 +204,9 @@ vedoucí, datum se proto zadává) se hned stáhne přes parser Bavlnky, nebo se
 řádek po řádku (hráči oddělení „ - “, skóre jako poslední číslo). Ručně šlo 1. kolo IMP 2026,
 které se omylem hrálo jako páry a Ondra ho přepočítal na VP. `update` stáhne znovu všechna kola
 z TC, aby se projevily pozdější opravy; plánovaná úloha na něj zatím není.
+Kolo, které se právě hraje, má stav `live` (v adminu „probíhá“, při přidání v den kola zaškrtnuté samo):
+do pořadí ani vítězů se nepočítá a výsledková stránka nahoře odkazuje na jeho průběžné výsledky.
+„Dohráno, počítat“ ho naposledy stáhne a teprve pak započítá.
 
 Pořadí je po **přihlášených dvojicích** (2–4 hráči z tabulky přihlášek, načte se tlačítkem). Výsledek
 se připíše dvojici, ve které hrají oba hráči, jinak jediné, ve které hraje aspoň jeden (náhradník),

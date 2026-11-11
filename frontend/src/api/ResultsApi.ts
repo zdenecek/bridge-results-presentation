@@ -30,6 +30,8 @@ export interface ResultsPreborSummary {
     played: number;
     rounds: number;
     lastRound: { number: number; date: string; url: string | null; winner: ResultsWinner } | null;
+    /** A round being played now, not counted yet. */
+    liveRound: { number: number; date: string | null; url: string | null } | null;
 }
 
 export interface ResultsSection {

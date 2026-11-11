@@ -3,6 +3,12 @@
     <template #hero>
       <div class="results-hero">
         <h1>{{ $t('results.title') }} <span class="season">{{ seasonLabel(season) }}</span></h1>
+        <div v-if="liveRounds.length" class="live-rounds">
+          <a v-for="live in liveRounds" :key="live.slug" :href="live.url ?? undefined" target="_blank" class="live-round">
+            <span class="live-text"><span class="dot" aria-hidden="true"></span>{{ $t('results.liveRoundOf', { n: live.number, title: live.title }) }}</span>
+            <span v-if="live.url" class="live-link">{{ $t('results.liveResults') }} ›</span>
+          </a>
+        </div>
         <div v-if="page && season !== current" class="seasons" role="navigation" :aria-label="$t('results.seasons')">
           <router-link v-for="s in page.seasons" :key="s" :to="s === current ? { name: 'home' } : { name: 'results', params: { season: s } }"
                        :class="{ active: s === season }" :aria-current="s === season ? 'page' : undefined">{{ seasonLabel(s) }}</router-link>
@@ -39,7 +45,7 @@ import ResultsApi, { ResultsPage, ResultsSection, currentSeason, seasonLabel } f
 import ResultsSectionBlock from '@/components/results/ResultsSectionBlock.vue';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
-import { t as tr } from '@/i18n';
+import { language, t as tr } from '@/i18n';
 import { localName } from '@/i18n/names';
 
 const route = useRoute();
@@ -47,6 +53,19 @@ const current = currentSeason();
 const season = computed(() => String(route.params.season || current));
 const page = ref<ResultsPage>();
 const state = ref<'loading' | 'loaded' | 'error'>('loading');
+/** Rounds of přebory being played right now, linked at the top where everyone sees them first. */
+const liveRounds = computed(() => {
+  const found: { slug: string; title: string; number: number; url: string | null }[] = [];
+  const visit = (section: ResultsSection) => {
+    const live = section.prebor?.liveRound;
+    if (section.kind === 'prebor' && section.prebor && live) {
+      found.push({ slug: section.prebor.slug, title: localName(language.value, section.title, section.title_en), number: live.number, url: live.url });
+    }
+    section.children.forEach(visit);
+  };
+  (page.value?.sections ?? []).forEach(visit);
+  return found;
+});
 const pastSeasons = computed(() => (page.value?.seasons ?? []).filter((s) => s !== season.value && s < current));
 
 /**
@@ -127,6 +146,54 @@ h1 {
 .season {
   font-weight: 400;
   opacity: 0.85;
+}
+
+.live-rounds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.live-round {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 10px 16px;
+  background: white;
+  color: var(--suit-black);
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+}
+
+.live-round:hover .live-link {
+  text-decoration: underline;
+}
+
+.live-link {
+  color: var(--felt);
+}
+
+.dot {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: 1px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #d93025;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot { animation: none; }
 }
 
 .seasons {

@@ -344,15 +344,17 @@ function preborFetchRound(PDO $pdo, array $round, callable $http): array
             throw new RuntimeException('Neznámé datum kola, zadej ho ručně');
         }
     } catch (Throwable $e) {
-        $pdo->prepare("UPDATE prebor_rounds SET status = 'error', error = ?, fetched_at = ? WHERE id = ?")
-            ->execute([$e->getMessage(), date('Y-m-d H:i:s'), $round['id']]);
+        // A round still being played may not be published yet; it stays in progress.
+        $pdo->prepare("UPDATE prebor_rounds SET status = CASE WHEN status = 'live' THEN 'live' ELSE 'error' END, error = ?, fetched_at = ?
+            WHERE id = ?")->execute([$e->getMessage(), date('Y-m-d H:i:s'), $round['id']]);
         throw $e;
     }
 
     $pdo->beginTransaction();
     try {
         preborStoreResults($pdo, (int) $round['id'], $parsed['pairs']);
-        $pdo->prepare("UPDATE prebor_rounds SET date = ?, title = ?, pairs = ?, status = 'ok', error = NULL, fetched_at = ?
+        $pdo->prepare("UPDATE prebor_rounds SET date = ?, title = ?, pairs = ?,
+            status = CASE WHEN status = 'live' THEN 'live' ELSE 'ok' END, error = NULL, fetched_at = ?
             WHERE id = ?")->execute([$date, $parsed['title'], count($parsed['pairs']), date('Y-m-d H:i:s'), $round['id']]);
         $pdo->commit();
     } catch (Throwable $e) {
@@ -371,7 +373,10 @@ function preborValidDate(?string $date): ?string
     return $date;
 }
 
-/** Adds a round either from a results URL, downloaded right away, or from pasted results. */
+/**
+ * Adds a round either from a results URL, downloaded right away, or from pasted results. A round added
+ * with `live` is being played: the page links its presentation, but it does not count until it is finished.
+ */
 function preborAddRound(PDO $pdo, string $slug, array $data, ?callable $http = null): array
 {
     $http ??= 'bavlnkaHttpGet';
@@ -379,6 +384,7 @@ function preborAddRound(PDO $pdo, string $slug, array $data, ?callable $http = n
     $date = preborValidDate($data['date'] ?? null);
     $url = trim((string) ($data['url'] ?? ''));
     $manual = trim((string) ($data['results'] ?? ''));
+    $live = !empty($data['live']);
 
     if ($manual !== '') {
         if (!$date) throw new InvalidArgumentException('U ručně zadaných výsledků je potřeba datum');
@@ -402,12 +408,14 @@ function preborAddRound(PDO $pdo, string $slug, array $data, ?callable $http = n
     if ($exists->fetchColumn()) {
         throw new InvalidArgumentException('Kolo s touto adresou už je uložené');
     }
-    $pdo->prepare("INSERT INTO prebor_rounds (competition_id, date, url, source, status) VALUES (?, ?, ?, 'tc', 'pending')")
-        ->execute([$competitionId, $date, $url]);
+    if ($live && !$date) throw new InvalidArgumentException('U probíhajícího kola je potřeba datum');
+    $pdo->prepare("INSERT INTO prebor_rounds (competition_id, date, url, source, status) VALUES (?, ?, ?, 'tc', ?)")
+        ->execute([$competitionId, $date, $url, $live ? 'live' : 'pending']);
     $round = ['id' => (int) $pdo->lastInsertId(), 'url' => $url, 'date' => $date];
     try {
         return preborFetchRound($pdo, $round, $http);
     } catch (Throwable $e) {
+        if ($live) return ['id' => $round['id'], 'date' => $date, 'pairs' => 0];
         throw new InvalidArgumentException('Kolo je uložené, ale výsledky se nepodařilo stáhnout: ' . $e->getMessage());
     }
 }
@@ -453,7 +461,18 @@ function preborRoundAction(PDO $pdo, int $id, string $action, ?callable $http = 
         case 'ignore':
             $pdo->prepare("UPDATE prebor_rounds SET status = 'ignored' WHERE id = ?")->execute([$id]);
             break;
+        case 'live':
+            $pdo->prepare("UPDATE prebor_rounds SET status = 'live' WHERE id = ?")->execute([$id]);
+            break;
         case 'restore':
+            // A finished round is downloaded once more first, so it never counts with the evening's partial results.
+            if ($round['status'] === 'live' && $round['source'] === 'tc') {
+                try {
+                    preborFetchRound($pdo, $round, $http);
+                } catch (Throwable $e) {
+                    throw new InvalidArgumentException('Kolo zůstává rozehrané, výsledky se nepodařilo stáhnout: ' . $e->getMessage());
+                }
+            }
             $pdo->prepare("UPDATE prebor_rounds SET status = 'ok' WHERE id = ?")->execute([$id]);
             break;
         case 'delete':
@@ -628,10 +647,28 @@ function preborLoad(PDO $pdo, int $competitionId): array
     return [$rounds, $results, $entries, $assignments];
 }
 
+/**
+ * Rounds being played, numbered after the finished ones, so the page can link their presentation.
+ *
+ * @return list<array{id: int, number: int, date: ?string, url: ?string}>
+ */
+function preborLiveRounds(PDO $pdo, int $competitionId): array
+{
+    $select = $pdo->prepare("SELECT id, date, url, (SELECT COUNT(*) FROM prebor_rounds o WHERE o.competition_id = r.competition_id AND o.status = 'ok') AS played
+        FROM prebor_rounds r WHERE competition_id = ? AND status = 'live' ORDER BY date, id");
+    $select->execute([$competitionId]);
+    $live = [];
+    foreach ($select->fetchAll(PDO::FETCH_ASSOC) as $i => $row) {
+        $live[] = ['id' => (int) $row['id'], 'number' => (int) $row['played'] + $i + 1, 'date' => $row['date'], 'url' => $row['url']];
+    }
+    return $live;
+}
+
 function preborRanking(PDO $pdo, string $slug): array
 {
     $competition = preborCompetition($pdo, $slug);
-    return preborComputeRanking($competition, ...preborLoad($pdo, $competition['id']));
+    return preborComputeRanking($competition, ...preborLoad($pdo, $competition['id']))
+        + ['live' => preborLiveRounds($pdo, $competition['id'])];
 }
 
 /** Same columns and formatting as the Google Sheet the bkpraha.cz widget used to read. */

@@ -12,6 +12,10 @@
 
     <template #default>
       <div v-if="ranking" class="results-page ranking">
+        <p v-for="live in ranking.live" :key="live.id" class="card live">
+          <span>{{ $t('prebor.liveRound', { n: live.number }) }}</span>
+          <a v-if="live.url" :href="live.url" target="_blank">{{ $t('prebor.liveResults') }} ›</a>
+        </p>
         <section class="card table-card">
           <h3>{{ $t('prebor.standings') }}</h3>
           <p v-if="!ranking.ranking.length" class="empty">{{ $t('prebor.noRounds') }}</p>
@@ -161,6 +165,20 @@ function formatScore(score: number): string {
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.live {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+  margin: 0;
+  background: #fff4e0;
+  font-weight: 600;
+}
+
+.live a {
+  margin-left: auto;
 }
 
 .empty {

@@ -141,6 +141,31 @@ $withRobots = preborWithoutRobots([
 check('robots left out, people re-ranked', array_map(fn($p) => [$p['pair'], $p['rankFrom'], $p['rankTo']], $withRobots),
     [[2, 1, 1], [3, 2, 2], [5, 3, 4], [6, 3, 4]]);
 
+// A round being played: linked, but not counted until it is finished
+$livePdo = memoryDb();
+$liveUrl = 'https://vysledky.bkpraha.cz/prezentace/2026/top-prebor/';
+$live = preborAddRound($livePdo, 'top-2026', ['url' => $liveUrl, 'date' => '2026-09-16', 'live' => true], $http);
+$liveRanking = preborRanking($livePdo, 'top-2026');
+check('live round is fetched', $live['pairs'], 15);
+check('live round does not count', [$liveRanking['rounds'], $liveRanking['ranking']], [[], []]);
+check('live round is linked as round 1', $liveRanking['live'], [['id' => $live['id'], 'number' => 1, 'date' => '2026-09-16', 'url' => $liveUrl]]);
+preborUpdate($livePdo, $http);
+check('update keeps the round in progress', count(preborRanking($livePdo, 'top-2026')['live']), 1);
+$unpublished = preborAddRound($livePdo, 'imp-2026', ['url' => 'https://example.com/not-yet/', 'date' => '2026-10-14', 'live' => true], $http);
+check('live round without a presentation yet is kept', preborRanking($livePdo, 'imp-2026')['live'][0]['id'], $unpublished['id']);
+preborRoundAction($livePdo, $live['id'], 'restore', $http);
+$finished = preborRanking($livePdo, 'top-2026');
+check('finished round counts', [count($finished['rounds']), count($finished['ranking']), $finished['live']], [1, 15, []]);
+$failed = (function () use ($livePdo, $unpublished, $http) {
+    try {
+        preborRoundAction($livePdo, $unpublished['id'], 'restore', $http);
+        return false;
+    } catch (InvalidArgumentException $e) {
+        return true;
+    }
+})();
+check('finishing fails while the presentation is missing', [$failed, count(preborRanking($livePdo, 'imp-2026')['live'])], [true, 1]);
+
 // Competitions
 check('both seeded', array_column(preborCompetitions($pdo), 'slug'), ['imp-2026', 'top-2026']);
 $next = preborSaveCompetition($pdo, ['slug' => 'top-2027', 'season' => '2027/28', 'title' => 'Topový přebor BKP 2027/28',

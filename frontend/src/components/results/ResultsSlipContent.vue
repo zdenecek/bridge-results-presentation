@@ -5,6 +5,11 @@
   </template>
 
   <template v-else-if="section.kind === 'prebor'">
+    <p v-if="section.prebor?.liveRound" class="live">
+      <span class="dot" aria-hidden="true"></span>
+      <span>{{ $t('results.liveRound', { n: section.prebor.liveRound.number }) }}</span>
+      <a v-if="section.prebor.liveRound.url" :href="section.prebor.liveRound.url" target="_blank">{{ $t('results.liveResults') }} ›</a>
+    </p>
     <template v-if="section.prebor?.lastRound">
       <p class="lead">
         {{ $t(section.prebor.lastRound.winner.kind === 'pair' && section.prebor.lastRound.winner.entries.length > 1 ? 'results.roundWinnerPairs' : 'results.roundWinnerPair',
@@ -16,8 +21,10 @@
         <router-link :to="{ name: 'prebor-ranking', params: { slug: section.prebor.slug } }">{{ $t('results.standings') }}</router-link>
       </div>
     </template>
-    <p v-else-if="section.note" class="note">{{ section.note }}</p>
-    <p v-else-if="section.prebor" class="note">{{ $t('results.notStarted') }}</p>
+    <template v-else-if="!section.prebor?.liveRound">
+      <p v-if="section.note" class="note">{{ section.note }}</p>
+      <p v-else-if="section.prebor" class="note">{{ $t('results.notStarted') }}</p>
+    </template>
   </template>
 
   <template v-else>
@@ -67,5 +74,37 @@ defineProps<{ section: ResultsSection }>();
 .note {
   margin: 0;
   color: var(--ink-muted);
+}
+
+.live {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fff4e0;
+  font-weight: 600;
+}
+
+.live a {
+  margin-left: auto;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #d93025;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dot { animation: none; }
 }
 </style>

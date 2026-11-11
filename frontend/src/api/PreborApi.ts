@@ -56,6 +56,15 @@ export interface PreborRanking {
     updated: string | null;
     rounds: PreborRound[];
     ranking: PreborStanding[];
+    /** Rounds being played now: linked, not counted yet. */
+    live: PreborLiveRound[];
+}
+
+export interface PreborLiveRound {
+    id: number;
+    number: number;
+    date: string | null;
+    url: string | null;
 }
 
 export interface PreborStoredRound {
@@ -65,7 +74,7 @@ export interface PreborStoredRound {
     source: "tc" | "manual";
     title: string | null;
     pairs: number | null;
-    status: "pending" | "ok" | "error" | "ignored";
+    status: "pending" | "ok" | "error" | "ignored" | "live";
     error: string | null;
     fetched_at: string | null;
 }
@@ -103,7 +112,10 @@ export interface PreborNewRound {
     url?: string;
     date?: string;
     results?: string;
+    live?: boolean;
 }
+
+export type PreborRoundAction = "refetch" | "ignore" | "restore" | "live" | "delete";
 
 export default class PreborApi {
 
@@ -146,7 +158,7 @@ export default class PreborApi {
             .then(() => undefined);
     }
 
-    public static roundAction(id: number, action: "refetch" | "ignore" | "restore" | "delete", key: string): Promise<void> {
+    public static roundAction(id: number, action: PreborRoundAction, key: string): Promise<void> {
         return axios.put(this.url + "rounds/" + id, { action }, { headers: { "Apikey": key }, timeout: 60000 })
             .then(() => undefined);
     }

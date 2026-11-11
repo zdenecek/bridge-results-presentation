@@ -413,6 +413,7 @@ function resultsSectionState(array $node, bool $currentSeason): string
             return !$t || !$t['played'] ? 'upcoming' : ($t['played'] >= $t['rounds'] ? 'done' : 'running');
         case 'prebor':
             $p = $node['prebor'];
+            if ($p && $p['liveRound']) return 'running';
             return !$p || !$p['played'] ? 'upcoming' : ($p['played'] >= $p['rounds'] ? 'done' : 'running');
         case 'bavlnka':
             return $currentSeason ? 'running' : 'done';
@@ -471,6 +472,7 @@ function resultsPreborSummary(PDO $pdo, ?string $slug): ?array
             'winner' => ['kind' => 'pair', 'entries' => array_map(fn($r) => $r['title']
                 ? resultsTitledPairWinner($r['title']) : resultsPairWinner($r['players']), $winners)],
         ] : null,
+        'liveRound' => preborLiveRounds($pdo, $competition['id'])[0] ?? null,
     ];
 }
 

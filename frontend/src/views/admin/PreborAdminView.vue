@@ -88,9 +88,11 @@
                 </td>
                 <td>
                   <div class="row-actions">
+                    <button v-if="r.status === 'live'" class="button primary small-button" :disabled="busy" @click="roundAction(r.id, 'restore')">dohráno, počítat</button>
                     <button v-if="r.source === 'tc'" class="link-button" :disabled="busy" @click="roundAction(r.id, 'refetch')">stáhnout znovu</button>
-                    <button v-if="r.status !== 'ignored'" class="link-button" :disabled="busy" @click="roundAction(r.id, 'ignore')">nepočítat</button>
-                    <button v-else class="link-button" :disabled="busy" @click="roundAction(r.id, 'restore')">počítat</button>
+                    <button v-if="r.status !== 'live'" class="link-button" :disabled="busy" @click="roundAction(r.id, 'live')">probíhá</button>
+                    <button v-if="r.status === 'ignored'" class="link-button" :disabled="busy" @click="roundAction(r.id, 'restore')">počítat</button>
+                    <button v-else class="link-button" :disabled="busy" @click="roundAction(r.id, 'ignore')">nepočítat</button>
                     <button class="link-button danger" :disabled="busy" @click="removeRound(r.id)">smazat</button>
                   </div>
                 </td>
@@ -109,6 +111,10 @@
             <label>Datum kola <input v-model="newDate" type="date" required></label>
             <label class="grow">{{ mode === 'tc' ? 'Adresa prezentace kola' : 'Odkaz na výsledky (nepovinný)' }}
               <input v-model="newUrl" type="url" :required="mode === 'tc'" size="50">
+            </label>
+            <label v-if="mode === 'tc'" class="wide check">
+              <input v-model="newLive" type="checkbox">
+              Kolo se právě hraje – web ukáže odkaz na průběžné výsledky a do pořadí se kolo započítá, až klikneš na „dohráno, počítat“
             </label>
             <label v-if="mode === 'manual'" class="wide">
               Výsledky – jeden řádek na dvojici, třeba zkopírovaný z tabulky: hráči oddělení pomlčkou
@@ -172,9 +178,9 @@
 
 <script setup lang="ts">
 import { suggestEnglish } from '@/i18n/names';
-import PreborApi, { PreborAdminData, PreborCompetition, PreborResultKind } from '@/api/PreborApi';
+import PreborApi, { PreborAdminData, PreborCompetition, PreborResultKind, PreborRoundAction } from '@/api/PreborApi';
 import { adminKey } from '@/utils/adminKey';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 
 const data = ref<PreborAdminData>();
 const selectedId = ref<number | null>(null);
@@ -188,6 +194,9 @@ const mode = ref<'tc' | 'manual'>('tc');
 const newUrl = ref('');
 const newDate = ref('');
 const manualText = ref('');
+const newLive = ref(false);
+// A round added on the evening it is played is still running.
+watch(newDate, (date) => { newLive.value = date === new Date().toLocaleDateString('sv'); });
 const busy = ref(false);
 const message = ref('');
 const isError = ref(false);
@@ -197,6 +206,7 @@ const statusLabels: Record<string, string> = {
   ok: 'započítáno',
   error: 'chyba',
   ignored: 'nepočítá se',
+  live: 'probíhá, zatím se nepočítá',
 };
 
 const kindLabels: Record<PreborResultKind, string> = {
@@ -261,7 +271,7 @@ function saveCompetition() {
 
 function addRound() {
   const round = mode.value === 'tc'
-    ? { url: newUrl.value, date: newDate.value }
+    ? { url: newUrl.value, date: newDate.value, live: newLive.value }
     : { url: newUrl.value, date: newDate.value, results: manualText.value };
   return run(async () => {
     try {
@@ -273,11 +283,14 @@ function addRound() {
   }, 'Kolo přidáno');
 }
 
-function roundAction(id: number, action: 'refetch' | 'ignore' | 'restore' | 'delete') {
+function roundAction(id: number, action: PreborRoundAction) {
   return run(async () => {
-    await PreborApi.roundAction(id, action, adminKey.value);
-    await reload();
-  }, action === 'refetch' ? 'Staženo znovu' : '');
+    try {
+      await PreborApi.roundAction(id, action, adminKey.value);
+    } finally {
+      await reload();
+    }
+  }, ({ refetch: 'Staženo znovu', live: 'Kolo probíhá – na webu je odkaz na průběžné výsledky', restore: 'Kolo se počítá' } as Record<string, string>)[action] ?? '');
 }
 
 function removeRound(id: number) {
@@ -352,6 +365,20 @@ tr.pending td {
 
 tr.ignored td {
   color: #999;
+}
+
+tr.live td {
+  background-color: #eaf6ea;
+}
+
+.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.small-button {
+  padding: 2px 10px;
 }
 
 select {

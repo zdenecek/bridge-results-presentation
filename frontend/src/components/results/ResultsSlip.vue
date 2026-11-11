@@ -18,7 +18,7 @@ const props = defineProps<{ section: ResultsSection }>();
 const onlyNote = computed(() => {
   const s = props.section;
   if (s.kind === 'tournament') return !s.tournament;
-  if (s.kind === 'prebor') return !s.prebor?.lastRound;
+  if (s.kind === 'prebor') return !s.prebor?.lastRound && !s.prebor?.liveRound;
   return !s.events?.length;
 });
 </script>
