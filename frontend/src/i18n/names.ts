@@ -62,3 +62,25 @@ export function localName(lang: string, czech: string, english?: string | null):
     if (lang !== "en") return czech;
     return english?.trim() || suggestEnglish(czech);
 }
+
+function englishDate(day: string, month: string, year: string): string {
+    return new Date(Number(year), Number(month) - 1, Number(day))
+        .toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+
+const NOTE_RULES: [RegExp, (...m: string[]) => string][] = [
+    [/^Soutěž začíná (\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})\.?$/u, (_, d, m, y) => `The competition starts on ${englishDate(d, m, y)}.`],
+    [/^Termín zahájení bude upřesněn\.?$/u, () => "The start date will be announced."],
+    [/^Soutěž zatím nezačala\.?$/u, () => "The competition has not started yet."],
+];
+
+/** A results section note: Czech as entered; in English the club's usual notes are translated, others stay Czech. */
+export function localNote(lang: string, czech: string): string {
+    if (lang !== "en") return czech;
+    const note = czech.trim();
+    for (const [pattern, replacement] of NOTE_RULES) {
+        const match = note.match(pattern);
+        if (match) return replacement(...match);
+    }
+    return czech;
+}

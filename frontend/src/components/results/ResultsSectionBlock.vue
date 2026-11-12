@@ -31,7 +31,7 @@
         <results-slip-content :section="section" />
       </article>
 
-      <p v-if="section.kind === 'group' && !section.children.length && section.note" class="after">{{ section.note }}</p>
+      <p v-if="section.kind === 'group' && !section.children.length && section.note" class="after">{{ localNote(language, section.note) }}</p>
     </div>
   </section>
 </template>
@@ -43,7 +43,7 @@ import ResultsSlip from '@/components/results/ResultsSlip.vue';
 import ResultsSlipContent from '@/components/results/ResultsSlipContent.vue';
 import { computed } from 'vue';
 import { formatNumber, language, monthName } from '@/i18n';
-import { localName } from '@/i18n/names';
+import { localName, localNote } from '@/i18n/names';
 
 const props = defineProps<{ section: ResultsSection }>();
 

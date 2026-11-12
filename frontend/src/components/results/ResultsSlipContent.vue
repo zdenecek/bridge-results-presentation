@@ -1,7 +1,7 @@
 <template>
   <template v-if="section.kind === 'tournament'">
     <tournament-leader v-if="section.tournament" :slug="section.tournament.slug" />
-    <p v-else-if="section.note" class="note">{{ section.note }}</p>
+    <p v-else-if="section.note" class="note">{{ localNote(language, section.note) }}</p>
   </template>
 
   <template v-else-if="section.kind === 'prebor'">
@@ -22,7 +22,7 @@
       </div>
     </template>
     <template v-else-if="!section.prebor?.liveRound">
-      <p v-if="section.note" class="note">{{ section.note }}</p>
+      <p v-if="section.note" class="note">{{ localNote(language, section.note) }}</p>
       <p v-else-if="section.prebor" class="note">{{ $t('results.notStarted') }}</p>
     </template>
   </template>
@@ -31,7 +31,7 @@
     <div v-if="section.events?.length" class="rows">
       <results-event-row v-for="event in section.events" :key="event.id" :event="event" />
     </div>
-    <p v-else-if="section.note" class="note">{{ section.note }}</p>
+    <p v-else-if="section.note" class="note">{{ localNote(language, section.note) }}</p>
   </template>
 </template>
 
@@ -40,7 +40,8 @@ import { ResultsSection } from '@/api/ResultsApi';
 import ResultsEventRow from '@/components/results/ResultsEventRow.vue';
 import TournamentLeader from '@/components/results/TournamentLeader.vue';
 import WinnerNames from '@/components/results/WinnerNames.vue';
-import { formatDate } from '@/i18n';
+import { formatDate, language } from '@/i18n';
+import { localNote } from '@/i18n/names';
 
 defineProps<{ section: ResultsSection }>();
 
