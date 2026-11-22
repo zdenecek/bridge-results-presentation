@@ -107,6 +107,13 @@ Dvě pasti:
   zaokrouhlení na desítky), IMPy se propíšou do `postponed` overwritu daného
   stolu i s odkazem `session`.
 
+**Double dummy** (`ability`, `minimax`) bere parser z `[Ability]` a `[Minimax]` v PBN. Rozdáním,
+kde chybí, je editor turnaje dopočítá sám (po otevření i po nahrání PBN) v prohlížeči přes balíček
+[`bridge-dds-wasm`](https://github.com/zdenecek/bridge-dds-wasm) (DDS ve WebAssembly, Web Worker,
+asi 0,2 s na rozdání). Uloží se až s „Uložit změny“.
+Minimax píše oběti s `D` (`5HDS-100`), starší PBN ho vynechávaly. Balíček je závislost z GitHubu
+připnutá na commit; Vite potřebuje `worker.format: 'es'` a balíček vyloučený z `optimizeDeps`.
+
 Nasazení na televizi v klubu: `/tv/{slug}` (další kolo) nebo `/tv/{slug}/{kolo}`. Bez menu
 a hesla, odkaz je jen v adminu u skupinovky, samo se každé dvě minuty načte znovu.
 
