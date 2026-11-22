@@ -21,6 +21,7 @@ const cs = {
         title: "Nastavení",
         close: "Zavřít",
         following: "Sledování",
+        followingHelp: "Sledovaný pár se zvýrazní v pořadí, ve výsledcích kol, v křížové tabulce i u rozdání, takže ho najdete na první pohled. Pamatuje si to jen tento prohlížeč.",
         pairHere: "Sledovaný pár v tomto turnaji",
         nobody: "– nikdo –",
         playerEverywhere: "Sledovaný hráč ve všech skupinovkách",
