@@ -24,6 +24,12 @@ export default defineConfig({
       }
     }
   },
+  optimizeDeps: {
+    exclude: ['bridge-dds-wasm']
+  },
+  worker: {
+    format: 'es'
+  },
   esbuild: {
     target: 'esnext'
   }

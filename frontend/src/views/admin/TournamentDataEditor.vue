@@ -40,6 +40,7 @@
                         </template>
                     </template>
                 </div>
+                <div v-if="ddStatus">{{ ddStatus }}</div>
             </tab-panel>
             <tab-panel v-for="r in tournamentData.totalRounds" :key="r" :header="r + '. kolo'">
                 <tournament-round-editor :tournament-data="tournamentData" :round="r"></tournament-round-editor>
@@ -64,12 +65,14 @@
 <script setup lang="ts">
 import Checkmark from '@/components/partial/CheckmarkPartial.vue';
 import { TournamentData } from '@/model/Tournament';
-import { ref, watchEffect } from 'vue';
+import type { Board } from '@/model/Board';
+import { computed, ref, watch, watchEffect } from 'vue';
 import TournamentFileParser from '@/parse/TournamentFileParser';
 import TournamentRoundEditor from '@/views/admin/TournamentRoundEditor.vue';
 import PostponedSessionsEditor from '@/views/admin/PostponedSessionsEditor.vue';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
+import { analyseBoards, ddsWorker, missingAnalysis, needsAnalysis } from '@/utils/ddAnalysis';
 
 function results(round: number): number {
     return data.value?.rounds[round]?.boardResults?.length ?? 0;
@@ -145,6 +148,47 @@ async function addFilesToRound(round: number, event: InputEvent) {
         }
     }
 }
+
+const missingDd = computed(() => missingAnalysis(data.value?.rounds));
+const ddStatus = ref('');
+let ddRunning = false;
+// A board that failed once is not retried, so a bad deal cannot loop.
+const ddAttempted = new WeakSet<Board>();
+
+/** Computes the double dummy table and par of boards whose PBN came without them. */
+async function runDd() {
+    if (ddRunning) return;
+    ddRunning = true;
+    let analysed = 0;
+    let failed = 0;
+    try {
+        for (;;) {
+            const boards = Object.values(data.value.rounds ?? {})
+                .flatMap((round) => Object.values(round.boards ?? {}))
+                .filter((board) => needsAnalysis(board) && !ddAttempted.has(board));
+            if (boards.length === 0) break;
+            boards.forEach((board) => ddAttempted.add(board));
+            ddStatus.value = 'Načítám double dummy…';
+            failed += await analyseBoards(boards, await ddsWorker(),
+                (done, total) => ddStatus.value = `Počítám double dummy: ${done}/${total}`);
+            analysed += boards.length;
+        }
+        if (analysed > 0) {
+            ddStatus.value = failed
+                ? `Double dummy: ${failed} rozdání se nepodařilo spočítat, ostatní ulož.`
+                : `Double dummy spočítán u ${analysed} rozdání, ulož změny.`;
+        }
+    } catch (e) {
+        console.error(e);
+        ddStatus.value = 'Double dummy se nepodařilo načíst.';
+    } finally {
+        ddRunning = false;
+    }
+}
+
+watch(missingDd, (missing) => {
+    if (missing > 0) void runDd();
+}, { immediate: true });
 
 function hasAverages(round: number): boolean {
     return data.value?.rounds?.[round.toString()]?.averages !== undefined;
