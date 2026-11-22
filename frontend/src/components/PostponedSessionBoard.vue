@@ -43,21 +43,21 @@ const followed = useFollowed(() => props.tournament);
 </script>
 
 <template>
-  <div class="flex flex-column justify-center">
+  <div class="flex flex-column justify-center board-results">
     <h3>{{ $t('common.boardNumber', { n: props.board }) }}</h3>
 
     <div class="flex flex-column justify-center board-with-results">
       <BoardPartial v-if="boardData" :board="boardData" :number="board" />
 
       <div class="table-scroll">
-        <table class="table table-results">
+        <table class="table table-results aligned">
           <tr>
             <th>NS</th>
             <th>EW</th>
-            <th>{{ $t('common.contract') }}</th>
-            <th v-if="hasLeads">{{ $t('common.lead') }}</th>
-            <th colspan="2">{{ $t('common.result') }}</th>
-            <th>IMP</th>
+            <th class="contract">{{ $t('common.contract') }}</th>
+            <th v-if="hasLeads" class="lead">{{ $t('common.lead') }}</th>
+            <th class="result" colspan="2">{{ $t('common.result') }}</th>
+            <th class="imp">IMP</th>
           </tr>
           <tr v-for="(line, index) in lines" :key="index" :class="{ jack: !line.seating, followed: followed(line.seating?.ns) || followed(line.seating?.ew) }">
             <template v-if="line.seating">

@@ -77,6 +77,16 @@ const bridgesolverLink = computed(() => getBSHandviewerUrl(props.board, props.nu
   gap: 2px 6px;
 }
 
+/*
+ * Beside the results the deal keeps one width, so the table does not move from board to board.
+ * The columns fit the widest hands of all deals so far, the double dummy table and the minimax.
+ */
+@media (min-width: 900px) {
+  .board {
+    grid-template-columns: minmax(110px, auto) minmax(116px, auto) minmax(150px, auto);
+  }
+}
+
 .board-header {
   grid-row: 1;
   grid-column: 1;
