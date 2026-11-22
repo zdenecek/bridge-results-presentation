@@ -44,6 +44,7 @@ const cs = {
     },
     calendar: {
         add: "Přidat do kalendáře",
+        google: "Přidat do Google Kalendáře",
         round: "{n}. kolo",
         postponed: "dohrávka {n}. kola",
     },

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildCalendar, pragueTime } from "@/utils/calendar";
+import { buildCalendar, googleCalendarUrl, pragueTime } from "@/utils/calendar";
 
 describe("calendar file", () => {
     it("turns Prague wall-clock time into UTC in winter and in summer", () => {
@@ -32,6 +32,21 @@ describe("calendar file", () => {
         expect(lines).toContain("DTSTART;VALUE=DATE:20261231");
         expect(lines).toContain("DTEND;VALUE=DATE:20270101");
         expect(ics.match(/BEGIN:VEVENT/g)).toHaveLength(2);
+    });
+
+    it("prefills Google Calendar with the same times and texts", () => {
+        const timed = new URL(googleCalendarUrl({
+            uid: "x", summary: "5. kolo: Krása - Krása", description: "Stůl 3 NS", location: "Italská 209/17",
+            start: pragueTime("2026-11-23", "17:45"), end: pragueTime("2026-11-23", "21:45"),
+        }));
+        expect(timed.origin + timed.pathname).toBe("https://calendar.google.com/calendar/render");
+        expect(timed.searchParams.get("action")).toBe("TEMPLATE");
+        expect(timed.searchParams.get("dates")).toBe("20261123T164500Z/20261123T204500Z");
+        expect(timed.searchParams.get("text")).toBe("5. kolo: Krása - Krása");
+        expect(timed.searchParams.get("details")).toBe("Stůl 3 NS");
+        expect(timed.searchParams.get("location")).toBe("Italská 209/17");
+        const allDay = new URL(googleCalendarUrl({ uid: "y", summary: "Dohrávka", day: "2026-12-31" }));
+        expect(allDay.searchParams.get("dates")).toBe("20261231/20270101");
     });
 
     it("folds lines longer than 75 octets without splitting characters", () => {
