@@ -46,6 +46,7 @@ const en: Messages = {
     },
     calendar: {
         add: "Add to calendar",
+        google: "Add to Google Calendar",
         round: "round {n}",
         postponed: "postponed round {n}",
     },

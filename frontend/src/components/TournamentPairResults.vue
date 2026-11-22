@@ -5,7 +5,7 @@ import { computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { formatDate, language, t } from '@/i18n';
 import { localName } from '@/i18n/names';
-import { buildCalendar, CalendarEvent, pragueTime } from '@/utils/calendar';
+import { buildCalendar, CalendarEvent, googleCalendarUrl, pragueTime } from '@/utils/calendar';
 import { downloadTextFile } from '@/utils/download';
 import { settings } from '@/settings';
 import FollowButton from './partial/FollowButton.vue';
@@ -42,26 +42,30 @@ const calendarMatches = computed(() => {
     !!m.date && day(m.date) >= today && !props.tournament.getPair(m.opponent)?.isBye);
 });
 
+const slug = String(route.params.tournament);
+
 /** Rounds start at 17:45 and take four hours; a postponed match is a whole day, its time is agreed separately. */
-function downloadCalendar() {
-  const slug = String(route.params.tournament);
+function calendarEvent(match: UpcomingMatch & { date: Date }): CalendarEvent {
   const name = localName(language.value, props.tournament.title, props.tournament.titleEn);
   const url = window.location.origin + router.resolve({ name: 'pair-results', params: { pair: props.pair } }).href;
-  const events: CalendarEvent[] = calendarMatches.value.map((match) => {
-    const opponent = props.tournament.getPair(match.opponent)?.title ?? '';
-    const what = t(match.postponed ? 'calendar.postponed' : 'calendar.round', { n: match.round });
-    const event = {
-      uid: `${slug}-${props.pair}-${match.round}-${match.table}@vysledky.bkpraha.cz`,
-      summary: `${name}, ${what}: ${opponent}`,
-      description: `${t('common.table')} ${match.table} ${match.ns ? 'NS' : 'EW'}\n${url}`,
-      location: CLUB,
-      url,
-    };
-    return match.postponed
-      ? { ...event, day: day(match.date) }
-      : { ...event, start: pragueTime(day(match.date), '17:45'), end: pragueTime(day(match.date), '21:45') };
-  });
-  downloadTextFile(`${slug}-${props.pair}.ics`, buildCalendar(events), 'text/calendar');
+  const opponent = props.tournament.getPair(match.opponent)?.title ?? '';
+  const what = t(match.postponed ? 'calendar.postponed' : 'calendar.round', { n: match.round });
+  const event = {
+    uid: `${slug}-${props.pair}-${match.round}-${match.table}@vysledky.bkpraha.cz`,
+    summary: `${name}, ${what}: ${opponent}`,
+    description: `${t('common.table')} ${match.table} ${match.ns ? 'NS' : 'EW'}\n${url}`,
+    location: CLUB,
+    url,
+  };
+  return match.postponed
+    ? { ...event, day: day(match.date) }
+    : { ...event, start: pragueTime(day(match.date), '17:45'), end: pragueTime(day(match.date), '21:45') };
+}
+
+const googleLinks = computed(() => new Map<UpcomingMatch, string>(calendarMatches.value.map((m) => [m, googleCalendarUrl(calendarEvent(m))])));
+
+function downloadCalendar() {
+  downloadTextFile(`${slug}-${props.pair}.ics`, buildCalendar(calendarMatches.value.map(calendarEvent)), 'text/calendar');
 }
 
 const adjusts = computed(() => {
@@ -168,13 +172,14 @@ const adjusts = computed(() => {
     <div class="table-scroll" v-if="upcoming.length">
       <table class="table table-totals">
         <tr>
-          <th colspan="4">{{ $t('tournament.toPlay') }}</th>
+          <th :colspan="calendarMatches.length ? 5 : 4">{{ $t('tournament.toPlay') }}</th>
         </tr>
         <tr>
           <th>{{ $t('common.roundCol') }}</th>
           <th>{{ $t('tournament.date') }}</th>
           <th>{{ $t('common.table') }}</th>
           <th>{{ $t('common.opponents') }}</th>
+          <th v-if="calendarMatches.length"></th>
         </tr>
         <tr v-for="match in upcoming" :key="`${match.round}-${match.table}`">
           <td>
@@ -187,6 +192,15 @@ const adjusts = computed(() => {
               {{ tournament.getPair(match.opponent)?.title }}
             </router-link>
             <span class="small" v-if="match.postponed">&nbsp;{{ $t('tournament.postponedLower') }}</span>
+          </td>
+          <td v-if="calendarMatches.length" class="gcal-cell">
+            <a v-if="googleLinks.get(match)" :href="googleLinks.get(match)" target="_blank" rel="noopener" class="gcal"
+               :title="$t('calendar.google')" :aria-label="$t('calendar.google')">
+              <svg viewBox="0 0 20 20" aria-hidden="true">
+                <rect x="2.5" y="4" width="15" height="13.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" />
+                <path d="M2.5 8h15M6.5 2v4M13.5 2v4M10 10.5v5M7.5 13h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+              </svg>
+            </a>
           </td>
         </tr>
       </table>
@@ -217,6 +231,27 @@ const adjusts = computed(() => {
 
 .small {
   font-size: 0.8em;
+}
+
+.gcal-cell {
+  width: 1%;
+  text-align: right;
+}
+
+.gcal {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 6px;
+  color: var(--felt, #1a881a);
+}
+
+.gcal:hover {
+  background: #eef5ee;
+}
+
+.gcal svg {
+  width: 16px;
+  height: 16px;
 }
 
 .calendar-row {

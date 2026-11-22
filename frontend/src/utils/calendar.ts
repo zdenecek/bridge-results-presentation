@@ -57,14 +57,31 @@ function fold(line: string): string {
     return out.join("\r\n ");
 }
 
+function nextDay(day: string): string {
+    const [y, m, d] = day.split("-").map(Number) as [number, number, number];
+    return new Date(Date.UTC(y, m - 1, d + 1)).toISOString().slice(0, 10).replace(/-/g, "");
+}
+
+/**
+ * Opens one event prefilled in Google Calendar; on Android it goes to the Calendar app,
+ * which cannot import an .ics file.
+ */
+export function googleCalendarUrl(event: CalendarEvent): string {
+    const dates = "day" in event
+        ? `${event.day.replace(/-/g, "")}/${nextDay(event.day)}`
+        : `${utcStamp(event.start)}/${utcStamp(event.end)}`;
+    const params = new URLSearchParams({ action: "TEMPLATE", text: event.summary, dates });
+    if (event.description) params.set("details", event.description);
+    if (event.location) params.set("location", event.location);
+    return `https://calendar.google.com/calendar/render?${params}`;
+}
+
 export function buildCalendar(events: CalendarEvent[], now = new Date()): string {
     const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//BK Praha//Vysledky//CS", "CALSCALE:GREGORIAN", "METHOD:PUBLISH"];
     for (const event of events) {
         lines.push("BEGIN:VEVENT", `UID:${event.uid}`, `DTSTAMP:${utcStamp(now)}`);
         if ("day" in event) {
-            const day = event.day.replace(/-/g, "");
-            const next = new Date(Date.UTC(+day.slice(0, 4), +day.slice(4, 6) - 1, +day.slice(6, 8) + 1));
-            lines.push(`DTSTART;VALUE=DATE:${day}`, `DTEND;VALUE=DATE:${next.toISOString().slice(0, 10).replace(/-/g, "")}`);
+            lines.push(`DTSTART;VALUE=DATE:${event.day.replace(/-/g, "")}`, `DTEND;VALUE=DATE:${nextDay(event.day)}`);
         } else {
             lines.push(`DTSTART:${utcStamp(event.start)}`, `DTEND:${utcStamp(event.end)}`);
         }
