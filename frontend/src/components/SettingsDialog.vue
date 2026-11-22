@@ -17,6 +17,7 @@
 
       <section>
         <h3>{{ $t('settings.following') }}</h3>
+        <p class="hint intro">{{ $t('settings.followingHelp') }}</p>
         <label v-if="pairs.length" class="field">
           <span>{{ $t('settings.pairHere') }}</span>
           <select :value="followedPair(tournamentKey) ?? ''" @change="onPair">
@@ -251,6 +252,11 @@ input:focus {
 .hint {
   color: #5f6661;
   font-size: 0.8125rem;
+}
+
+.intro {
+  margin: 0;
+  line-height: 1.45;
 }
 
 .check {

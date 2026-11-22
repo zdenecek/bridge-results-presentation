@@ -23,6 +23,7 @@ const en: Messages = {
         title: "Settings",
         close: "Close",
         following: "Following",
+        followingHelp: "A followed pair is highlighted in the standings, round results, cross table and board results, so you spot it at a glance. Only this browser remembers it.",
         pairHere: "Followed pair in this tournament",
         nobody: "– nobody –",
         playerEverywhere: "Followed player in every group league",
