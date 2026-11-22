@@ -19,7 +19,7 @@ export function createPBN(round: Round): string {
 
         if(board.ability) {
             const strs = [0,1,2,3].map((i) => 
-                board.ability?.slice(i*4, i*4+5).map((a) => a.toString(16).toUpperCase ()).join(''))
+                board.ability?.slice(i*5, i*5+5).map((a) => a.toString(16).toUpperCase ()).join(''))
 
             str += `[Ability "N:${strs[0]} E:${strs[1]} S:${strs[2]} W:${strs[3]}"]\n`
         }
