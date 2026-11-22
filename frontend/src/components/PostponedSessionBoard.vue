@@ -4,6 +4,7 @@ import { Tournament } from '@/model/Tournament';
 import { computed } from 'vue';
 import Contract from './partial/ContractPartial.vue';
 import BoardPartial from './partial/BoardPartial.vue';
+import SuitPartial from './partial/SuitPartial.vue';
 import { PostponedSession, ScoredLine } from '@/model/PostponedSession';
 import { getBBOPlayUrl } from '@/utils/handviewers';
 import { useFollowed } from '@/settings';
@@ -29,6 +30,8 @@ const lines = computed(() => props.session.getBoardLines(props.board).map((line)
 }));
 
 const average = computed(() => props.session.averages.get(props.board));
+// Only Jack's lines carry the play; slips have no lead.
+const hasLeads = computed(() => lines.value.some((line) => line.play));
 const boardData = computed(() => props.session.boards.get(props.board));
 
 function playUrl(line: ScoredLine): string | undefined {
@@ -52,6 +55,7 @@ const followed = useFollowed(() => props.tournament);
             <th>NS</th>
             <th>EW</th>
             <th>{{ $t('common.contract') }}</th>
+            <th v-if="hasLeads">{{ $t('common.lead') }}</th>
             <th colspan="2">{{ $t('common.result') }}</th>
             <th>IMP</th>
           </tr>
@@ -68,6 +72,9 @@ const followed = useFollowed(() => props.tournament);
             <td>
               <Contract :contract="line.contract" :declarer="line.declarer" />
             </td>
+            <td v-if="hasLeads" class="lead">
+              <template v-if="line.play"><SuitPartial :suit="line.play[0]!" />{{ line.play[1] }}</template>
+            </td>
             <td>
               <a v-if="playUrl(line)" class="play-link" :href="playUrl(line)" target="_blank" rel="noopener"
                 :title="$t('tournament.replay')">{{ line.result }}<sup>▷</sup></a>
@@ -78,7 +85,7 @@ const followed = useFollowed(() => props.tournament);
           </tr>
           <tr v-if="average !== undefined">
             <td colspan="2"></td>
-            <td colspan="4">{{ $t('common.averageValue', { value: average }) }}</td>
+            <td :colspan="hasLeads ? 5 : 4">{{ $t('common.averageValue', { value: average }) }}</td>
           </tr>
         </table>
       </div>
@@ -89,6 +96,10 @@ const followed = useFollowed(() => props.tournament);
 <style scoped>
 .jack {
   color: #777;
+}
+
+.lead {
+  white-space: nowrap;
 }
 
 .play-link {

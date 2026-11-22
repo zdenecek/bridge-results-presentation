@@ -61,6 +61,7 @@ const cs = {
         averageValue: "Průměr: {value}",
         matches: "Zápasy",
         contract: "Závazek",
+        lead: "Výnos",
         result: "Výsledek",
         board: "Rozdání",
         boardNumber: "Rozdání číslo {n}",

@@ -105,10 +105,11 @@ Dvě pasti:
   (`matches[]` s kolem, stolem a textem lístečku). Průměr rozdání počítá
   `trimmedDatum` z Jacka i všech zápisů (z každé strany se ořízne 10 % váhy,
   zaokrouhlení na desítky), IMPy se propíšou do `postponed` overwritu daného
-  stolu i s odkazem `session`.
+  stolu i s odkazem `session`. Řádky Jacka mají `play`, takže výsledky dohrávky
+  ukazují i výnos; lísteček výnos nemá.
 
 **Double dummy** (`ability`, `minimax`) bere parser z `[Ability]` a `[Minimax]` v PBN. Rozdáním,
-kde chybí, je editor turnaje dopočítá sám (po otevření i po nahrání PBN) v prohlížeči přes balíček
+kde chybí (v kolech i v dohrávkách), je editor turnaje dopočítá sám (po otevření i po nahrání PBN) v prohlížeči přes balíček
 [`bridge-dds-wasm`](https://github.com/zdenecek/bridge-dds-wasm) (DDS ve WebAssembly, Web Worker,
 asi 0,2 s na rozdání). Uloží se až s „Uložit změny“.
 Minimax píše oběti s `D` (`5HDS-100`), starší PBN ho vynechávaly. Balíček je závislost z GitHubu
