@@ -47,7 +47,7 @@ const boardData = computed(() => props.round.boards?.get(props.board));
 </script>
 
 <template>
-  <div class="flex flex-column justify-center">
+  <div class="flex flex-column justify-center board-results">
     <h3>{{ $t('common.boardNumber', { n: props.board }) }}</h3>
 
     <div class="flex flex-column justify-center board-with-results">
@@ -55,13 +55,13 @@ const boardData = computed(() => props.round.boards?.get(props.board));
       <div v-else>{{ $t('tournament.boardUnavailable') }}</div>
 
       <div class="table-scroll" v-if="results">
-        <table class="table table-results">
+        <table class="table table-results aligned">
           <tr>
             <th>NS</th>
             <th>EW</th>
-            <th>{{ $t('common.contract') }}</th>
-            <th colspan="2">{{ $t('common.result') }}</th>
-            <th>IMP</th>
+            <th class="contract">{{ $t('common.contract') }}</th>
+            <th class="result" colspan="2">{{ $t('common.result') }}</th>
+            <th class="imp">IMP</th>
           </tr>
 
 

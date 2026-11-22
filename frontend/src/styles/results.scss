@@ -238,6 +238,12 @@
 
 /* With room for both, the deal stays in view beside its results instead of above them. */
 @media (min-width: 900px) {
+  /* Full width, so a wider table on the next board does not shift the deal and the table. */
+  .results-page .board-results,
+  .results-page .board-with-results {
+    width: 100%;
+  }
+
   .results-page .board-with-results {
     flex-direction: row;
     align-items: flex-start;
@@ -280,6 +286,23 @@
 
   .results-page .table.aligned th.num {
     width: 5.5em;
+  }
+
+  /* Board results: names share what the short columns leave. */
+  .results-page .table-results.aligned th.contract {
+    width: 5.5em;
+  }
+
+  .results-page .table-results.aligned th.lead {
+    width: 3.5em;
+  }
+
+  .results-page .table-results.aligned th.result {
+    width: 7.5em;
+  }
+
+  .results-page .table-results.aligned th.imp {
+    width: 3.5em;
   }
 }
 
