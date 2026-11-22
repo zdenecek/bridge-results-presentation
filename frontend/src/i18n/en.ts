@@ -44,6 +44,11 @@ const en: Messages = {
         bug: "Bug on the website: webmaster",
         hcp: "Points in hands",
     },
+    calendar: {
+        add: "Add to calendar",
+        round: "round {n}",
+        postponed: "postponed round {n}",
+    },
     banner: {
         label: "Invitation",
         more: "More information",

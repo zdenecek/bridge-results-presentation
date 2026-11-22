@@ -42,6 +42,11 @@ const cs = {
         bug: "Chyba na webu: webmaster",
         hcp: "Body v rukou",
     },
+    calendar: {
+        add: "Přidat do kalendáře",
+        round: "{n}. kolo",
+        postponed: "dohrávka {n}. kola",
+    },
     banner: {
         label: "Pozvánka",
         more: "Více informací",

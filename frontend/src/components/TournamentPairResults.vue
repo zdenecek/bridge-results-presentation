@@ -1,8 +1,12 @@
 <script setup lang="ts">
 
-import { Tournament } from '@/model/Tournament';
+import { Tournament, UpcomingMatch } from '@/model/Tournament';
 import { computed } from 'vue';
-import { formatDate } from '@/i18n';
+import { useRoute, useRouter } from 'vue-router';
+import { formatDate, language, t } from '@/i18n';
+import { localName } from '@/i18n/names';
+import { buildCalendar, CalendarEvent, pragueTime } from '@/utils/calendar';
+import { downloadTextFile } from '@/utils/download';
 import { settings } from '@/settings';
 import FollowButton from './partial/FollowButton.vue';
 
@@ -25,6 +29,40 @@ const upcoming = props.tournament.getPairUpcomingMatches(props.pair);
 const finalResult = props.tournament.getPairResult(props.pair);
 
 const players = props.tournament.getPair(props.pair)?.players;
+
+const route = useRoute();
+const router = useRouter();
+const CLUB = "Bridžový klub Praha, Italská 209/17, Praha 2";
+const day = (date: Date) => date.toISOString().slice(0, 10);
+
+// Matches still ahead that have a date; a bye is no match.
+const calendarMatches = computed(() => {
+  const today = new Date().toLocaleDateString('sv-SE');
+  return upcoming.filter((m): m is UpcomingMatch & { date: Date } =>
+    !!m.date && day(m.date) >= today && !props.tournament.getPair(m.opponent)?.isBye);
+});
+
+/** Rounds start at 17:45 and take four hours; a postponed match is a whole day, its time is agreed separately. */
+function downloadCalendar() {
+  const slug = String(route.params.tournament);
+  const name = localName(language.value, props.tournament.title, props.tournament.titleEn);
+  const url = window.location.origin + router.resolve({ name: 'pair-results', params: { pair: props.pair } }).href;
+  const events: CalendarEvent[] = calendarMatches.value.map((match) => {
+    const opponent = props.tournament.getPair(match.opponent)?.title ?? '';
+    const what = t(match.postponed ? 'calendar.postponed' : 'calendar.round', { n: match.round });
+    const event = {
+      uid: `${slug}-${props.pair}-${match.round}-${match.table}@vysledky.bkpraha.cz`,
+      summary: `${name}, ${what}: ${opponent}`,
+      description: `${t('common.table')} ${match.table} ${match.ns ? 'NS' : 'EW'}\n${url}`,
+      location: CLUB,
+      url,
+    };
+    return match.postponed
+      ? { ...event, day: day(match.date) }
+      : { ...event, start: pragueTime(day(match.date), '17:45'), end: pragueTime(day(match.date), '21:45') };
+  });
+  downloadTextFile(`${slug}-${props.pair}.ics`, buildCalendar(events), 'text/calendar');
+}
 
 const adjusts = computed(() => {
   return finalResult.adjusts;
@@ -152,6 +190,15 @@ const adjusts = computed(() => {
           </td>
         </tr>
       </table>
+      <div v-if="calendarMatches.length" class="calendar-row">
+        <button type="button" class="calendar-button" @click="downloadCalendar">
+          <svg viewBox="0 0 20 20" aria-hidden="true">
+            <rect x="2.5" y="4" width="15" height="13.5" rx="2" fill="none" stroke="currentColor" stroke-width="1.6" />
+            <path d="M2.5 8h15M6.5 2v4M13.5 2v4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+          <span>{{ $t('calendar.add') }}</span>
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -170,5 +217,36 @@ const adjusts = computed(() => {
 
 .small {
   font-size: 0.8em;
+}
+
+.calendar-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.calendar-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 9px 2px 6px;
+  border: 1px solid #cfd8cf;
+  border-radius: 999px;
+  background: white;
+  color: var(--felt, #1a881a);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.calendar-button:hover {
+  border-color: var(--felt, #1a881a);
+  background: #eef5ee;
+}
+
+.calendar-button svg {
+  width: 14px;
+  height: 14px;
 }
 </style>
