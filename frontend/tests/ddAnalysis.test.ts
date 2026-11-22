@@ -43,9 +43,12 @@ describe("double dummy analysis", () => {
         expect(boards[0]!.minimax).toBe("keep");
     });
 
-    it("counts boards without analysis across rounds", () => {
+    it("counts boards without analysis across rounds and dohrávky", () => {
         const [a, b, c] = unanalysed();
-        expect(missingAnalysis({ "1": { boards: { "1": a!, "2": published[0]!.board } }, "2": { boards: { "1": b!, "2": c! } }, "3": {} })).toBe(3);
+        expect(missingAnalysis({
+            rounds: { "1": { boards: { "1": a!, "2": published[0]!.board } }, "2": { boards: { "1": b! } }, "3": {} },
+            postponedSessions: [{ id: "s", date: "2026-10-05", boards: { "1": c! }, field: [], matches: [] }],
+        })).toBe(3);
     });
 
     it("orders the ability array N, E, S, W by NT, S, H, D, C", () => {
