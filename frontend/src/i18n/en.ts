@@ -63,6 +63,7 @@ const en: Messages = {
         averageValue: "Average: {value}",
         matches: "Matches",
         contract: "Contract",
+        lead: "Lead",
         result: "Result",
         board: "Board",
         boardNumber: "Board {n}",
