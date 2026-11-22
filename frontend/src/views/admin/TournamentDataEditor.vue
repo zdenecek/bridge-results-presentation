@@ -72,7 +72,7 @@ import TournamentRoundEditor from '@/views/admin/TournamentRoundEditor.vue';
 import PostponedSessionsEditor from '@/views/admin/PostponedSessionsEditor.vue';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
-import { analyseBoards, ddsWorker, missingAnalysis, needsAnalysis } from '@/utils/ddAnalysis';
+import { analyseBoards, ddsWorker, missingAnalysis, needsAnalysis, tournamentBoards } from '@/utils/ddAnalysis';
 
 function results(round: number): number {
     return data.value?.rounds[round]?.boardResults?.length ?? 0;
@@ -149,7 +149,7 @@ async function addFilesToRound(round: number, event: InputEvent) {
     }
 }
 
-const missingDd = computed(() => missingAnalysis(data.value?.rounds));
+const missingDd = computed(() => missingAnalysis(data.value));
 const ddStatus = ref('');
 let ddRunning = false;
 // A board that failed once is not retried, so a bad deal cannot loop.
@@ -163,8 +163,7 @@ async function runDd() {
     let failed = 0;
     try {
         for (;;) {
-            const boards = Object.values(data.value.rounds ?? {})
-                .flatMap((round) => Object.values(round.boards ?? {}))
+            const boards = tournamentBoards(data.value)
                 .filter((board) => needsAnalysis(board) && !ddAttempted.has(board));
             if (boards.length === 0) break;
             boards.forEach((board) => ddAttempted.add(board));

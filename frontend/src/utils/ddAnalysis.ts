@@ -1,6 +1,6 @@
 import type { DdTable, DdsWorker, Par, Seat, Strain, Vulnerability } from 'bridge-dds-wasm';
 import type { Board, BoardAnalysis } from '@/model/Board';
-import type { RoundData } from '@/model/Round';
+import type { TournamentData } from '@/model/Tournament';
 
 const SEATS: Seat[] = ['N', 'E', 'S', 'W'];
 const STRAINS: Strain[] = ['NT', 'S', 'H', 'D', 'C'];
@@ -33,10 +33,16 @@ export function needsAnalysis(board: Board): boolean {
     return !board.ability && board.deal?.length === 4;
 }
 
-export function missingAnalysis(rounds: Record<string, RoundData> | undefined): number {
-    return Object.values(rounds ?? {})
-        .flatMap((round) => Object.values(round.boards ?? {}))
-        .filter(needsAnalysis).length;
+/** Boards of every round and of every dohrávka (postponed session). */
+export function tournamentBoards(data: Partial<TournamentData> | undefined): Board[] {
+    return [
+        ...Object.values(data?.rounds ?? {}).flatMap((round) => Object.values(round.boards ?? {})),
+        ...(data?.postponedSessions ?? []).flatMap((session) => Object.values(session.boards ?? {})),
+    ];
+}
+
+export function missingAnalysis(data: Partial<TournamentData> | undefined): number {
+    return tournamentBoards(data).filter(needsAnalysis).length;
 }
 
 /** Fills `ability` and `minimax` of the boards that have none. Returns how many failed. */
