@@ -1,8 +1,7 @@
 
-export function downloadTextFile(filename: string, text: string) : void {
+export function downloadTextFile(filename: string, text: string, type = 'text/plain') : void {
     // Create a new Blob object using the text content
-    const blob = new Blob([text], { type: 'text/plain' });
-   console.log(text) 
+    const blob = new Blob([text], { type });
     // Create a link element
     const link = document.createElement('a');
     

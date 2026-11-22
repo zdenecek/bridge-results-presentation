@@ -115,6 +115,10 @@ asi 0,2 s na rozdání). Uloží se až s „Uložit změny“.
 Minimax píše oběti s `D` (`5HDS-100`), starší PBN ho vynechávaly. Balíček je závislost z GitHubu
 připnutá na commit; Vite potřebuje `worker.format: 'es'` a balíček vyloučený z `optimizeDeps`.
 
+Stránka páru nabízí soubor `.ics` se zbývajícími zápasy, které mají datum (`utils/calendar.ts`).
+Kolo je 17:45–21:45 pražského času podle klubového kalendáře, dohrávka celý den, protože čas
+si dvojice domlouvají; adresa klubu je napsaná v `TournamentPairResults.vue`.
+
 Nasazení na televizi v klubu: `/tv/{slug}` (další kolo) nebo `/tv/{slug}/{kolo}`. Bez menu
 a hesla, odkaz je jen v adminu u skupinovky, samo se každé dvě minuty načte znovu.
 
