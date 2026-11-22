@@ -155,7 +155,7 @@ export default class TournamentFileParser {
             Object.assign(boards, { [boardNum]: board });
         }
 
-        const lines = text.split("\r\n");
+        const lines = text.split(/\r?\n/);
         for (const line of lines) {
             const t = line.split('"')[1];
             if (!t) continue;
@@ -164,6 +164,10 @@ export default class TournamentFileParser {
 
                 state = true;
                 boardNum = t
+                deal = [];
+                ability_present = false;
+                ability = [];
+                minimax = "";
             } else if (line.startsWith("[Dealer")) {
                 dealer = t
             } else if (line.startsWith("[Vulnerable")) {
