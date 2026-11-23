@@ -59,6 +59,8 @@ const en: Messages = {
         kicker: "Registration open",
         cta: "Register",
         deadline: "by {when}",
+        later: "Not now",
+        close: "Close",
     },
     common: {
         allResults: "‹ All results",

@@ -20,6 +20,7 @@
     <template #default>
       <div :class="{ 'results-page': !isPrint, presentation: !isPrint }">
         <registration-promo v-if="!isPrint" :tournament="String($route.params.tournament)" />
+        <promo-popup v-if="!isPrint" :tournament="String($route.params.tournament)" />
         <router-view :key="$route.path" v-show="state === 'loaded'"></router-view>
         <p v-show="state === 'loading'" class="page-lead">{{ $t('tournament.loading') }}</p>
         <p v-show="state === 'error'" class="page-lead">{{ error }}</p>
@@ -58,6 +59,7 @@ import { Tournament } from '@/model/Tournament';
 import { useRoute } from 'vue-router';
 import MainLayout from '@/layouts/MainLayout.vue';
 import RegistrationPromo from '@/components/RegistrationPromo.vue';
+import PromoPopup from '@/components/PromoPopup.vue';
 import { formatDate, language, t as tr } from '@/i18n';
 import { localName } from '@/i18n/names';
 

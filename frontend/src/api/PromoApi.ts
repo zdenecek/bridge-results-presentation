@@ -21,8 +21,15 @@ export interface PromoSettings extends Promo {
     enabled: boolean;
 }
 
+let current: Promise<Promo | null> | undefined;
+
 export default class PromoApi {
     private static url: string = import.meta.env.VITE_API_URL + "promo";
+
+    /** The promo visitors see, loaded once per visit and shared by the card and the popup. */
+    static current(): Promise<Promo | null> {
+        return current ??= this.get().catch(() => null);
+    }
 
     static get(): Promise<Promo | null> {
         return axios.get(this.url).then((response) => response.data.promo ?? null);
