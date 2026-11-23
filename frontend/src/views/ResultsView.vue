@@ -17,6 +17,7 @@
     </template>
     <template #default>
       <div class="results-page">
+        <registration-promo v-if="season === current" />
         <p v-if="state === 'loading'" class="status">{{ $t('results.loading') }}</p>
         <p v-else-if="state === 'error'" class="status">{{ $t('results.error') }}</p>
         <p v-else-if="page && !page.sections.length" class="status">{{ $t('results.empty', { season: seasonLabel(season) }) }}</p>
@@ -43,6 +44,7 @@
 import MainLayout from '@/layouts/MainLayout.vue';
 import ResultsApi, { ResultsPage, ResultsSection, currentSeason, seasonLabel } from '@/api/ResultsApi';
 import ResultsSectionBlock from '@/components/results/ResultsSectionBlock.vue';
+import RegistrationPromo from '@/components/RegistrationPromo.vue';
 import { computed, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { language, t as tr } from '@/i18n';

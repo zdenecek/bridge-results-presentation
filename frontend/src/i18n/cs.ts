@@ -53,6 +53,11 @@ const cs = {
         more: "Více informací",
         hide: "Skrýt pozvánku",
     },
+    promo: {
+        kicker: "Přihlášky otevřené",
+        cta: "Přihlásit se",
+        deadline: "do {when}",
+    },
     common: {
         allResults: "‹ Všechny výsledky",
         loading: "Načítám…",

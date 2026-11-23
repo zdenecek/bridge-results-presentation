@@ -55,6 +55,11 @@ const en: Messages = {
         more: "More information",
         hide: "Hide the invitation",
     },
+    promo: {
+        kicker: "Registration open",
+        cta: "Register",
+        deadline: "by {when}",
+    },
     common: {
         allResults: "‹ All results",
         loading: "Loading…",

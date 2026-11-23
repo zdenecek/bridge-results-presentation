@@ -34,12 +34,15 @@
         <SiteBanner :preview="form" />
       </div>
     </template>
+
+    <PromoAdminForm />
   </div>
 </template>
 
 <script setup lang="ts">
 import BannerApi, { BannerSettings } from '@/api/BannerApi';
 import SiteBanner from '@/components/SiteBanner.vue';
+import PromoAdminForm from '@/views/admin/PromoAdminForm.vue';
 import { suggestEnglish } from '@/i18n/names';
 import { adminKey } from '@/utils/adminKey';
 import { ref } from 'vue';
