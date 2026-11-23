@@ -159,6 +159,7 @@ const en: Messages = {
         seatingsTitle: "Table assignments for round {n}",
         seatingsTitleDate: "Table assignments for round {n}, {date}",
         crossLead: "VP from each match, row against column. The number above a column is the pair number.",
+        crossUnscheduled: "These pairs do not play each other, only {n} rounds are played",
         backStandings: "‹ Standings",
         backRound: "‹ Round {n} results",
         pairInRound: "{pair} in round {n}",

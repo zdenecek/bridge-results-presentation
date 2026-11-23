@@ -54,6 +54,18 @@ const results = computed(() => {
   return res;
 });
 
+// Pairs that never meet in the movement; null when rotations are not filled in for every round.
+const unscheduled = computed(() => {
+  const rounds = Array.from({ length: props.tournament.totalRounds }, (_, i) => props.tournament.rotations.get(i + 1));
+  if (rounds.some(rotation => !rotation)) return null;
+  const meets = new Set<string>();
+  rounds.forEach(rotation => Object.values(rotation!).forEach(({ ns, ew }) => {
+    meets.add(`${ns}-${ew}`);
+    meets.add(`${ew}-${ns}`);
+  }));
+  return group.players.map(p => group.players.map(p2 => p !== p2 && !meets.has(`${p}-${p2}`)));
+});
+
 const pairResults = computed(() => props.tournament.getPairResults());
 
 const hasAdjusts = computed(() => {
@@ -82,8 +94,8 @@ const followed = useFollowed(() => props.tournament);
             <td class="col-name" :class="{ 'followed-name': followed(player) }"> {{ tournament.getPair(player)?.title }} </td>
             <td v-for="player2, i2 in group.players" :key="player2"
                 class="col-vp"
-                :class="{ empty: player === player2, missing: (results[i]?.[i2]?.round ?? 100) <= tournament.standing && results[i]?.[i2]?.tableResult.status === 'not-played' && !tournament.isFinished }"
-                :title="player !== player2 ? ((results[i]?.[i2]?.round.toString() ?? '?') + '. kolo proti ' + tournament.getPair(player2)?.title) : ''">
+                :class="{ empty: player === player2, unscheduled: unscheduled?.[i]?.[i2], missing: (results[i]?.[i2]?.round ?? 100) <= tournament.standing && results[i]?.[i2]?.tableResult.status === 'not-played' && !tournament.isFinished }"
+                :title="player === player2 ? '' : unscheduled?.[i]?.[i2] ? $t('tournament.crossUnscheduled', { n: tournament.totalRounds }) : ((results[i]?.[i2]?.round.toString() ?? '?') + '. kolo proti ' + tournament.getPair(player2)?.title)">
               <template v-if="player !== player2 && results[i]?.[i2] && results[i]?.[i2]?.tableResult.status !== 'not-played'">
                 <router-link v-if="results[i]?.[i2]?.status === 'played'"
                              :to="{ name: 'round-pair-results', params: { round: results[i]?.[i2]?.round, pair: player } }">
@@ -141,6 +153,13 @@ const followed = useFollowed(() => props.tournament);
 
 .missing {
   background-color: lightyellow;
+}
+
+.unscheduled::after {
+  content: "×";
+  color: lighten(black, 65%);
+  font-size: 1.8em;
+  line-height: 1;
 }
 
 .col-vp {

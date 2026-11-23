@@ -157,6 +157,7 @@ const cs = {
         seatingsTitle: "Nasazení na {n}. kolo",
         seatingsTitleDate: "Nasazení na {n}. kolo, {date}",
         crossLead: "VP z každého zápasu, řádek proti sloupci. Číslo ve sloupci je číslo páru.",
+        crossUnscheduled: "Tyto dvojice spolu nehrají, hraje se jen {n} kol",
         backStandings: "‹ Celkové výsledky",
         backRound: "‹ Výsledky {n}. kola",
         pairInRound: "{pair} v {n}. kole",
