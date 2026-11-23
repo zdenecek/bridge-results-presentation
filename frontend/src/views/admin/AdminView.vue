@@ -6,7 +6,7 @@
     <template #default>
       <div class="admin-shell">
         <div class="admin-bar">
-          <div class="admin-tabs">
+          <div v-if="adminKey" class="admin-tabs">
             <router-link v-for="tab in tabs" :key="tab.name" :to="{ name: tab.name }"
                          :class="{ active: tab.matches.some((m) => String(route.name ?? '').startsWith(m)) }">
               {{ tab.label }}
@@ -105,6 +105,7 @@ async function submit() {
 
 .admin-meta {
   display: flex;
+  margin-left: auto;
   gap: 16px;
   padding-bottom: 8px;
   font-size: 0.9rem;
