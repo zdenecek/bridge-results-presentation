@@ -1,20 +1,14 @@
 <template>
   <aside v-if="shown" class="promo" :class="size" :aria-label="$t('promo.kicker')">
     <div class="message">
-      <span class="kicker"><span class="dot" aria-hidden="true"></span>{{ $t('promo.kicker') }}</span>
       <h2 class="title">{{ localName(language, shown.title, shown.titleEn) }}</h2>
       <p v-if="text" class="lead">{{ text }}</p>
-      <ul v-if="facts.length" class="facts">
-        <li v-for="fact in facts" :key="fact">{{ fact }}</li>
-      </ul>
+      <p v-if="facts.length" class="facts">{{ facts.join(' · ') }}</p>
     </div>
     <div class="action">
       <component :is="preview ? 'span' : 'a'" :href="preview ? undefined : shown.url ?? undefined"
                  :target="preview ? undefined : '_blank'" class="cta">
         {{ (language === 'en' ? shown.linkLabelEn : shown.linkLabel) || $t('promo.cta') }}
-        <svg viewBox="0 0 16 16" aria-hidden="true">
-          <path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
       </component>
       <span v-if="deadline" class="deadline">{{ $t('promo.deadline', { when: deadline }) }}</span>
     </div>
@@ -65,38 +59,18 @@ const deadline = computed(() => {
 
 <style scoped>
 .promo {
-  position: relative;
-  overflow: hidden;
   display: flex;
   align-items: center;
-  gap: 20px 32px;
-  margin: 0 0 28px;
-  padding: 24px 28px;
-  border-radius: 14px;
-  background: linear-gradient(115deg, #0b4a16 0%, #14721a 55%, #1a881a 100%);
-  box-shadow: 0 6px 24px rgba(11, 74, 22, 0.25), inset 0 0 0 1px rgba(242, 193, 78, 0.35);
-  color: white;
+  gap: 16px 28px;
+  margin: 0 0 24px;
+  padding: 18px 22px;
+  border: 1px solid #d9e0d9;
+  border-left: 6px solid #1a881a;
+  border-radius: 8px;
+  background: white;
+  color: #222;
   font-family: 'Lexend', Verdana, sans-serif;
   text-align: left;
-}
-
-.promo::after {
-  content: '♠♥♦♣';
-  position: absolute;
-  right: -0.08em;
-  bottom: -0.18em;
-  font-size: 8rem;
-  line-height: 1;
-  letter-spacing: -0.05em;
-  color: white;
-  opacity: 0.06;
-  pointer-events: none;
-}
-
-.message,
-.action {
-  position: relative;
-  z-index: 1;
 }
 
 .message {
@@ -104,64 +78,32 @@ const deadline = computed(() => {
   min-width: 0;
 }
 
-.kicker {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #f2c14e;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #f2c14e;
-  box-shadow: 0 0 0 0 rgba(242, 193, 78, 0.6);
-  animation: pulse 2s infinite;
-}
-
 .promo .title {
-  margin: 4px 0 6px;
-  color: white;
-  font-size: 1.875rem;
-  line-height: 1.15;
+  margin: 0 0 4px;
+  color: #1a881a;
+  font-size: 1.375rem;
+  line-height: 1.2;
   font-weight: 700;
-  letter-spacing: -0.015em;
 }
 
-.lead {
+.lead,
+.facts {
   margin: 0;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.0625rem;
+  font-size: 1rem;
   line-height: 1.45;
 }
 
 .facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 14px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.facts li {
-  padding: 3px 12px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 0.875rem;
+  margin-top: 2px;
+  color: #5f6661;
+  font-size: 0.9375rem;
 }
 
 .action {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   flex-shrink: 0;
 }
 
@@ -169,139 +111,65 @@ const deadline = computed(() => {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  min-height: 52px;
-  padding: 0 22px 0 28px;
-  border-radius: 999px;
-  background: #f2c14e;
-  color: #1d2a1d;
-  font-size: 1.125rem;
-  font-weight: 700;
+  min-height: 44px;
+  padding: 0 22px;
+  border-radius: 6px;
+  background: #1a881a;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-  transition: background 0.15s ease, transform 0.15s ease;
 }
 
 .promo .cta:hover {
-  background: #f7d27a;
-  transform: translateY(-1px);
+  background: #0e5a1b;
 }
 
 .promo .cta:focus-visible {
-  outline: 3px solid white;
-  outline-offset: 3px;
-}
-
-.cta svg {
-  width: 18px;
-  height: 18px;
+  outline: 3px solid #f2c14e;
+  outline-offset: 2px;
 }
 
 .deadline {
-  color: rgba(255, 255, 255, 0.8);
+  color: #5f6661;
   font-size: 0.8125rem;
 }
 
 .hero {
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 28px;
-  margin-bottom: 36px;
-  padding: 44px 48px;
-  border-radius: 18px;
-}
-
-.hero::after {
-  font-size: 15rem;
-}
-
-.hero .kicker {
-  font-size: 0.9375rem;
+  padding: 22px 26px;
 }
 
 .promo.hero .title {
-  margin: 8px 0 10px;
-  font-size: 3rem;
-  line-height: 1.05;
+  font-size: 1.75rem;
 }
 
 .hero .lead {
-  max-width: 34em;
-  font-size: 1.3125rem;
-}
-
-.hero .facts {
-  margin-top: 20px;
-}
-
-.hero .facts li {
-  padding: 5px 16px;
-  font-size: 1rem;
-}
-
-.hero .action {
-  flex-direction: row;
-  gap: 16px;
+  font-size: 1.0625rem;
 }
 
 .hero .cta {
-  min-height: 60px;
-  padding: 0 28px 0 36px;
-  font-size: 1.3125rem;
-}
-
-.hero .deadline {
-  font-size: 1rem;
+  min-height: 48px;
+  padding: 0 26px;
+  font-size: 1.0625rem;
 }
 
 @media (max-width: 640px) {
   .promo {
     flex-direction: column;
     align-items: stretch;
-    margin: 0 8px 24px;
-    padding: 20px;
+    margin: 0 8px 20px;
+    padding: 16px;
   }
 
-  .promo .title {
+  .promo.hero .title {
     font-size: 1.5rem;
   }
 
   .action {
     align-items: stretch;
-  }
-
-  .hero {
-    padding: 28px 20px;
-  }
-
-  .promo.hero .title {
-    font-size: 2.125rem;
-  }
-
-  .hero .lead {
-    font-size: 1.125rem;
-  }
-
-  .hero .action {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-
-  .deadline {
     text-align: center;
   }
-}
-
-@keyframes pulse {
-  70% { box-shadow: 0 0 0 8px rgba(242, 193, 78, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(242, 193, 78, 0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dot { animation: none; }
-  .promo .cta { transition: none; }
 }
 
 @media print {
