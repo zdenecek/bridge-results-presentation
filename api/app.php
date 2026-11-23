@@ -14,6 +14,7 @@ require_once __DIR__ . '/prebor.php';
 require_once __DIR__ . '/results.php';
 require_once __DIR__ . '/results_import.php';
 require_once __DIR__ . '/banner.php';
+require_once __DIR__ . '/promo.php';
 $app = AppFactory::create();
 $config = include(__DIR__ . '/config.php');
 
@@ -45,7 +46,7 @@ $loggedInMiddleware = function ($request, $handler) use ($apikey): ResponseInter
 
     // Define routes that user does not have to be logged in with. All other routes, the user needs to be logged in with.
     // Names for routes must be defined in routes.php with ->setName() for each one.
-    $publicRoutesArray = array('tournament', 'tournaments', 'home', 'bavlnka-ranking', 'bavlnka-ranking-csv', 'prebor-competitions', 'prebor-ranking', 'prebor-ranking-csv', 'results-seasons', 'results-season', 'banner');
+    $publicRoutesArray = array('tournament', 'tournaments', 'home', 'bavlnka-ranking', 'bavlnka-ranking-csv', 'prebor-competitions', 'prebor-ranking', 'prebor-ranking-csv', 'results-seasons', 'results-season', 'banner', 'promo');
 
     if ((!array_key_exists(0, $key) || $key[0] !== $apikey) && (!in_array($routeName, $publicRoutesArray)) && $method !== 'OPTIONS') {
         $response = new \Slim\Psr7\Response();
@@ -517,6 +518,26 @@ $app->put("$prefix/banner", function (Request $request, Response $response) use 
 });
 
 $app->options("$prefix/banner[/{path:.*}]", function (Request $request, Response $response): Response {
+    return $response;
+});
+
+$app->get("$prefix/promo", function (Request $request, Response $response) use ($pdo, $resultsJson) {
+    return $resultsJson($response, ['promo' => promoPublic($pdo)])->withHeader('Cache-Control', 'max-age=300');
+})->setName('promo');
+
+$app->get("$prefix/promo/admin", function (Request $request, Response $response) use ($pdo, $resultsJson) {
+    return $resultsJson($response, promoGet($pdo));
+});
+
+$app->put("$prefix/promo", function (Request $request, Response $response) use ($pdo, $resultsJson) {
+    try {
+        return $resultsJson($response, promoSave($pdo, (array) $request->getParsedBody()));
+    } catch (InvalidArgumentException $e) {
+        return $resultsJson($response, ['message' => $e->getMessage()], 400);
+    }
+});
+
+$app->options("$prefix/promo[/{path:.*}]", function (Request $request, Response $response): Response {
     return $response;
 });
 

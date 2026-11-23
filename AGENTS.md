@@ -47,6 +47,8 @@ vyvíjet. Heslo k zápisovým endpointům je `key` v `api/config.php` (necommitn
 | GET | `/api/prebor/admin` | hlavička `Apikey`, zápisy přes `/admin/prebor` |
 | GET | `/api/banner` | pozvánka nahoře na webu (`null`, když je vypnutá nebo prošlá), `max-age=300` |
 | GET/PUT | `/api/banner/admin`, `/api/banner` | hlavička `Apikey`, edituje se na `/admin/pozvanka` |
+| GET | `/api/promo` | přihlášky do další soutěže: velká karta na úvodní stránce a větší na stránkách vybraného turnaje (`null`, když je vypnutá nebo po uzávěrce v pražském čase), `max-age=300` |
+| GET/PUT | `/api/promo/admin`, `/api/promo` | hlavička `Apikey`, edituje se na `/admin/pozvanka` pod pozvánkou |
 
 `POST /api/transcribe-slip` (hlavička `Apikey`, tělo `{image, mimeType}` s fotkou
 v base64) pošle fotku lístečku do Gemini a vrátí `{text}` s řádky pro zápis
