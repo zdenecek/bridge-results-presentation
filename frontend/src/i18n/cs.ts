@@ -57,6 +57,8 @@ const cs = {
         kicker: "Přihlášky otevřené",
         cta: "Přihlásit se",
         deadline: "do {when}",
+        later: "Teď ne",
+        close: "Zavřít",
     },
     common: {
         allResults: "‹ Všechny výsledky",
