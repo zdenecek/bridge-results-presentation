@@ -4,7 +4,7 @@
       <h2>Přihlášky do další soutěže</h2>
     </div>
     <p class="muted">
-      Velká zelená karta s tlačítkem k přihlášce. Na úvodní stránce je velká, na stránkách vybraného turnaje
+      Karta s tlačítkem k přihlášce. Na úvodní stránce je velká, na stránkách vybraného turnaje
       (typicky končícího cyklu) ještě větší. Sama zmizí v čas uzávěrky.
     </p>
 
@@ -18,10 +18,10 @@
       <label class="check"><input v-model="form.enabled" type="checkbox"> Zobrazovat na webu</label>
       <label class="wide">Nadpis <input v-model="form.title" :required="form.enabled" maxlength="255" placeholder="Skupinová A Zima 2026"></label>
       <label class="wide">Text <input v-model="form.text" maxlength="500" placeholder="Nový cyklus začíná v pondělí 30. 11. Přihlaste se do soboty 28. 11. do 18:00."></label>
-      <label class="wide">Fakta, oddělená středníkem <input v-model="form.facts" maxlength="500" placeholder="Start 30. 11.; 5 kol; 750 Kč, členové BKP 500 Kč"></label>
+      <label class="wide">Fakta, oddělená středníkem <input v-model="form.facts" maxlength="500" placeholder="Start 30. 11.; 5 kol"></label>
       <label class="wide">Nadpis anglicky <input v-model="form.titleEn" maxlength="255" :placeholder="suggestEnglish(form.title)"></label>
       <label class="wide">Text anglicky <input v-model="form.textEn" maxlength="500" placeholder="Bez něj se v angličtině ukáže český text"></label>
-      <label class="wide">Fakta anglicky <input v-model="form.factsEn" maxlength="500" placeholder="Starts 30 Nov; 5 rounds; CZK 750, BKP members CZK 500"></label>
+      <label class="wide">Fakta anglicky <input v-model="form.factsEn" maxlength="500" placeholder="Starts 30 Nov; 5 rounds"></label>
       <label class="grow">Odkaz na přihlášku <input v-model="form.url" type="url" :required="form.enabled" maxlength="500" placeholder="https://www.bkpraha.cz/prihlasky-ska/"></label>
       <label>Text tlačítka <input v-model="form.linkLabel" maxlength="100" placeholder="Přihlásit se" size="16"></label>
       <label>Anglicky <input v-model="form.linkLabelEn" maxlength="100" placeholder="Register" size="16"></label>
